@@ -1,0 +1,4 @@
+*.pyc
+settings.py
+.sass-cache
+.css

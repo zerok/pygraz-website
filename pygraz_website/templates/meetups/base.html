@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block nav_meetups %}active{% endblock %}
+{% block sidebar %}
+    <nav id="subnav">
+        <ul>
+            <li><a href="" class="{% block subnav_start %}{% endblock %}">Nächste Treffen</a></li>
+            <li><a href="" class="{% block subnav_sessions %}{% endblock %}">Sessions</a></li>
+            <li><a href="" class="{% block subnav_archive %}{% endblock %}">Vergangene Treffen</a></li>
+        </ul>
+    </nav>
+{% endblock %}

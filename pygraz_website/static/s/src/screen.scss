@@ -1,0 +1,97 @@
+@import "compass/reset";
+@import "blueprint/grid";
+@import "compass/css3/border-radius";
+@import "content";
+@import "common";
+
+body {
+    font-size: 16px;
+    font-family: Helvetica Neue, Arial, Helvetica, sans-serif;
+    color: #333;
+    background: url(bodybg.png) top left repeat-x;
+}
+
+header, footer, #main {
+    @include container;
+}
+#logo {
+    @include column(3);
+    padding-top: 10px;
+}
+#mainnav {
+    @include column(21);
+    @include last;
+
+    ul {
+        float: right;
+        padding: 4px 7px 0 7px;
+        background: $midblue; //#E4E4E4;
+        @include border-radius(0 0 10px 10px);
+
+        li {
+            float: left;
+
+            a {
+                display: block;
+                padding: 5px 10px;
+                text-decoration: none;
+                border-bottom: 4px solid transparent;
+                color: $blue;
+
+                &:hover, &.active {
+                    border-bottom: 4px solid $blue;
+                }
+                &.active {
+                    color: $darkblue;
+                    font-weight: bold;
+                }
+            }
+        }
+    }
+}
+#main {
+    padding-top: 2em;
+}
+
+#body {
+    @include column(15);
+    @include append(1);
+
+    h1 {
+        font-size: 200%;
+        margin-bottom: 1em;
+    }
+
+    p {
+        line-height: 1.4em;
+        margin-bottom: 1em;
+    }
+}
+#sidebar {
+    @include column(8);
+    @include last;
+}
+#subnav {
+    width: 80%;
+    float: right;
+
+    li {
+        border: 1px solid #DDD;
+        @include border-radius(2px);
+        margin-bottom: 3px;
+        background: #FAFAFA;
+    }
+
+    a {
+        display: block;
+        padding: 5px;
+        color: #333;
+        font-size: 110%;
+        text-decoration: none;
+        border-left: 1em solid transparent;
+
+        &.active {
+            border-left: 1em solid $orange;
+        }
+    }
+}

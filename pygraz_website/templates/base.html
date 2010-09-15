@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>{% block title %}{% endblock %}</title>
+        <link rel="stylesheet" href="/static/s/screen.css" type="text/css" media="screen" charset="utf-8" />
+        <link rel="stylesheet" href="/static/s/print.css" type="text/css" media="print" charset="utf-8" />
+    </head>
+    <body>
+        <div id="page">
+            <header>
+                <a href="/" id="logo"><img src="{{ url_for(".static", filename="s/logo.png")}}" alt="pyGRAZ" /></a>
+                <nav id="mainnav">
+                    <ul>
+                        <li><a href="/" class="{% block nav_start %}{% endblock %}">Start</a></li>
+                        <li><a href="{{ url_for('meetups') }}" class="{% block nav_meetups %}{% endblock %}">Treffen</a></li>
+                        <li><a href="/" class="{% block nav_about %}{% endblock %}">Über pyGRAZ</a></li>
+                    </ul>
+                </nav>
+            </header>
+            <div id="main">
+                <div id="body">
+                    {% block body %}{% endblock %}
+                </div>
+                <div id="sidebar">
+                    {% block sidebar %}{% endblock %}
+                </div>
+            </div>
+            <footer>
+                {% block footer %}{% endblock %}
+            </footer>
+        </div>
+    </body>
+</html>

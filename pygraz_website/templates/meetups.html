@@ -1,0 +1,32 @@
+{% extends "meetups/base.html" %}
+{% block subnav_start %}active{% endblock %}
+{% block body %}
+<h1>Treffen</h1>
+<div class="info">
+    <p>Kern ist das (zumindest halbwegs) regelmässige Zusammenkommen der
+    der Mitglieder, um persönlich Neuigkeiten und Wissenswertes 
+    auszutauschen. Dies geschieht in der Regel an einem kommunikationsfördernden
+    Ort wie einem Gasthaus oder an einem Ort, wo einfach und unkompliziert
+    kurze Präsentationen abgehalten werden können.</p>
+</div>
+<table>
+    <thead>
+        <tr>
+            <th>Tag</th>
+            <th>Beginn</th>
+            <th>Ort</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for meetup in meetups %}
+        <tr>
+            <td class="date"><a href="{{ url_for('meetup', doc=meetup._id) }}">{{ meetup.start|date }}</a></td>
+            <td class="start">{{ meetup.start|time}}</td>
+            <td class="location">{% if meetup.location %}
+                {{ meetup.location.name }}
+            {% endif %}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
