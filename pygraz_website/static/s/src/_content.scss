@@ -1,6 +1,14 @@
 @import "common";
 
-#body {
+.content, #body {
+    h1 {
+        font-size: 35px;
+    }
+    h1, h2, h3, h4, h5, h6 {
+        font-family: Garamond, Georgia, serif;
+        letter-spacing: -1px;
+        margin-bottom: 0.9em;
+    }
     table {
         margin-bottom: 1em;
         border-collapse: collapse;
@@ -11,10 +19,34 @@
         border-bottom: 1px solid #DEDEDE;
     }
     th {
+        font-family: Georgia, serif;
+        font-style :italic;
         font-weight: bold;
         text-align: center;
         background: $midblue;
         color: $darkblue;
         border-top: 1px solid $darkblue;
+    }
+    a {
+        color: $blue;
+    }
+    p {
+        line-height: 1.4em;
+        margin-bottom: 1em;
+    }
+    blockquote {
+        font-family: Georgia, serif;
+        font-style :italic;
+        *:first-child:first-letter {
+            font-style :normal;
+            font-size: 300%;
+            float:left;
+            padding: 0 3px 3px 0;
+        }
+        cite {
+            display: block;
+            text-align: right;
+            font-style: italic;
+        }
     }
 }

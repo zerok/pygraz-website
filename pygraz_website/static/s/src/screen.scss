@@ -1,6 +1,7 @@
 @import "compass/reset";
 @import "blueprint/grid";
 @import "compass/css3/border-radius";
+@import "compass/css3/box-shadow";
 @import "content";
 @import "common";
 
@@ -8,7 +9,6 @@ body {
     font-size: 16px;
     font-family: Helvetica Neue, Arial, Helvetica, sans-serif;
     color: #333;
-    background: url(bodybg.png) top left repeat-x;
 }
 
 header, footer, #main {
@@ -16,7 +16,7 @@ header, footer, #main {
 }
 #logo {
     @include column(3);
-    padding-top: 10px;
+    padding-top: 20px;
 }
 #mainnav {
     @include column(21);
@@ -25,8 +25,10 @@ header, footer, #main {
     ul {
         float: right;
         padding: 4px 7px 0 7px;
-        background: $midblue; //#E4E4E4;
+        margin-right: 5px;
+        background: #e4e4e4; //#E4E4E4;
         @include border-radius(0 0 10px 10px);
+        @include box-shadow;
 
         li {
             float: left;
@@ -57,15 +59,6 @@ header, footer, #main {
     @include column(15);
     @include append(1);
 
-    h1 {
-        font-size: 200%;
-        margin-bottom: 1em;
-    }
-
-    p {
-        line-height: 1.4em;
-        margin-bottom: 1em;
-    }
 }
 #sidebar {
     @include column(8);
@@ -87,6 +80,9 @@ header, footer, #main {
         padding: 7px 5px 7px 20px;
         color: #333;
         text-decoration: none;
+        &:hover {
+            background: url(subnav.png) 0% 50% no-repeat;
+        }
 
         &.active {
             background: url(subnav-active.png) 0% 50% no-repeat;

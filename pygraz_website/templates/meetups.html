@@ -20,7 +20,7 @@
     <tbody>
         {% for meetup in meetups %}
         <tr>
-            <td class="date"><a href="{{ url_for('meetup', doc=meetup._id) }}">{{ meetup.start|date }}</a></td>
+            <td class="date"><a href="{{ url_for('meetup', doc=meetup.start|date) }}">{{ meetup.start|date }}</a></td>
             <td class="start">{{ meetup.start|time}}</td>
             <td class="location">{% if meetup.location %}
                 {{ meetup.location.name }}

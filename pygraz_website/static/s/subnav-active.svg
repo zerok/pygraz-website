@@ -14,7 +14,7 @@
    id="svg3765"
    version="1.1"
    inkscape:version="0.47 r22583"
-   sodipodi:docname="New document 6">
+   sodipodi:docname="subnav-active.svg">
   <defs
      id="defs3767">
     <inkscape:perspective
@@ -75,7 +75,7 @@
        inkscape:export-xdpi="7.4747095"
        inkscape:export-ydpi="7.4747095" />
     <path
-       style="fill:#ffd43b;fill-opacity:1;stroke:#000000;stroke-width:7.73600006;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:7.73600006000000029;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        d="m 225.61995,255.72625 2.40971,147.55757 -127.52273,-73.6347 125.11302,-73.92287 z"
        id="rect3775"
        sodipodi:nodetypes="cccc"

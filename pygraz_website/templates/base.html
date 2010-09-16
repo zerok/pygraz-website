@@ -18,12 +18,14 @@
                 </nav>
             </header>
             <div id="main">
+                {% block main %}
                 <div id="body">
                     {% block body %}{% endblock %}
                 </div>
                 <div id="sidebar">
                     {% block sidebar %}{% endblock %}
                 </div>
+                {% endblock %}
             </div>
             <footer>
                 {% block footer %}{% endblock %}
