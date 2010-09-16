@@ -74,24 +74,23 @@ header, footer, #main {
 #subnav {
     width: 80%;
     float: right;
+    margin: 0;
+    padding: 0;
 
     li {
-        border: 1px solid #DDD;
-        @include border-radius(2px);
-        margin-bottom: 3px;
-        background: #FAFAFA;
+        margin: 0;
+        padding: 0;
     }
 
     a {
         display: block;
-        padding: 5px;
+        padding: 7px 5px 7px 20px;
         color: #333;
-        font-size: 110%;
         text-decoration: none;
-        border-left: 1em solid transparent;
 
         &.active {
-            border-left: 1em solid $orange;
+            background: url(subnav-active.png) 0% 50% no-repeat;
+            font-weight: bold;
         }
     }
 }
