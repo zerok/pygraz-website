@@ -4,14 +4,16 @@
 @import "compass/css3/box-shadow";
 @import "content";
 @import "common";
-
+/*
 $blueprint_grid_width: 25px;
 $blueprint_grid_outer_width: 35px;
 $blueprint_container_size: 830px;
+*/
 
 body {
     font-size: 16px;
     font-family: Helvetica Neue, Arial, Helvetica, sans-serif;
+    background: url(bodybg.png) top left repeat-x #EFEFEF;
     color: #333;
 }
 
@@ -70,6 +72,14 @@ a:hover {
 #body {
     @include column(16);
     @include append(1);
+    .wrapper {
+        background: #FFF;
+        border: solid 3px #DDD;
+        @include border-radius(4px);
+        @include box-shadow;
+        padding: 1em;
+        margin-bottom: 7px;
+    }
 
 }
 #sidebar {
