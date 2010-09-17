@@ -14,12 +14,16 @@
 <div id="misc">
     <div id="next-meetup">
         <h2>Nächstes Treffen</h2>
+
+        {% if next_meetup %}
+        <a href="{{ url_for('meetup', date=next_meetup.start|datecode)}}">{{ next_meetup.start|date }}</a>
+        {% if next_meetup.location %}
+        ({{ next_meetup.location.name }})
+        {% endif %}
+        {% endif %}
     </div>
     <div id="twitter">
         <h2>Twitter</h2>
-    </div>
-    <div id="about">
-        <h2>Was ist pyGRAZ?</h2>
     </div>
 </div>
 {% endblock %}

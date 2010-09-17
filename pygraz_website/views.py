@@ -10,7 +10,10 @@ root = Module(__name__, url_prefix='')
 
 @root.route('/')
 def index():
-    return render_template('index.html')
+    now_key = datetime.datetime.utcnow().date().strftime("%Y-%m-%d")
+    next_meetup = documents.Meetup.view('frontend/meetups_by_date', 
+            descending=False, startkey=now_key, limit=1).first()
+    return render_template('index.html', next_meetup=next_meetup)
 
 @root.route('/meetups/')
 def meetups():
