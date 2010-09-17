@@ -21,8 +21,17 @@ def meetups():
                 descending=False, startkey=now_key))
             )
 
-@root.route('/meetups/<doc>')
-def meetup(doc):
-    meetup = site.couchdb[doc]
+@root.route('/meetups/<date>')
+def meetup(date):
+    doc = documents.Meetup.view('frontend/meetups_by_date', key=date, 
+            include_docs=True).first()
     return render_template('meetup.html',
-            meetup = meetup)
+            meetup = doc)
+
+@root.route('/meetups-archive/')
+def meetup_archive():
+    now_key = datetime.datetime.utcnow().date().strftime("%Y-%m-%d")
+    return render_template('meetups/archive.html',
+            meetups = list(documents.Meetup.view('frontend/meetups_by_date',
+                descending=True, startkey=now_key, include_docs=True))
+            )

@@ -1,4 +1,34 @@
-{% extends "base.html" %}
+{% extends "meetups/base.html" %}
 {% block body %}
-    {{ meetup.location }}
+    <h1>Treffen vom {{ meetup.start|date }}</h1>
+    {% if meetup.notes %}
+    {{ meetup.notes|rst|safe }}
+    {% endif %}
 {% endblock %}
+{% block sidebar %}
+{{ super() }}
+<div class="block" id="info">
+    <div class="content">
+        {% if meetup.start %}
+        <dl>
+            <dt>Beginn:</dt>
+            <dd>{{ meetup.start }}</dd>
+        </dl>
+        {% endif %}
+        {% if meetup.end %}
+        <dl>
+            <dt>Geplantes Ende:</dt>
+            <dd>{{ meetup.end }}</dd>
+        </dl>
+        {% endif %}
+        {% if meetup.location %}
+        <dl>
+            <dt>Ort:</dt>
+            <dd>{{ meetup.location.name }}</dd>
+        </dl>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
+{% block subnav_archive %}active{% endblock %}

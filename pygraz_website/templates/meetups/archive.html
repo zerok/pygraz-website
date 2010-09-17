@@ -1,14 +1,6 @@
 {% extends "meetups/base.html" %}
-{% block subnav_start %}active{% endblock %}
 {% block body %}
-<h1>Treffen</h1>
-<div class="info">
-    <p>Kern ist das (zumindest halbwegs) regelmässige Zusammenkommen der
-    der Mitglieder, um persönlich Neuigkeiten und Wissenswertes 
-    auszutauschen. Dies geschieht in der Regel an einem kommunikationsfördernden
-    Ort wie einem Gasthaus oder an einem Ort, wo einfach und unkompliziert
-    kurze Präsentationen abgehalten werden können.</p>
-</div>
+<h1>Vergangene Treffen</h1>
 <table>
     <thead>
         <tr>
@@ -30,3 +22,4 @@
     </tbody>
 </table>
 {% endblock %}
+{% block subnav_archive %}active{% endblock %}

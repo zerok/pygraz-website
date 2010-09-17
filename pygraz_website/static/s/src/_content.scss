@@ -4,10 +4,19 @@
     h1 {
         font-size: 35px;
     }
+    h2 {
+        font-size: 28px;
+    }
+    h3 {
+        font-size: 25px;
+    }
     h1, h2, h3, h4, h5, h6 {
         font-family: Garamond, Georgia, serif;
         letter-spacing: -1px;
-        margin-bottom: 0.9em;
+        margin-bottom: 0.4em;
+    }
+    h2, h3, h4, h5, h6 {
+        margin-top: 1em;
     }
     table {
         margin-bottom: 1em;
@@ -29,10 +38,16 @@
     }
     a {
         color: $blue;
+        &:hover {
+            color: $highlight;
+        }
     }
-    p {
+    p, ul, ol {
         line-height: 1.4em;
         margin-bottom: 1em;
+    }
+    li {
+        line-height: 1.4em;
     }
     blockquote {
         font-family: Georgia, serif;
@@ -48,5 +63,26 @@
             text-align: right;
             font-style: italic;
         }
+    }
+    ul {
+        list-style: circle;
+        padding-left: 3em;
+    }
+    ol {
+        list-style: numeric;
+        padding-left: 3em;
+    }
+    dt, dd {
+        padding: 3px;
+    }
+    dl {
+        margin-bottom: 5px;
+    }
+    dt {
+        font-weight: bold;
+        background: #EFEFEF;
+    }
+    dd {
+        background: #E5E5e5;
     }
 }

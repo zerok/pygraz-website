@@ -5,6 +5,10 @@
 @import "content";
 @import "common";
 
+$blueprint_grid_width: 25px;
+$blueprint_grid_outer_width: 35px;
+$blueprint_container_size: 830px;
+
 body {
     font-size: 16px;
     font-family: Helvetica Neue, Arial, Helvetica, sans-serif;
@@ -13,6 +17,10 @@ body {
 
 header, footer, #main {
     @include container;
+}
+
+a:hover {
+    color: $highlight;
 }
 #logo {
     @include column(3);
@@ -29,6 +37,9 @@ header, footer, #main {
         background: #e4e4e4; //#E4E4E4;
         @include border-radius(0 0 10px 10px);
         @include box-shadow;
+        &:hover {
+            background: #d2e5f3;
+        }
 
         li {
             float: left;
@@ -39,13 +50,14 @@ header, footer, #main {
                 text-decoration: none;
                 border-bottom: 4px solid transparent;
                 color: $blue;
-
-                &:hover, &.active {
-                    border-bottom: 4px solid $blue;
+                &:hover {
+                    color: $highlight;
+                    border-bottom: 4px solid $highlight;
                 }
+
                 &.active {
-                    color: $darkblue;
                     font-weight: bold;
+                    border-bottom: 4px solid $blue;
                 }
             }
         }
@@ -56,18 +68,17 @@ header, footer, #main {
 }
 
 #body {
-    @include column(15);
+    @include column(16);
     @include append(1);
 
 }
 #sidebar {
-    @include column(8);
+    @include column(7);
     @include last;
 }
 #subnav {
-    width: 80%;
-    float: right;
-    margin: 0;
+    width: 100%;
+    margin: 0 0 2em 0;
     padding: 0;
 
     li {

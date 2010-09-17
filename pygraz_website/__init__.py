@@ -10,6 +10,8 @@ def create_app(settings):
 
     app.jinja_env.filters['time'] = filters.timefilter
     app.jinja_env.filters['date'] = filters.datefilter
+    app.jinja_env.filters['datecode'] = filters.datecode
+    app.jinja_env.filters['rst'] = filters.rst
 
     from .views import root
     app.register_module(root)

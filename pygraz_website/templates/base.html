@@ -4,6 +4,20 @@
         <title>{% block title %}{% endblock %}</title>
         <link rel="stylesheet" href="/static/s/screen.css" type="text/css" media="screen" charset="utf-8" />
         <link rel="stylesheet" href="/static/s/print.css" type="text/css" media="print" charset="utf-8" />
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+        <!--
+        <script type="text/javascript">
+            $(function(){
+                $('#logo').hover(function(ev){
+                    var src = $('img', $(this)).attr('src');
+                    $('img', $(this)).attr('src', src.replace('-mono', ''));
+                }, function(ev){
+                    var src = $('img', $(this)).attr('src');
+                    $('img', $(this)).attr('src', src.replace('.png', '-mono.png'));
+                })
+            });
+        </script>
+        -->
     </head>
     <body>
         <div id="page">
