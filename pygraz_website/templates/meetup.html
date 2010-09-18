@@ -3,6 +3,8 @@
     <h1>Treffen vom {{ meetup.start|date }}</h1>
     {% if meetup.notes %}
     {{ meetup.notes|rst|safe }}
+    {% else %}
+    <p>Keine Notizen vorhanden.</p>
     {% endif %}
 {% endblock %}
 {% block sidebar %}
