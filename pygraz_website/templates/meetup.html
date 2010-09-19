@@ -31,6 +31,31 @@
         {% endif %}
     </div>
 </div>
+{% if versions %}
+<div class="block" id="docinfo">
+    <h2 class="title">Über dieses Seite</h2>
+    <div class="content">
+        <dl>
+            <dt>Aktualisiert:</dt>
+            <dd>
+                {{ meetup.updated_at }}
+            </dd>
+        </dl>
+        <dl id="versions">
+            <dt>Versionen:</dt>
+            <dd>
+                <ul>
+                    {% for version in versions %}
+                    <li class="{{ version._id == meetup._id and "active" or "" }}">
+                    <a href="/doc/{{ version._id }}">
+                        {{ version.updated_at }}</a></li>
+                    {% endfor %}
+                </ul>
+            </dd>
+        </dl>
+    </div>
+</div>
+{% endif %}
 
 {% endblock %}
 {% block subnav_archive %}active{% endblock %}

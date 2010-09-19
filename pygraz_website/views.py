@@ -1,10 +1,10 @@
-from flask import render_template, Module, request
+from flask import render_template, Module, request, redirect, url_for
 import datetime
 import couchdbkit
 from flatland.out.markup import Generator
 
 import pygraz_website as site
-from . import documents, forms
+from . import documents, forms, filters
 
 
 root = Module(__name__, url_prefix='')
@@ -13,10 +13,16 @@ root = Module(__name__, url_prefix='')
 def add_form_generator():
     return {'formgen': Generator(auto_for=True)}
 
+@root.route('/doc/<docid>')
+def view_doc(docid):
+    doc = site.couchdb.get(docid)
+    return globals()[doc['type']](None, docid=docid)
+
+
 @root.route('/')
 def index():
     now_key = datetime.datetime.utcnow().date().strftime("%Y-%m-%d")
-    next_meetup = documents.Meetup.view('frontend/meetups_by_date', 
+    next_meetup = documents.Meetup.view('frontend/meetups_by_date',
             descending=False, startkey=now_key, limit=1).first()
     return render_template('index.html', next_meetup=next_meetup)
 
@@ -30,11 +36,23 @@ def meetups():
             )
 
 @root.route('/meetups/<date>')
-def meetup(date):
-    doc = documents.Meetup.view('frontend/meetups_by_date', key=date, 
-            include_docs=True).first()
+def meetup(date, docid=None):
+    if docid is None:
+        doc = documents.Meetup.view('frontend/meetups_by_date', key=date,
+                include_docs=True).first()
+    else:
+        doc = documents.Meetup.get(docid)
+        if 'next_version' not in doc:
+            return redirect(url_for('meetup', date=filters.datecode(doc.start)))
+    if 'root_id' in doc:
+        versions = documents.Version.view('frontend/all_versions',
+                endkey=[doc['root_id']], startkey=[doc['root_id'], 'Z'],
+                descending=True)
+    else:
+        versions = []
     return render_template('meetup.html',
-            meetup = doc)
+            meetup = doc,
+            versions=versions)
 
 @root.route('/meetups/<date>/edit', methods=['GET', 'POST'])
 def edit_meetup(date):
@@ -43,9 +61,9 @@ def edit_meetup(date):
     if request.method == 'POST':
         form = forms.MeetupForm.from_flat(request.form)
         if form.validate({'doc': doc}):
-            print "OK"
-        else:
-            print "NOK"
+            new_doc = save_edit(doc, form)
+            return redirect(url_for('meetup',
+                date=filters.datecode(new_doc.start)))
     else:
         form = forms.MeetupForm.from_flat(doc)
     return render_template('meetups/edit.html',
@@ -60,3 +78,30 @@ def meetup_archive():
             meetups = list(documents.Meetup.view('frontend/meetups_by_date',
                 descending=True, startkey=now_key, include_docs=True))
             )
+
+def save_edit(doc, form):
+    """
+    This creates a new document based on the existing one and updates
+    all the fields from the new form.
+    """
+    new_doc = {}
+    for prop, _ in doc.all_properties().iteritems():
+        new_doc[prop] = getattr(doc, prop)
+    for field in form.all_children:
+        new_doc[field.name] = to_doc_value(field)
+    new_doc['previous_version'] = doc._id
+    if 'root_id' not in doc:
+        doc['root_id'] = doc['_id']
+    new_doc['root_id'] = doc['root_id']
+    new_doc['updated_at'] = filters.datetimecode(datetime.datetime.utcnow())
+    site.couchdb.save_doc(new_doc)
+    doc['next_version'] = new_doc['_id']
+    doc.save()
+    return doc.__class__.get(new_doc['_id'])
+
+def to_doc_value(field):
+    import flatland
+    if isinstance(field, flatland.DateTime):
+        return field.value.strftime("%Y-%m-%dT%H:%M:%SZ")
+    return field.u
+

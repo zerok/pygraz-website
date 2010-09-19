@@ -39,6 +39,7 @@ def load_db(app):
     server = couchdbkit.Server(app.config['COUCHDB_SERVER'])
     couchdb = server.get_or_create_db(app.config['COUCHDB_DATABASE'])
     couchdbkit.Document.set_db(couchdb)
+    documents.Version.set_db(couchdb)
     documents.Meetup.set_db(couchdb)
 
 

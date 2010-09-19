@@ -19,7 +19,7 @@ class DateAfterOther(Validator):
         if element.value is None or element.value < other.value:
             self.note_error(element, state, 'fail', othervalue=other.value)
             return False
-        return False
+        return True
 
 def meetup_unique_start_date(elem, state):
     return True

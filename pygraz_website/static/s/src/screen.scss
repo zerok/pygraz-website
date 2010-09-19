@@ -85,6 +85,16 @@ a:hover {
 #sidebar {
     @include column(7);
     @include last;
+    .block {
+        margin-bottom: 2em;
+        .title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #FFF;
+            background: #333;
+            padding: 3px;
+        }
+    }
 }
 #subnav {
     width: 100%;
@@ -127,5 +137,11 @@ form {
     }
     textarea {
         height: 300px;
+    }
+}
+
+#versions {
+    .active {
+        font-weight: bold;
     }
 }
