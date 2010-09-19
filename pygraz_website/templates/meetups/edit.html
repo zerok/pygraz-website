@@ -1,0 +1,30 @@
+{% extends "meetups/base.html" %}
+{% macro errors(elem) -%}
+    {% if elem.errors %}
+    <ul class="errors">
+        {% for error in elem.errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+{%- endmacro %}
+{% block body %}
+<form method="POST">
+    <div>
+        <label for="start">Beginn:</label>
+        {{ formgen.input(form.start) }}
+        {{ errors(form.start) }}
+    </div>
+    <div>
+        <label for="end">Geplantes Ende:</label>
+        {{ formgen.input(form.end) }}
+        {{ errors(form.end) }}
+    </div>
+    <div>
+        <label for="notes">Notizen:</label>
+        {{ formgen.textarea(form.notes) }}
+        {{ errors(form.notes) }}
+    </div>
+    <button type="submit">Speichern</button>
+</form>
+{% endblock %}

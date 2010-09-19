@@ -111,3 +111,21 @@ a:hover {
         }
     }
 }
+
+form {
+    div {
+        width: 100%;
+        overflow: hidden;
+    }
+    label {
+        float: left;
+        width: 25%;
+    }
+    input, textarea {
+        flat: right;
+        width: 70%;
+    }
+    textarea {
+        height: 300px;
+    }
+}

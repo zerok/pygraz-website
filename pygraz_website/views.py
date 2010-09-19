@@ -1,12 +1,17 @@
-from flask import render_template, Module
+from flask import render_template, Module, request
 import datetime
 import couchdbkit
+from flatland.out.markup import Generator
 
 import pygraz_website as site
-from . import documents
+from . import documents, forms
 
 
 root = Module(__name__, url_prefix='')
+
+@root.context_processor
+def add_form_generator():
+    return {'formgen': Generator(auto_for=True)}
 
 @root.route('/')
 def index():
@@ -30,6 +35,23 @@ def meetup(date):
             include_docs=True).first()
     return render_template('meetup.html',
             meetup = doc)
+
+@root.route('/meetups/<date>/edit', methods=['GET', 'POST'])
+def edit_meetup(date):
+    doc = documents.Meetup.view('frontend/meetups_by_date', key=date,
+            include_docs=True).first()
+    if request.method == 'POST':
+        form = forms.MeetupForm.from_flat(request.form)
+        if form.validate({'doc': doc}):
+            print "OK"
+        else:
+            print "NOK"
+    else:
+        form = forms.MeetupForm.from_flat(doc)
+    return render_template('meetups/edit.html',
+            meetup=meetup,
+            form=form)
+
 
 @root.route('/meetups-archive/')
 def meetup_archive():
