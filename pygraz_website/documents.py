@@ -16,4 +16,4 @@ class User(couchdbkit.Document):
     name = couchdbkit.StringProperty()
     email = couchdbkit.StringProperty()
     openids = couchdbkit.ListProperty()
-    roles = couchdbkit.ListProperty()
+    roles = couchdbkit.ListProperty(default=[])

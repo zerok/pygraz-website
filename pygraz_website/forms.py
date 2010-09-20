@@ -5,6 +5,7 @@ from flatland.out.markup import Generator
 import __builtin__
 
 from pygraz_website import filters
+import pygraz_website as site
 
 
 class DateAfterOther(Validator):
@@ -35,6 +36,16 @@ class UniqueMeetupStartDate(Validator):
                 return False
         return True
 
+class UniqueUsername(Validator):
+    fail = "Dieser Benutzername wird schon von jemand anderem verwendet."
+
+    def validate(self, element, state):
+        res = site.couchdb.view('frontend/users_by_username', key=element.u.rstrip().lstrip())
+        if res.count() != 0:
+            self.note_error(element, state, 'fail')
+            return False
+        return True
+
 class MeetupForm(flatland.Form):
     start = flatland.DateTime.using(name="start", validators=[
         Present(), UniqueMeetupStartDate()])
@@ -53,7 +64,7 @@ class LoginForm(flatland.Form):
 
 class RegisterForm(flatland.Form):
     username = flatland.String.using(name="username", validators=[
-        Present()
+        Present(), UniqueUsername()
         ])
     email = flatland.String.using(name="email", validators=[
         Present(), IsEmail()

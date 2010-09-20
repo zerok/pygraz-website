@@ -40,7 +40,7 @@ def auth_processor():
             'is_logged_in': False,
             'is_admin': False
             }
-    if hasattr(g, 'user'):
+    if hasattr(g, 'user') and g.user is not None:
         result['is_logged_in'] = True
         if 'admin' in g.user.roles:
             result['is_admin'] = True
@@ -168,6 +168,7 @@ def register():
             doc = dict(form.flatten())
             doc['openids'] = [session['openid']]
             doc['type'] = 'user'
+            doc['username'] = doc['username'].lstrip().rstrip()
             site.couchdb.save_doc(doc)
             return redirect(site.oid.get_next_url())
     else:
