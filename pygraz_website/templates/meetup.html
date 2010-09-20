@@ -9,6 +9,9 @@
     {% if (not meetup.next_version) and g.user %}
     <a href="{{ url_for('edit_meetup', date=meetup.start|datecode) }}" class="edit">Seite ändern</a>
     {% endif %}
+    {% if 'admin' in g.user.roles %}
+    <a href="{{ url_for('purge_version', docid=meetup._id) }}" class="purge">Version löschen</a>
+    {% endif %}
 {% endblock %}
 {% block sidebar %}
 {{ super() }}

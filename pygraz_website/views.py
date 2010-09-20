@@ -20,6 +20,16 @@ def login_required(func):
         return func(*args, **kwargs)
     return _func
 
+def admin_required(func):
+    @functools.wraps(func)
+    def _func(*args, **kwargs):
+        if not hasattr(g, 'user'):
+            return redirect(url_for('login', next=request.path))
+        if g.user.roles is None or not 'admin' in g.user.roles:
+            return abort(403)
+        return func(*args, **kwargs)
+    return _func
+
 @root.context_processor
 def add_form_generator():
     return {'formgen': Generator(auto_for=True)}
@@ -98,6 +108,45 @@ def meetup_archive():
             meetups = list(documents.Meetup.view('frontend/meetups_by_date',
                 descending=True, startkey=now_key, include_docs=True))
             )
+
+@root.route('/purge-version/<docid>', methods=['POST', 'GET'])
+@admin_required
+def purge_version(docid):
+    """
+    Removes a version from the database. This is irreversible!
+    """
+    doc = documents.Version.get(docid)
+    if doc is None:
+        return abort(404)
+    if request.method == 'POST':
+        next_version = None
+        prev_version = None
+        if doc.next_version is not None:
+            next_version = site.couchdb.get(doc.next_version)
+        if doc.previous_version is not None:
+            prev_version = site.couchdb.get(doc.previous_version)
+        if next_version is not None and prev_version is not None:
+            next_version['previous_version'] = prev_version['_id']
+            prev_version['next_version'] = next_version['_id']
+            next_doc = next_version['_id']
+        elif next_version is not None:
+            next_version['previous_version'] = None
+            next_doc = next_version['_id']
+        elif prev_version is not None:
+            prev_version['next_version'] = None
+            next_doc = prev_version['_id']
+        else:
+            # This is the last version of this document
+            next_doc = None
+        doc.delete()
+        if next_version is not None:
+            site.couchdb.save_doc(next_version)
+        if prev_version is not None:
+            site.couchdb.save_doc(prev_version)
+        if next_doc is not None:
+            return redirect(url_for('view_doc', docid=next_doc))
+        return redirect('/')
+    return render_template('confirm_purge.html')
 
 @root.route('/account/register', methods=['POST', 'GET'])
 def register():
