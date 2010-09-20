@@ -4,6 +4,8 @@ from flatland.validation.base import N_
 from flatland.out.markup import Generator
 import __builtin__
 
+from pygraz_website import filters
+
 
 class DateAfterOther(Validator):
     fail = "%(label)s has to be after %(othervalue)s"
@@ -21,12 +23,21 @@ class DateAfterOther(Validator):
             return False
         return True
 
-def meetup_unique_start_date(elem, state):
-    return True
+class UniqueMeetupStartDate(Validator):
+    fail = "Am selben Tag findet schon ein Treffen statt."
+
+    def validate(self, element, state):
+        docs = state['doc'].__class__.view('frontend/meetups_by_date',
+                key=filters.datecode(element.value))
+        for d in docs:
+            if d['_id'] != state['doc']['_id']:
+                self.note_error(element, state, 'fail')
+                return False
+        return True
 
 class MeetupForm(flatland.Form):
     start = flatland.DateTime.using(name="start", validators=[
-        Present(), meetup_unique_start_date])
+        Present(), UniqueMeetupStartDate()])
     end = flatland.DateTime.using(name="end", validators=[
         Present(), DateAfterOther('start')])
     notes = flatland.String.using(optional=True)
