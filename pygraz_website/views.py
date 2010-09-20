@@ -34,6 +34,18 @@ def admin_required(func):
 def add_form_generator():
     return {'formgen': Generator(auto_for=True)}
 
+@root.context_processor
+def auth_processor():
+    result = {
+            'is_logged_in': False,
+            'is_admin': False
+            }
+    if hasattr(g, 'user'):
+        result['is_logged_in'] = True
+        if 'admin' in g.user.roles:
+            result['is_admin'] = True
+    return result
+
 @root.before_request
 def check_user():
     if 'openid' in session:
