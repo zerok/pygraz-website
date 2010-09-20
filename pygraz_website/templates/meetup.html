@@ -47,6 +47,7 @@
                 {{ meetup.updated_at }}
             </dd>
         </dl>
+        {% if versions|count > 1 %}
         <dl id="versions">
             <dt>Versionen:</dt>
             <dd>
@@ -59,6 +60,7 @@
                 </ul>
             </dd>
         </dl>
+        {% endif %}
     </div>
 </div>
 {% endif %}
