@@ -1,6 +1,9 @@
-from flask import render_template, Module, request, redirect, url_for
+from flask import render_template, Module, request, redirect, url_for, session
+from flask import g, abort
 import datetime
 import couchdbkit
+import copy
+import functools
 from flatland.out.markup import Generator
 
 import pygraz_website as site
@@ -9,9 +12,23 @@ from . import documents, forms, filters
 
 root = Module(__name__, url_prefix='')
 
+def login_required(func):
+    @functools.wraps(func)
+    def _func(*args, **kwargs):
+        if not hasattr(g, 'user'):
+            return redirect(url_for('login', next=request.path))
+        return func(*args, **kwargs)
+    return _func
+
 @root.context_processor
 def add_form_generator():
     return {'formgen': Generator(auto_for=True)}
+
+@root.before_request
+def check_user():
+    if 'openid' in session:
+        g.user = documents.User.view('frontend/users_by_openid',
+                key=session['openid']).first()
 
 @root.route('/doc/<docid>')
 def view_doc(docid):
@@ -42,7 +59,7 @@ def meetup(date, docid=None):
                 include_docs=True).first()
     else:
         doc = documents.Meetup.get(docid)
-        if 'next_version' not in doc:
+        if not doc.next_version:
             return redirect(url_for('meetup', date=filters.datecode(doc.start)))
     if 'root_id' in doc:
         versions = documents.Version.view('frontend/all_versions',
@@ -55,9 +72,12 @@ def meetup(date, docid=None):
             versions=versions)
 
 @root.route('/meetups/<date>/edit', methods=['GET', 'POST'])
+@login_required
 def edit_meetup(date):
     doc = documents.Meetup.view('frontend/meetups_by_date', key=date,
             include_docs=True).first()
+    if doc.next_version:
+        return abort(403)
     if request.method == 'POST':
         form = forms.MeetupForm.from_flat(request.form)
         if form.validate({'doc': doc}):
@@ -78,6 +98,61 @@ def meetup_archive():
             meetups = list(documents.Meetup.view('frontend/meetups_by_date',
                 descending=True, startkey=now_key, include_docs=True))
             )
+
+@root.route('/account/register', methods=['POST', 'GET'])
+def register():
+    if request.method == 'POST':
+        form = forms.RegisterForm.from_flat(request.form)
+        if form.validate():
+            doc = dict(form.flatten())
+            doc['openids'] = [session['openid']]
+            doc['type'] = 'user'
+            site.couchdb.save_doc(doc)
+            return redirect(site.oid.get_next_url())
+    else:
+        default = {}
+        for k, v in request.args.items():
+            if k == 'name':
+                default['username'] = v
+            else:
+                default[k] = v
+        form = forms.RegisterForm.from_flat(default)
+    return render_template('account/register.html',
+            form=form, next=site.oid.get_next_url())
+
+@root.route('/account/login', methods=['GET','POST'])
+@site.oid.loginhandler
+def login():
+    if request.method == 'POST':
+        form = forms.LoginForm.from_flat(request.form)
+        if form.validate():
+            return site.oid.try_login(form['openid'].u,
+                    ask_for=['fullname', 'email'])
+    else:
+        form = forms.LoginForm()
+    return render_template('account/login.html',
+            form=form, next=request.args.get('next', '/'))
+
+@site.oid.after_login
+def login_or_register(response):
+    session['openid'] = response.identity_url
+    user = documents.User.view('frontend/users_by_openid',
+            key=session['openid']).first()
+    if user is None:
+        return redirect(url_for('register',
+                name=response.fullname,
+                email=response.email, next=site.oid.get_next_url()))
+    else:
+        return redirect(site.oid.get_next_url())
+
+@root.route('/account/logout')
+def logout():
+    del session['openid']
+    return redirect(request.args.get('next', '/'))
+
+@root.route('/account/profile')
+def profile():
+    pass
 
 def save_edit(doc, form):
     """

@@ -1,5 +1,5 @@
 import flatland
-from flatland.validation import Present, Validator
+from flatland.validation import Present, Validator, IsEmail
 from flatland.validation.base import N_
 from flatland.out.markup import Generator
 import __builtin__
@@ -31,3 +31,15 @@ class MeetupForm(flatland.Form):
         Present(), DateAfterOther('start')])
     notes = flatland.String.using(optional=True)
 
+class LoginForm(flatland.Form):
+    openid = flatland.String.using(name='openid', validators=[
+        Present()
+        ])
+
+class RegisterForm(flatland.Form):
+    username = flatland.String.using(name="username", validators=[
+        Present()
+        ])
+    email = flatland.String.using(name="email", validators=[
+        Present(), IsEmail()
+        ])

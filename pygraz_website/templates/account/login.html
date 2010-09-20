@@ -1,0 +1,8 @@
+{% extends "base.html"%}
+{% block body %}
+<form method="post">
+    {{ formgen.input(form.openid) }}
+    <input type="hidden" value="{{ next }}" />
+    <button type="submit">Anmelden</button>
+</form>
+{% endblock %}

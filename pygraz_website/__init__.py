@@ -1,14 +1,16 @@
 from flask import Flask
 from flaskext.babel import Babel, get_translations
+from flaskext.openid import OpenID
 import couchdbkit
 from . import documents, filters
 import __builtin__
 
 couchdb = None
 babel = None
+oid = OpenID()
 
 def create_app(settings):
-    global babel
+    global babel, oid
     app = Flask(__name__)
     app.config.from_envvar(settings)
 
@@ -16,10 +18,12 @@ def create_app(settings):
     app.jinja_env.filters['date'] = filters.datefilter
     app.jinja_env.filters['datecode'] = filters.datecode
     app.jinja_env.filters['rst'] = filters.rst
+    app.secret_key = app.config['SECRET_KEY']
 
     from .views import root
     app.register_module(root)
     babel = Babel(app)
+    oid.init_app(app)
 
     # Register babel's i18n functions globally in order for Flatland to see
     # them.

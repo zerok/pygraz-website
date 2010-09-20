@@ -6,6 +6,9 @@
     {% else %}
     <p>Keine Notizen vorhanden.</p>
     {% endif %}
+    {% if (not meetup.next_version) and g.user %}
+    <a href="{{ url_for('edit_meetup', date=meetup.start|datecode) }}" class="edit">Seite ändern</a>
+    {% endif %}
 {% endblock %}
 {% block sidebar %}
 {{ super() }}
