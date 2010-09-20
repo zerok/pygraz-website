@@ -13,6 +13,16 @@
         {{ forms.errors(form.end) }}
     </div>
     <div>
+        <label for="end">Ort:</label>
+        {{ formgen.input(form.location['name']) }}
+        {{ forms.errors(form.location['name']) }}
+    </div>
+    <div>
+        <label for="end">Adresse:</label>
+        {{ formgen.input(form.location.address) }}
+        {{ forms.errors(form.location.address) }}
+    </div>
+    <div>
         <label for="notes">Notizen:</label>
         {{ formgen.textarea(form.notes) }}
         {{ forms.errors(form.notes) }}

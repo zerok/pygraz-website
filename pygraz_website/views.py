@@ -95,7 +95,7 @@ def edit_meetup(date):
             return redirect(url_for('meetup',
                 date=filters.datecode(new_doc.start)))
     else:
-        form = forms.MeetupForm.from_flat(doc)
+        form = forms.MeetupForm.from_object(doc)
     return render_template('meetups/edit.html',
             meetup=meetup,
             form=form)
@@ -218,6 +218,7 @@ def save_edit(doc, form):
         doc['root_id'] = doc['_id']
     new_doc['root_id'] = doc['root_id']
     new_doc['updated_at'] = filters.datetimecode(datetime.datetime.utcnow())
+    new_doc['updated_by'] = {'id': g.user['_id'], 'username': g.user['username']}
     site.couchdb.save_doc(new_doc)
     doc['next_version'] = new_doc['_id']
     doc.save()
@@ -227,5 +228,5 @@ def to_doc_value(field):
     import flatland
     if isinstance(field, flatland.DateTime):
         return field.value.strftime("%Y-%m-%dT%H:%M:%SZ")
-    return field.u
+    return field.value
 

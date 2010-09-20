@@ -41,6 +41,10 @@ class MeetupForm(flatland.Form):
     end = flatland.DateTime.using(name="end", validators=[
         Present(), DateAfterOther('start')])
     notes = flatland.String.using(optional=True)
+    location = flatland.Dict.of(
+        flatland.String.named('name'),
+        flatland.String.named('address').using(optional=True)
+        )
 
 class LoginForm(flatland.Form):
     openid = flatland.String.using(name='openid', validators=[
