@@ -6,6 +6,7 @@ import __builtin__
 
 from pygraz_website import filters
 import pygraz_website as site
+from pygraz_website.documents import Meetup
 
 
 class DateAfterOther(Validator):
@@ -28,10 +29,15 @@ class UniqueMeetupStartDate(Validator):
     fail = "Am selben Tag findet schon ein Treffen statt."
 
     def validate(self, element, state):
-        docs = state['doc'].__class__.view('frontend/meetups_by_date',
+        docs = Meetup.view('frontend/meetups_by_date',
                 key=filters.datecode(element.value))
-        for d in docs:
-            if d['_id'] != state['doc']['_id']:
+        if state is not None:
+            for d in docs:
+                if d['_id'] != state['doc']['_id']:
+                    self.note_error(element, state, 'fail')
+                    return False
+        else:
+            if docs.count() > 0:
                 self.note_error(element, state, 'fail')
                 return False
         return True

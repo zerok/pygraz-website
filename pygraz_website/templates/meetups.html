@@ -29,4 +29,7 @@
         {% endfor %}
     </tbody>
 </table>
+{% if is_admin %}
+<a href="{{ url_for('create_meetup') }}">Neues Treffen anlegen</a>
+{% endif %}
 {% endblock %}

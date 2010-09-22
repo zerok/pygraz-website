@@ -112,6 +112,20 @@ def edit_meetup(date):
             meetup=meetup,
             form=form)
 
+@root.route('/create-meetup', methods=['GET','POST'])
+@admin_required
+def create_meetup():
+    if request.method == 'POST':
+        form = forms.MeetupForm.from_flat(request.form)
+        if form.validate():
+            save_new(form, 'meetup')
+            return redirect(url_for('meetup',
+                date=filters.datecode(form['start'].value)))
+    else:
+        form = forms.MeetupForm()
+    return render_template('meetups/create.html', form=form)
+
+
 
 @root.route('/meetups-archive/')
 def meetup_archive():
@@ -236,6 +250,19 @@ def save_edit(doc, form):
     doc['next_version'] = new_doc['_id']
     doc.save()
     return doc.__class__.get(new_doc['_id'])
+
+def save_new(form, type_):
+    new_doc = {}
+    for field in form.all_children:
+        new_doc[field.name] = to_doc_value(field)
+    new_doc['type'] = type_
+    new_doc['updated_at'] = filters.datetimecode(datetime.datetime.utcnow())
+    new_doc['updated_by'] = {'id': g.user['_id'], 'username': g.user['username']}
+    site.couchdb.save_doc(new_doc)
+    new_doc['root_id'] = new_doc['_id']
+    site.couchdb.save_doc(new_doc)
+    return new_doc
+
 
 def to_doc_value(field):
     import flatland
