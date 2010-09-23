@@ -7,7 +7,7 @@ import functools
 from flatland.out.markup import Generator
 
 import pygraz_website as site
-from . import documents, forms, filters
+from . import documents, forms, filters, utils, exceptions
 
 
 root = Module(__name__, url_prefix='')
@@ -51,6 +51,7 @@ def check_user():
     if 'openid' in session:
         g.user = documents.User.view('frontend/users_by_openid',
                 key=session['openid']).first()
+
 
 @root.route('/doc/<docid>')
 def view_doc(docid):
@@ -98,19 +99,21 @@ def meetup(date, docid=None):
 def edit_meetup(date):
     doc = documents.Meetup.view('frontend/meetups_by_date', key=date,
             include_docs=True).first()
-    if doc.next_version:
-        return abort(403)
-    if request.method == 'POST':
-        form = forms.MeetupForm.from_flat(request.form)
-        if form.validate({'doc': doc}):
-            new_doc = save_edit(doc, form)
-            return redirect(url_for('meetup',
-                date=filters.datecode(new_doc.start)))
-    else:
-        form = forms.MeetupForm.from_object(doc)
-    return render_template('meetups/edit.html',
-            meetup=meetup,
-            form=form)
+    with utils.DocumentLock(doc.root_id) as lock:
+        if doc.next_version:
+            return abort(403)
+        if request.method == 'POST':
+            form = forms.MeetupForm.from_flat(request.form)
+            if form.validate({'doc': doc}):
+                new_doc = save_edit(doc, form)
+                lock.unlock()
+                return redirect(url_for('meetup',
+                    date=filters.datecode(new_doc.start)))
+        else:
+            form = forms.MeetupForm.from_object(doc)
+        return render_template('meetups/edit.html',
+                meetup=meetup,
+                form=form)
 
 @root.route('/create-meetup', methods=['GET','POST'])
 @admin_required
@@ -226,9 +229,8 @@ def logout():
     del session['openid']
     return redirect(request.args.get('next', '/'))
 
-@root.route('/account/profile')
-def profile():
-    pass
+def handle_conflict(*args, **kwargs):
+    return render_template('errors/conflict.html')
 
 def save_edit(doc, form):
     """

@@ -4,9 +4,11 @@ from flaskext.openid import OpenID
 import couchdbkit
 from . import documents, filters
 import __builtin__
+import redis as redisapi
 
 couchdb = None
 babel = None
+redis = None
 oid = OpenID()
 
 def create_app(settings):
@@ -20,7 +22,8 @@ def create_app(settings):
     app.jinja_env.filters['rst'] = filters.rst
     app.secret_key = app.config['SECRET_KEY']
 
-    from .views import root
+
+    from .views import root, handle_conflict
     app.register_module(root)
     babel = Babel(app)
     oid.init_app(app)
@@ -29,6 +32,7 @@ def create_app(settings):
     # them.
     __builtin__.ugettext = lambda x : get_translations().ugettext(x)
     __builtin__.ungettext = lambda x,s,p: get_translations().ungettext(x,s,p)
+    app.error_handlers[409] = handle_conflict
     return app
 
 
@@ -36,7 +40,7 @@ def load_db(app):
     """
     Initializes the connection pool
     """
-    global couchdb
+    global couchdb, redis
     if couchdb is not None:
         app.log.warn("couchdb already initialzed")
         return
@@ -46,4 +50,7 @@ def load_db(app):
     documents.Version.set_db(couchdb)
     documents.Meetup.set_db(couchdb)
 
+    redis = redisapi.Redis(app.config.get('REDIS_HOST', 'localhost'),
+            app.config.get('REDIS_HOST', 6379),
+            app.config.get('REDIS_DB', 0))
 
