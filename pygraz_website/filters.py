@@ -1,11 +1,18 @@
 from docutils.core import publish_parts
+from flask import current_app
+
+def _local_tz(dt):
+    return dt.astimezone(current_app.config['local_timezone'])
 
 
 def timefilter(dt):
-    return dt.time()
+    return _local_tz(dt).time()
 
 def datefilter(dt):
-    return dt.strftime('%d. %b %Y')
+    return _local_tz(dt).strftime('%d. %b %Y')
+
+def datetimefilter(dt):
+    return _local_tz(dt)
 
 def datecode(dt):
     return dt.strftime('%Y-%m-%d')

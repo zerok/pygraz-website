@@ -20,8 +20,8 @@
     <tbody>
         {% for meetup in meetups %}
         <tr>
-            <td class="date"><a href="{{ url_for('meetup', date=meetup.start|datecode) }}">{{ meetup.start|date }}</a></td>
-            <td class="start">{{ meetup.start|time}}</td>
+            <td class="date"><a href="{{ url_for('meetup', date=meetup.start|datecode) }}">{{ meetup.utc_start|date }}</a></td>
+            <td class="start">{{ meetup.utc_start|time}}</td>
             <td class="location">{% if meetup.location %}
                 {{ meetup.location.name }}
             {% endif %}</td>

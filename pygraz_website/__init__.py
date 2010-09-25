@@ -5,6 +5,7 @@ import couchdbkit
 from . import documents, filters
 import __builtin__
 import redis as redisapi
+import pytz
 
 couchdb = None
 babel = None
@@ -15,10 +16,13 @@ def create_app(settings):
     global babel, oid
     app = Flask(__name__)
     app.config.from_envvar(settings)
+    if 'local_timezone' not in app.config:
+        app.config['local_timezone'] = pytz.timezone('Europe/Vienna')
 
     app.jinja_env.filters['time'] = filters.timefilter
     app.jinja_env.filters['date'] = filters.datefilter
     app.jinja_env.filters['datecode'] = filters.datecode
+    app.jinja_env.filters['datetime'] = filters.datetimefilter
     app.jinja_env.filters['rst'] = filters.rst
     app.secret_key = app.config['SECRET_KEY']
 

@@ -16,7 +16,7 @@
         <h2>Nächstes Treffen</h2>
 
         {% if next_meetup %}
-        <a href="{{ url_for('meetup', date=next_meetup.start|datecode)}}">{{ next_meetup.start|date }}</a>
+        <a href="{{ url_for('meetup', date=next_meetup.start|datecode)}}">{{ next_meetup.utc_start|date }}</a>
         {% if next_meetup.location %}
         ({{ next_meetup.location.name }})
         {% endif %}

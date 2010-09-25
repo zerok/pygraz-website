@@ -1,6 +1,6 @@
 {% extends "meetups/base.html" %}
 {% block body %}
-    <h1>Treffen vom {{ meetup.start|date }}</h1>
+    <h1>Treffen vom {{ meetup.utc_start|date }}</h1>
     {% if meetup.notes %}
     {{ meetup.notes|rst|safe }}
     {% else %}
@@ -20,13 +20,13 @@
         {% if meetup.start %}
         <dl>
             <dt>Beginn:</dt>
-            <dd>{{ meetup.start }}</dd>
+            <dd>{{ meetup.utc_start|datetime }}</dd>
         </dl>
         {% endif %}
         {% if meetup.end %}
         <dl>
             <dt>Geplantes Ende:</dt>
-            <dd>{{ meetup.end }}</dd>
+            <dd>{{ meetup.utc_end|datetime }}</dd>
         </dl>
         {% endif %}
         {% if meetup.location %}

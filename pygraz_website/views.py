@@ -56,7 +56,7 @@ def check_user():
 @root.route('/doc/<docid>')
 def view_doc(docid):
     doc = site.couchdb.get(docid)
-    return globals()[doc['type']](None, docid=docid)
+    return globals()[doc['doc_type']](None, docid=docid)
 
 
 @root.route('/')
@@ -184,7 +184,7 @@ def register():
         if form.validate():
             doc = dict(form.flatten())
             doc['openids'] = [session['openid']]
-            doc['type'] = 'user'
+            doc['doc_type'] = 'user'
             doc['username'] = doc['username'].lstrip().rstrip()
             site.couchdb.save_doc(doc)
             return redirect(site.oid.get_next_url())
@@ -257,7 +257,7 @@ def save_new(form, type_):
     new_doc = {}
     for field in form.all_children:
         new_doc[field.name] = to_doc_value(field)
-    new_doc['type'] = type_
+    new_doc['doc_type'] = type_
     new_doc['updated_at'] = filters.datetimecode(datetime.datetime.utcnow())
     new_doc['updated_by'] = {'id': g.user['_id'], 'username': g.user['username']}
     site.couchdb.save_doc(new_doc)
