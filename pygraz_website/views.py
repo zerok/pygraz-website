@@ -7,28 +7,11 @@ import functools
 from flatland.out.markup import Generator
 
 import pygraz_website as site
-from . import documents, forms, filters, utils, exceptions
+from . import documents, forms, filters, utils, exceptions, decorators
 
 
 root = Module(__name__, url_prefix='')
 
-def login_required(func):
-    @functools.wraps(func)
-    def _func(*args, **kwargs):
-        if not hasattr(g, 'user'):
-            return redirect(url_for('login', next=request.path))
-        return func(*args, **kwargs)
-    return _func
-
-def admin_required(func):
-    @functools.wraps(func)
-    def _func(*args, **kwargs):
-        if not hasattr(g, 'user'):
-            return redirect(url_for('login', next=request.path))
-        if g.user.roles is None or not 'admin' in g.user.roles:
-            return abort(403)
-        return func(*args, **kwargs)
-    return _func
 
 @root.context_processor
 def add_form_generator():
@@ -95,7 +78,7 @@ def meetup(date, docid=None):
             versions=versions)
 
 @root.route('/meetups/<date>/edit', methods=['GET', 'POST'])
-@login_required
+@decorators.login_required
 def edit_meetup(date):
     doc = documents.Meetup.view('frontend/meetups_by_date', key=date,
             include_docs=True).first()
@@ -116,7 +99,7 @@ def edit_meetup(date):
                 form=form)
 
 @root.route('/create-meetup', methods=['GET','POST'])
-@admin_required
+@decorators.admin_required
 def create_meetup():
     if request.method == 'POST':
         form = forms.MeetupForm.from_flat(request.form)
@@ -128,8 +111,6 @@ def create_meetup():
         form = forms.MeetupForm()
     return render_template('meetups/create.html', form=form)
 
-
-
 @root.route('/meetups-archive/')
 def meetup_archive():
     now_key = datetime.datetime.utcnow().date().strftime("%Y-%m-%d")
@@ -139,7 +120,7 @@ def meetup_archive():
             )
 
 @root.route('/purge-version/<docid>', methods=['POST', 'GET'])
-@admin_required
+@decorators.admin_required
 def purge_version(docid):
     """
     Removes a version from the database. This is irreversible!
