@@ -26,13 +26,13 @@
                 <nav id="mainnav">
                     <ul>
                         {% if not g.user %}
-                        <li><a href="{{ url_for('login') }}?next={{ request.path }}">Anmelden</a></li>
+                        <li><a href="{{ url_for('account.login') }}?next={{ request.path }}">Anmelden</a></li>
                         {% else %}
                         <li><a href="">Meine Profil</a></li>
-                        <li><a href="{{ url_for('logout') }}?next={{ request.path }}">Abmelden</a></li>
+                        <li><a href="{{ url_for('account.logout') }}?next={{ request.path }}">Abmelden</a></li>
                         {% endif %}
                         <li><a href="/" class="{% block nav_start %}{% endblock %}">Start</a></li>
-                        <li><a href="{{ url_for('meetups') }}" class="{% block nav_meetups %}{% endblock %}">Treffen</a></li>
+                        <li><a href="{{ url_for('meetups.meetups') }}" class="{% block nav_meetups %}{% endblock %}">Treffen</a></li>
                         <li><a href="http://groups.google.at/group/python-graz" class="{% block nav_about %}{% endblock %}">Mailinglist</a></li>
                     </ul>
                 </nav>

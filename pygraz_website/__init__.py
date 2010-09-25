@@ -2,7 +2,7 @@ from flask import Flask
 from flaskext.babel import Babel, get_translations
 from flaskext.openid import OpenID
 import couchdbkit
-from . import documents, filters
+from . import documents, filters, context_processors, request_processors, utils
 import __builtin__
 import redis as redisapi
 import pytz
@@ -27,8 +27,15 @@ def create_app(settings):
     app.secret_key = app.config['SECRET_KEY']
 
 
-    from .views import root, handle_conflict
-    app.register_module(root)
+    from .views.account import module as account_module
+    from .views.core import module as core_module
+    from .views.meetups import module as meetups_module
+    app.register_module(account_module)
+    app.register_module(core_module)
+    app.register_module(meetups_module)
+    app.context_processor(context_processors.add_form_generator)
+    app.context_processor(context_processors.auth_processor)
+    app.before_request(request_processors.check_user)
     babel = Babel(app)
     oid.init_app(app)
 
@@ -36,7 +43,7 @@ def create_app(settings):
     # them.
     __builtin__.ugettext = lambda x : get_translations().ugettext(x)
     __builtin__.ungettext = lambda x,s,p: get_translations().ungettext(x,s,p)
-    app.error_handlers[409] = handle_conflict
+    app.error_handlers[409] = utils.handle_conflict
     return app
 
 

@@ -1,8 +1,8 @@
 import pygraz_website as site
-from flask import g, abort
-import time
+from flask import g, abort, render_template
+import time, datetime
 
-from . import exceptions
+from . import exceptions, filters
 
 
 class DocumentLock(object):
@@ -58,3 +58,46 @@ class DocumentLock(object):
         site.redis.delete(self.lock_key + ".holder")
         site.redis.delete(self.lock_key + ".expires")
 
+def save_edit(doc, form):
+    """
+    This creates a new document based on the existing one and updates
+    all the fields from the new form.
+    """
+    new_doc = {}
+    for prop, _ in doc.all_properties().iteritems():
+        new_doc[prop] = getattr(doc, prop)
+    for field in form.all_children:
+        new_doc[field.name] = to_doc_value(field)
+    new_doc['previous_version'] = doc._id
+    if 'root_id' not in doc:
+        doc['root_id'] = doc['_id']
+    new_doc['root_id'] = doc['root_id']
+    new_doc['updated_at'] = filters.datetimecode(datetime.datetime.utcnow())
+    new_doc['updated_by'] = {'id': g.user['_id'], 'username': g.user['username']}
+    new_doc['doc_type'] = doc['doc_type']
+    site.couchdb.save_doc(new_doc)
+    doc['next_version'] = new_doc['_id']
+    doc.save()
+    return doc.__class__.get(new_doc['_id'])
+
+def save_new(form, type_):
+    new_doc = {}
+    for field in form.all_children:
+        new_doc[field.name] = to_doc_value(field)
+    new_doc['doc_type'] = type_
+    new_doc['updated_at'] = filters.datetimecode(datetime.datetime.utcnow())
+    new_doc['updated_by'] = {'id': g.user['_id'], 'username': g.user['username']}
+    site.couchdb.save_doc(new_doc)
+    new_doc['root_id'] = new_doc['_id']
+    site.couchdb.save_doc(new_doc)
+    return new_doc
+
+
+def to_doc_value(field):
+    import flatland
+    if isinstance(field, flatland.DateTime):
+        return field.value.strftime("%Y-%m-%dT%H:%M:%SZ")
+    return field.value
+
+def handle_conflict(*args, **kwargs):
+    return render_template('errors/conflict.html')
