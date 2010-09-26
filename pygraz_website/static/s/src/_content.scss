@@ -1,14 +1,15 @@
 @import "common";
+@import "colors";
 
 .content, #body {
     h1 {
-        font-size: 35px;
+        font-size: 225%;
     }
     h2 {
-        font-size: 28px;
+        font-size: 200%;
     }
     h3 {
-        font-size: 25px;
+        font-size: 180%;
     }
     h1, h2, h3, h4, h5, h6 {
         font-family: Garamond, Georgia, serif;
@@ -32,12 +33,13 @@
         font-style :italic;
         font-weight: bold;
         text-align: center;
-        background: $midblue;
-        color: $darkblue;
-        border-top: 1px solid $darkblue;
+        background: $th-bg;
+        color: $th-fg;
+        @include linear-gradient(color-stops($th-bg, lighten($th-bg, 20)));
+        border-top: 1px solid $th-bg;
     }
     a {
-        color: $blue;
+        color: $links;
         &:hover {
             color: $highlight;
         }
@@ -86,3 +88,4 @@
         background: #E5E5e5;
     }
 }
+#teaser a { color: $teaser-links }

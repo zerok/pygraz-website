@@ -1,0 +1,41 @@
+@import "blueprint/grid";
+@import "colors";
+@import "compass/css3/gradient";
+
+#main {
+    width: 100%;
+    padding: 0;
+}
+#teaser {
+    background: lighten($teaser, 55);
+}
+#teaser-w {
+    background: $teaser;
+    border-bottom: 5px solid $teaser;
+    color: #FFF;
+    @include linear-gradient(color-stops($teaser, lighten($teaser, 10)));
+    @include container ;
+    #info, #quote {
+        padding-top: 10px;
+        padding-bottom: 10px;
+        @include column(12);
+        @include prepend(1);
+        @include append(1);
+    }
+    #quote {
+        padding-top: 3em;
+        @include column(8);
+        @include last;
+    }
+}
+#misc {
+    @include container;
+    #twitter, #next-meetup {
+        @include column(10);
+        @include append(1);
+        @include prepend(1);
+    }
+    #twitter {
+        @include last;
+    }
+}

@@ -1,0 +1,15 @@
+$mainnav: #222;
+$teaser-links: darken(#ffd43b, 15);
+$teaser: #306998;
+$accountnav-bg: lighten($teaser, 50);
+$mainnav-fg: darken($teaser-links, 25);
+$mainnav-active-fg: $mainnav-fg;
+$subnav-fg: #FFF;
+$subnav-bg: $teaser;
+$links: $teaser;
+$th-bg: lighten($teaser, 50);
+$th-fg: $teaser;
+
+$sidebar-block-fg: $mainnav-fg;
+$block-title-bg: lighten($sidebar-block-fg, 30);
+$block-title-fg: $sidebar-block-fg;
