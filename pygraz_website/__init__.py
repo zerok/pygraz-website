@@ -32,11 +32,13 @@ def create_app(settings):
 
 
     from .views.account import module as account_module
+    from .views.admin import module as admin_module
     from .views.core import module as core_module
     from .views.meetups import module as meetups_module
     app.register_module(core_module)
     app.register_module(account_module)
     app.register_module(meetups_module)
+    app.register_module(admin_module)
     app.context_processor(context_processors.add_form_generator)
     app.context_processor(context_processors.auth_processor)
     app.before_request(request_processors.check_user)

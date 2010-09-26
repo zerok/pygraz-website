@@ -25,7 +25,7 @@ class Meetup(Version):
 
 class User(couchdbkit.Document):
     _doc_type = 'user'
-    name = couchdbkit.StringProperty()
+    username = couchdbkit.StringProperty()
     email = couchdbkit.StringProperty()
     openids = couchdbkit.ListProperty()
     roles = couchdbkit.ListProperty(default=[])

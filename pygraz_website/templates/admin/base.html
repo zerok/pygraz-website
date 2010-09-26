@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block nav_admin %}active{% endblock %}
+{% block sidebar %}
+    <nav id="subnav">
+        <h2 class="title">Administration</h2>
+        <ul>
+            <li><a href="{{ url_for('locks') }}" class="{% block subnav_locks %}{% endblock %}">Locks</a></li>
+        </ul>
+    </nav>
+{% endblock %}
