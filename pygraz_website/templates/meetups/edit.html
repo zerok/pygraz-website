@@ -28,5 +28,6 @@
         {{ forms.errors(form.notes) }}
     </div>
     <button type="submit">Speichern</button>
+    <a href="{{ url_for('cancel_edit_meetup', date=meetup.start|datecode) }}">Abbrechen</a>
 </form>
 {% endblock %}

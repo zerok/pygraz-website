@@ -186,3 +186,9 @@ form {
         font-weight: bold;
     }
 }
+.confirm {
+    border: 2px solid $confirm-border;
+    padding: 1em;
+    @include border-radius;
+    @include linear-gradient(color-stops(lighten($confirm-border, 40), lighten($confirm-border, 70)));
+}

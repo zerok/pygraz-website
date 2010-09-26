@@ -60,8 +60,17 @@ def edit_meetup(date):
         else:
             form = forms.MeetupForm.from_object(doc)
         return render_template('meetups/edit.html',
-                meetup=meetup,
+                meetup=doc,
                 form=form)
+
+@module.route('/<date>/cancel_edit', methods=['GET', 'POST'])
+@decorators.login_required
+def cancel_edit_meetup(date):
+    doc = documents.Meetup.view('frontend/meetups_by_date', key=date,
+            include_docs=True).first()
+    with utils.DocumentLock(doc.root_id) as lock:
+        lock.unlock()
+    return redirect(url_for('meetup', date=date))
 
 @module.route('/create', methods=['GET','POST'])
 @decorators.admin_required
