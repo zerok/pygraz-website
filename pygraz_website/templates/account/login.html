@@ -1,7 +1,14 @@
 {% extends "base.html"%}
+{% block title %}Anmelden{% endblock %}
 {% block body %}
-<form method="post">
-    {{ formgen.input(form.openid) }}
+<h1>Anmelden</h1>
+<div class="info" style="float: left; width: 50%">
+    <p>Um sich anmelden zu können, benötigen Sie eine OpenID. Damit können Sie sich
+    auf vielen Websites ohne Passwort anmelden. <a href="http://de.wikipedia.org/wiki/OpenID">
+    Mehr Information.</a></p>
+</div>
+<form method="post" style="float:right; width: 48%">
+    <p><label>OpenID:</label>{{ formgen.input(form.openid) }}</p>
     <input type="hidden" value="{{ next }}" />
     <button type="submit">Anmelden</button>
 </form>

@@ -1,4 +1,5 @@
 {% extends "meetups/base.html" %}
+{% block title %}Treffen vom {{ meetup.utc_start|date }}{% endblock %}
 {% block body %}
     <h1>Treffen vom {{ meetup.utc_start|date }}</h1>
     {% if meetup.notes %}
