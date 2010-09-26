@@ -12,10 +12,13 @@
 #teaser-w {
     background: $teaser;
     border-bottom: 5px solid $teaser;
-    color: #FFF;
+    color: $teaser-fg;
     @include linear-gradient(color-stops($teaser, lighten($teaser, 10)));
     @include container ;
     #info, #quote {
+        h1 {
+            color: $teaser-fg;
+        }
         padding-top: 10px;
         padding-bottom: 10px;
         @include column(12);
