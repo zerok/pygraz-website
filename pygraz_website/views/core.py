@@ -1,11 +1,12 @@
-from flask import Module, request, redirect, abort, render_template
+from flask import Module, request, redirect, abort, render_template,\
+        current_app, url_for
 import datetime
 
 import pygraz_website as site
 from pygraz_website import documents, decorators
 
 
-module = Module(__name__, url_prefix='/')
+module = Module(__name__, url_prefix='')
 
 @module.route('/')
 def index():
@@ -17,7 +18,8 @@ def index():
 @module.route('/doc/<docid>')
 def view_doc(docid):
     doc = site.couchdb.get(docid)
-    return globals()[doc['doc_type']](None, docid=docid)
+    view = current_app.config['type2view'][doc['doc_type']]
+    return redirect(url_for(view, docid=docid))
 
 
 @module.route('/purge-version/<docid>', methods=['POST', 'GET'])

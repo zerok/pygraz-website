@@ -18,6 +18,10 @@ def create_app(settings):
     app.config.from_envvar(settings)
     if 'local_timezone' not in app.config:
         app.config['local_timezone'] = pytz.timezone('Europe/Vienna')
+    if 'type2module' not in app.config:
+        app.config['type2view'] = {
+                'meetup': 'meetups.view_doc',
+                }
 
     app.jinja_env.filters['time'] = filters.timefilter
     app.jinja_env.filters['date'] = filters.datefilter
@@ -30,8 +34,8 @@ def create_app(settings):
     from .views.account import module as account_module
     from .views.core import module as core_module
     from .views.meetups import module as meetups_module
-    app.register_module(account_module)
     app.register_module(core_module)
+    app.register_module(account_module)
     app.register_module(meetups_module)
     app.context_processor(context_processors.add_form_generator)
     app.context_processor(context_processors.auth_processor)

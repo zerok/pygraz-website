@@ -1,4 +1,4 @@
-from flask import Module, render_template, request, redirect, url_for
+from flask import Module, render_template, request, redirect, url_for, current_app
 import datetime
 
 import pygraz_website as site
@@ -7,6 +7,11 @@ from pygraz_website import documents, forms, decorators, utils, filters
 
 module = Module(__name__, url_prefix='/meetups')
 
+
+@module.route('/doc/<docid>')
+def view_doc(docid):
+    return current_app.view_functions['meetups.meetup'](date=None,
+            docid=docid)
 
 
 @module.route('/')
@@ -26,7 +31,7 @@ def meetup(date, docid=None):
     else:
         doc = documents.Meetup.get(docid)
         if not doc.next_version:
-            return redirect(url_for('meetup', date=filters.datecode(doc.start)))
+            return redirect(url_for('meetups.meetup', date=filters.datecode(doc.start)))
     if 'root_id' in doc:
         versions = documents.Version.view('frontend/all_versions',
                 endkey=[doc['root_id']], startkey=[doc['root_id'], 'Z'],
