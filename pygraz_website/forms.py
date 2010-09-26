@@ -2,12 +2,25 @@ import flatland
 from flatland.validation import Present, Validator, IsEmail
 from flatland.validation.base import N_
 from flatland.out.markup import Generator
+import pytz
 import __builtin__
+from flask import current_app
 
 from pygraz_website import filters
 import pygraz_website as site
 from pygraz_website.documents import Meetup
 
+
+class LocalDateTime(flatland.DateTime):
+    def adapt(self, value):
+        local_tz = current_app.config['local_timezone']
+        if isinstance(value, self.type_):
+            return flatland.DateTime.adapt(self,
+                    pytz.utc.localize(value).astimezone(local_tz))
+        else:
+            # We are in "store" mode, so a string is coming from the form
+            result = flatland.DateTime.adapt(self, value)
+            return local_tz.localize(result).astimezone(pytz.utc)
 
 class DateAfterOther(Validator):
     fail = "%(label)s has to be after %(othervalue)s"
@@ -53,9 +66,9 @@ class UniqueUsername(Validator):
         return True
 
 class MeetupForm(flatland.Form):
-    start = flatland.DateTime.using(name="start", validators=[
+    start = LocalDateTime.using(name="start", validators=[
         Present(), UniqueMeetupStartDate()])
-    end = flatland.DateTime.using(name="end", validators=[
+    end = LocalDateTime.using(name="end", validators=[
         Present(), DateAfterOther('start')])
     notes = flatland.String.using(optional=True)
     location = flatland.Dict.of(
