@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% import "forms.html" as forms %}
+{% block title %}Profil ändern{% endblock %}
+{% block body %}
+<h1>Profil ändern</h1>
+<form method="post">
+    <div>
+        <label>Name:</label>
+        {{ formgen.input(form.username) }}
+        {{ forms.errors(form.username) }}
+    </div>
+    <div>
+        <label>E-Mail:</label>
+        {{ formgen.input(form.email) }}
+        {{ forms.errors(form.email) }}
+    </div>
+    <button type="submit">Speichern</button>
+</form>
+{% endblock %}

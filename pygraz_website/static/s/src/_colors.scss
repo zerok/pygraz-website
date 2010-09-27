@@ -18,4 +18,5 @@ $block-title-fg: $sidebar-block-fg;
 $h1-fg: $teaser;
 
 $confirm-border: lighten($mainnav-fg, 30);
-
+$flash-bg: darken($block-title-bg, 10);
+$flash-fg: #FFFFFF;

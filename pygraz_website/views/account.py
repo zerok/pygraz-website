@@ -1,7 +1,8 @@
-from flask import Module, session, redirect, abort, render_template, request
+from flask import Module, session, redirect, abort, render_template, request,\
+        flash, g, url_for
 import pygraz_website as site
 
-from pygraz_website import documents, forms
+from pygraz_website import documents, forms, decorators
 
 
 module = Module(__name__, url_prefix='/account')
@@ -58,3 +59,17 @@ def logout():
     del session['openid']
     return redirect(request.args.get('next', '/'))
 
+@module.route('/profile', methods=['GET', 'POST'])
+@decorators.login_required
+def edit_profile():
+    if request.method == 'POST':
+        form = forms.EditProfileForm.from_flat(request.form)
+        if form.validate():
+            g.user.username = form['username'].u
+            g.user.email = form['email'].u
+            g.user.save()
+            flash("Benutzerdaten gespeichert")
+            return redirect(url_for('edit_profile'))
+    else:
+        form = forms.EditProfileForm.from_object(g.user)
+    return render_template('account/edit_profile.html', form=form)

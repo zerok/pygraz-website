@@ -4,7 +4,7 @@ from flatland.validation.base import N_
 from flatland.out.markup import Generator
 import pytz
 import __builtin__
-from flask import current_app
+from flask import current_app, g
 
 from pygraz_website import filters
 import pygraz_website as site
@@ -55,15 +55,25 @@ class UniqueMeetupStartDate(Validator):
                 return False
         return True
 
-class UniqueUsername(Validator):
-    fail = "Dieser Benutzername wird schon von jemand anderem verwendet."
+
+class UniqueUserField(Validator):
 
     def validate(self, element, state):
-        res = site.couchdb.view('frontend/users_by_username', key=element.u.rstrip().lstrip())
-        if res.count() != 0:
+        res = site.couchdb.view(self.view, key=element.u.rstrip().lstrip())
+        for doc in res:
+            if g.user is not None and g.user['_id'] == doc['value']['_id']:
+                break
             self.note_error(element, state, 'fail')
             return False
         return True
+
+class UniqueUsername(UniqueUserField):
+    fail = "Dieser Benutzername wird schon von jemand anderem verwendet."
+    view = 'frontend/users_by_username'
+
+class UniqueEmail(UniqueUserField):
+    fail = "Diese E-Mail-Adresse wird bereits von jemand anderem verwendet."
+    view = 'frontend/users_by_email'
 
 class MeetupForm(flatland.Form):
     start = LocalDateTime.using(name="start", validators=[
@@ -86,5 +96,9 @@ class RegisterForm(flatland.Form):
         Present(), UniqueUsername()
         ])
     email = flatland.String.using(name="email", validators=[
-        Present(), IsEmail()
+        Present(), IsEmail(), UniqueEmail()
         ])
+
+class EditProfileForm(RegisterForm):
+    pass
+
