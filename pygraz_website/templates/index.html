@@ -32,11 +32,19 @@
 <div id="misc">
     <div id="next-meetup">
         <h2>Nächstes Treffen</h2>
-
         {% if next_meetup %}
-        <a href="{{ url_for('meetups.meetup', date=next_meetup.start|datecode)}}">{{ next_meetup.utc_start|date }}</a>
+        <p><a href="{{ url_for('meetups.meetup', date=next_meetup.start|datecode)}}">{{ next_meetup.utc_start|date }}</a>,
+        {{ next_meetup.utc_start|time }} - {{ next_meetup.utc_end|time }}
         {% if next_meetup.location %}
-        ({{ next_meetup.location.name }})
+        <br />{{ next_meetup.location.name }}
+        {% if next_meetup.location.address %}
+        , {{ next_meetup.location.address }}
+        {% endif %}
+        {% endif %}
+        </p>
+        {% if next_meetup and next_meetup.location and next_meetup.location.address %}
+            <iframe id="map" width="423" height="350" frameborder="0" scrolling="no" 
+                marginheight="0" marginwidth="0" src="http://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q={{ next_meetup.location.address|urlencode }}&amp;output=embed"></iframe>
         {% endif %}
         {% endif %}
     </div>

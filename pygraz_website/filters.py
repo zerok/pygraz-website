@@ -1,6 +1,6 @@
 from docutils.core import publish_parts
 from flask import current_app
-import pytz, datetime
+import pytz, datetime, urllib
 
 
 def _local_tz(dt):
@@ -29,3 +29,8 @@ def mkdate(v):
     if isinstance(v, datetime.datetime):
         return v
     return datetime.datetime.utcfromtimestamp(float(v)).replace(tzinfo=pytz.utc)
+
+def urlencode(v):
+    if isinstance(v, basestring):
+        return urllib.urlencode((('v', v),)).lstrip('v=')
+    return urllib.urlencode(v)

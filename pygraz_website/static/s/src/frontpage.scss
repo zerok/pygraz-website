@@ -1,6 +1,7 @@
 @import "blueprint/grid";
 @import "colors";
 @import "compass/css3/gradient";
+@import "compass/css3/border-radius";
 
 #main {
     width: 100%;
@@ -33,12 +34,25 @@
 }
 #misc {
     @include container;
-    #twitter, #next-meetup {
-        @include column(10);
-        @include append(1);
-        @include prepend(1);
+    position:relative;
+    margin-top: 1em;
+    color: #555;
+    a {
+        color: #444;
     }
-    #twitter {
-        @include last;
+}
+#next-meetup {
+    float: right;
+    width: 425px;
+    #map {
+        margin-top: 10px;
+        border: 1px solid #444;
     }
+}
+
+h2 {
+    font-size: 150%;
+    border-bottom: 2px solid #DDD;
+    margin-bottom: 10px;
+    color: #333;
 }

@@ -28,6 +28,7 @@ def create_app(settings):
     app.jinja_env.filters['datecode'] = filters.datecode
     app.jinja_env.filters['datetime'] = filters.datetimefilter
     app.jinja_env.filters['rst'] = filters.rst
+    app.jinja_env.filters['urlencode'] = filters.urlencode
     app.secret_key = app.config['SECRET_KEY']
 
 
