@@ -2,4 +2,6 @@ Flask==0.6
 couchdbkit
 docutils
 Flask-Babel
+Flask-OpenID
 redis
+flatland
