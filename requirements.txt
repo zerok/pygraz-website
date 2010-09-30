@@ -5,3 +5,5 @@ Flask-Babel
 Flask-OpenID
 redis
 flatland
+Flask-Script
+tweepy

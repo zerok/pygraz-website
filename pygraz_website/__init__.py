@@ -67,6 +67,7 @@ def load_db(app):
     couchdbkit.Document.set_db(couchdb)
     documents.Version.set_db(couchdb)
     documents.Meetup.set_db(couchdb)
+    documents.Tweet.set_db(couchdb)
 
     redis = redisapi.Redis(app.config.get('REDIS_HOST', 'localhost'),
             app.config.get('REDIS_HOST', 6379),

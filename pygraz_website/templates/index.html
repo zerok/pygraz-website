@@ -48,8 +48,16 @@
         {% endif %}
         {% endif %}
     </div>
-    <div id="twitter">
-        <h2>Twitter</h2>
+    <div id="news">
+        <h2>Neuigkeiten</h2>
+        <ul>
+            {% for item in news %}
+            <li>
+            <p class="content">{{ item.text }}</p>
+            <a href="{{ item.url }}" class="date">{{ item.utc_created_at|date }}</a>
+            </li>
+            {% endfor %}
+        </ul>
     </div>
 </div>
 {% endblock %}

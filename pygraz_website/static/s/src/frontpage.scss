@@ -56,3 +56,23 @@ h2 {
     margin-bottom: 10px;
     color: #333;
 }
+#news {
+    float: left;
+    width: 460px;
+    li {
+        padding: 10px;
+        margin-bottom: 1em;
+        color: $news-item-fg;
+        background: $news-item-bg;
+        @include border-radius(0 0 0 15px);
+    }
+    .content {
+        line-height: 1.5em;
+    }
+    .date {
+        display: block;
+        text-align: right;
+        color: #666;
+        font-style: italic;
+    }
+}
