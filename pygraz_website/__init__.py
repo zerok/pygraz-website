@@ -36,10 +36,10 @@ def create_app(settings):
     from .views.admin import module as admin_module
     from .views.core import module as core_module
     from .views.meetups import module as meetups_module
-    app.register_module(core_module)
-    app.register_module(account_module)
-    app.register_module(meetups_module)
-    app.register_module(admin_module)
+    from .views.companies import module as companies_module
+    for k, v in locals().items():
+        if k.endswith('_module'):
+            app.register_module(v)
     app.context_processor(context_processors.add_form_generator)
     app.context_processor(context_processors.auth_processor)
     app.before_request(request_processors.check_user)

@@ -1,0 +1,10 @@
+{% extends "companies/base.html" %}
+{% block title %}Python-Firmen in Graz{% endblock %}
+{% block body %}
+<h1>Python-Firmen in Graz</h1>
+<ul>
+    {% for row in rows %}
+    <li><a href="{{ url_for('companies.view', root_id=row.root_id) }}">{{ row.name }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -55,3 +55,11 @@ class Tweet(couchdbkit.Document):
         inst.in_reply_to_screen_name = tweet.in_reply_to_screen_name
         print inst
         return inst
+
+class Company(Version):
+    doc_type = 'company'
+    confirmed = couchdbkit.BooleanProperty()
+    name = couchdbkit.StringProperty()
+    location = couchdbkit.DictProperty()
+    url = couchdbkit.StringProperty()
+    technologies = couchdbkit.ListProperty()
