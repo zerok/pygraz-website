@@ -1,5 +1,5 @@
 import functools
-from flask import g, redirect, url_for, abort
+from flask import g, redirect, url_for, abort, request
 
 def login_required(func):
     """
@@ -8,8 +8,8 @@ def login_required(func):
     """
     @functools.wraps(func)
     def _func(*args, **kwargs):
-        if not hasattr(g, 'user'):
-            return redirect(url_for('login', next=request.path))
+        if not hasattr(g, 'user') or g.user is None:
+            return redirect(url_for('account.login', next=request.path))
         return func(*args, **kwargs)
     return _func
 
