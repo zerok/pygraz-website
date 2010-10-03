@@ -40,6 +40,7 @@ def meetup(date, docid=None):
         versions = []
     return render_template('meetup.html',
             meetup = doc,
+            doc=doc,
             versions=versions)
 
 @module.route('/<date>/edit', methods=['GET', 'POST'])

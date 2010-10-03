@@ -1,0 +1,28 @@
+{% if versions %}
+<div class="block" id="docinfo">
+    <h2 class="title">Über dieses Seite</h2>
+    <div class="content">
+        <dl>
+            <dt>Aktualisiert:</dt>
+            <dd>
+                {{ doc.utc_updated_at|datetime }}
+            </dd>
+        </dl>
+        {% if versions|count > 1 %}
+        <dl id="versions">
+            <dt>Versionen:</dt>
+            <dd>
+                <ul>
+                    {% for version in versions %}
+                    <li class="{{ version._id == doc._id and "active" or "" }}">
+                    <a href="/doc/{{ version._id }}">
+                        {{ version.utc_updated_at|datetime }}</a></li>
+                    {% endfor %}
+                </ul>
+            </dd>
+        </dl>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+

@@ -1,4 +1,5 @@
-from flask import Module, render_template, abort, request
+from flask import Module, render_template, abort, request, redirect, url_for,\
+        current_app
 
 from pygraz_website import documents, decorators, utils, forms
 
@@ -17,11 +18,15 @@ def view(root_id, docid=None):
     else:
         doc = documents.Company.get(docid)
     if doc is None: abort(404)
-    return render_template('companies/view.html', doc=doc)
+    versions = documents.Version.view('frontend/all_versions',
+            endkey=[doc['root_id']], startkey=[doc['root_id'], 'Z'],
+            descending=True)
+    return render_template('companies/view.html', doc=doc,
+            versions=versions)
 
 @module.route('/doc/<docid>')
 def view_doc(docid):
-    return current_app.view_functions['companies.view'](date=None,
+    return current_app.view_functions['companies.view'](root_id=None,
             docid=docid)
 
 
@@ -36,20 +41,46 @@ def edit(root_id):
             form = forms.CompanyForm.from_flat(request.form)
             if form.validate({'doc': doc}):
                 new_doc = utils.save_edit(doc, form)
+                # Mark the content as unconfirmed if the current user
+                # is not a designed editor of this company (or admin)
+                if doc.confirmed and not utils.is_editor_for(doc):
+                    new_doc.confirmed = False
+                    new_doc.save()
                 lock.unlock()
                 return redirect(url_for('view',
-                    date=root_id))
+                    root_id=root_id))
         else:
             form = forms.CompanyForm.from_object(doc)
         return render_template('companies/edit.html',
                 doc=doc,
                 form=form)
 
-@module.route('/<date>/cancel_edit', methods=['GET', 'POST'])
+@module.route('/<root_id>/cancel_edit', methods=['GET', 'POST'])
 @decorators.login_required
-def cancel_edit_meetup(date):
-    doc = documents.Meetup.view('frontend/meetups_by_date', key=date,
-            include_docs=True).first()
+def cancel_edit(root_id):
+    doc = documents.Company.view('frontend/company_by_id', key=root_id).first()
     with utils.DocumentLock(doc.root_id) as lock:
         lock.unlock()
-    return redirect(url_for('meetup', date=date))
+    return redirect(url_for('view', root_id=root_id))
+
+@module.route('/<root_id>/confirm')
+@decorators.login_required
+def confirm(root_id):
+    doc = documents.Company.view('frontend/company_by_id', key=root_id).first()
+    if not utils.is_editor_for(doc):
+        return abort(403)
+    with utils.DocumentLock(doc.root_id) as lock:
+        doc.confirmed = True
+        doc.save()
+    return redirect(url_for('view', root_id=root_id))
+
+@module.route('/<root_id>/unconfirm')
+@decorators.login_required
+def unconfirm(root_id):
+    doc = documents.Company.view('frontend/company_by_id', key=root_id).first()
+    if not utils.is_editor_for(doc):
+        return abort(403)
+    with utils.DocumentLock(doc.root_id) as lock:
+        doc.confirmed = False
+        doc.save()
+    return redirect(url_for('view', root_id=root_id))

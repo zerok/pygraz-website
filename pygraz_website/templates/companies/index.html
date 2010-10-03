@@ -4,7 +4,7 @@
 <h1>Python-Firmen in Graz</h1>
 <ul>
     {% for row in rows %}
-    <li><a href="{{ url_for('companies.view', root_id=row.root_id) }}">{{ row.name }}</a></li>
+    <li><a href="{{ url_for('view', root_id=row.root_id) }}">{{ row.name }}</a></li>
     {% endfor %}
 </ul>
 {% endblock %}

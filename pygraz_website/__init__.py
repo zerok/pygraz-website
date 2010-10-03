@@ -21,6 +21,7 @@ def create_app(settings):
     if 'type2module' not in app.config:
         app.config['type2view'] = {
                 'meetup': 'meetups.view_doc',
+                'company': 'companies.view_doc',
                 }
 
     app.jinja_env.filters['time'] = filters.timefilter

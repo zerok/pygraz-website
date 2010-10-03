@@ -14,5 +14,9 @@
         {{ formgen.input(form.url) }}
         {{ forms.errors(form.url) }}
     </div>
+    <div class="buttons">
+        <button type="submit">Speichern</button>
+        <a href="{{ url_for('cancel_edit', root_id=doc.root_id) }}">Abbrechen</a>
+    </div>
 </form>
 {% endblock %}

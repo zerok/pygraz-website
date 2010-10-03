@@ -101,3 +101,14 @@ def to_doc_value(field):
 
 def handle_conflict(*args, **kwargs):
     return render_template('errors/conflict.html')
+
+def is_editor_for(doc, user=None):
+    """
+    Checks if the given user has editor status for the given document
+    (determined by the user's editor_of property and the doc's root_id)
+    """
+    if user is None:
+        user = g.user
+    if 'admin' in getattr(user, 'roles', []):
+        return True
+    return doc.root_id in getattr(user, 'editor_for', {}).get(doc.doc_type, [])

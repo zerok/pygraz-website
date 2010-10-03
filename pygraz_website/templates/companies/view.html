@@ -1,5 +1,45 @@
 {% extends "companies/base.html" %}
 {% block title %}Firmenprofil: {{ doc.name }}{% endblock %}
+
 {% block body %}
 <h1>Firmenprofil: {{ doc.name }}</h1>
+{% if doc.url %}
+<p><a href="{{ doc.url }}" {% if not doc.confirmed %}rel="nofollow"{% endif %}>{{ doc.url }}</a></p>
+{% endif %}
+{% if doc.technologies %}
+<h2>Eingesetzte Technologien</h2>
+<ul>
+    {% for tech in doc.technologies %}
+    <li>{{ tech }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% if is_logged_in %}<a href="{{ url_for('edit', root_id=doc.root_id)}}">Seite editieren</a>{% endif %}
+{% if is_admin %}
+    <a href="{{ url_for('core.purge_version', docid=doc._id) }}" class="purge">Version löschen</a>
+    {% if doc.confirmed %}
+    <a href="{{ url_for('unconfirm', root_id=doc.root_id) }}" class="confirm_doc">Un-Bestätigen</a>
+    {% else %}
+    <a href="{{ url_for('confirm', root_id=doc.root_id) }}" class="confirm_doc">Bestätigen</a>
+    {% endif %}
+{% endif %}
+{% endblock %}
+
+{% block sidebar %}
+<div class="block" id="info">
+    <div class="content">
+        {% if doc.location and doc.location.address %}
+        <iframe id="map" width="270" height="200" frameborder="0" scrolling="no" 
+            marginheight="0" marginwidth="0" src="http://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q={{ doc.location.address|urlencode }}&amp;output=embed&amp;iwloc="></iframe>
+        {% endif %}
+
+        {% if doc.location %}
+        <dl>
+            <dt>Adresse:</dt>
+            <dd>{{ doc.location.address }}</dd>
+        </dl>
+        {% endif %}
+    </div>
+</div>
+{% include "_docinfo.html" %}
 {% endblock %}

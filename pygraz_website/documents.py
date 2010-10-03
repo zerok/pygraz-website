@@ -7,6 +7,9 @@ class Version(couchdbkit.Document):
     next_version = couchdbkit.StringProperty()
     previous_version = couchdbkit.StringProperty()
     root_id = couchdbkit.StringProperty()
+    @property
+    def utc_updated_at(self):
+        return self.updated_at.replace(tzinfo=pytz.utc)
 
 class Meetup(Version):
     doc_type = 'meetup'
