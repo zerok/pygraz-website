@@ -105,7 +105,6 @@ class EditProfileForm(RegisterForm):
 class CompanyForm(flatland.Form):
     name = flatland.String.using(validators=[Present()])
     url = flatland.String
-    confirmed = flatland.Boolean
     location = flatland.Dict.of(
         flatland.String.named('address').using(optional=True)
         )

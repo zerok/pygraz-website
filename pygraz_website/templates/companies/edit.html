@@ -1,0 +1,18 @@
+{% extends "companies/base.html" %}
+{% block title %}Firmenprofil von {{ doc.name }} ändern{% endblock %}
+{% import "forms.html" as forms %}
+{% block body %}
+<h1>Firmenprofil von {{ doc.name }} ändern</h1>
+<form method="post">
+    <div>
+        <label>Name:</label>
+        {{ formgen.input(form['name']) }}
+        {{ forms.errors(form['name']) }}
+    </div>
+    <div>
+        <label>Website:</label>
+        {{ formgen.input(form.url) }}
+        {{ forms.errors(form.url) }}
+    </div>
+</form>
+{% endblock %}
