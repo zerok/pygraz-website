@@ -37,7 +37,7 @@ def create_app(settings):
     from .views.admin import module as admin_module
     from .views.core import module as core_module
     from .views.meetups import module as meetups_module
-    from .views.companies import module as companies_module
+    #from .views.companies import module as companies_module
     for k, v in locals().items():
         if k.endswith('_module'):
             app.register_module(v)
