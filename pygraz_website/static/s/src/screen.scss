@@ -173,7 +173,13 @@ form {
         width: 25%;
     }
     input, textarea {
-        flat: right;
+        float: right;
+        width: 70%;
+    }
+    .info {
+        font-size: 80%;
+        color: #999;
+        float: right;
         width: 70%;
     }
     textarea {
