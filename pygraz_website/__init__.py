@@ -6,6 +6,7 @@ from . import documents, filters, context_processors, request_processors, utils
 import __builtin__
 import redis as redisapi
 import pytz
+import logging.handlers
 
 couchdb = None
 babel = None
@@ -23,6 +24,14 @@ def create_app(settings):
                 'meetup': 'meetups.view_doc',
                 'company': 'companies.view_doc',
                 }
+    if 'LOG_FILE' in app.config:
+        handler = logging.handlers.RotatingFileHandler(app.config['LOG_FILE'],
+                backupCount=5, maxBytes=1000000)
+        if 'LOG_LEVEL' in app.config:
+            handler.setLevel(app.config['LOG_LEVEL'])
+        else:
+            handler.setLevel(logging.INFO)
+        app.logger.addHandler(handler)
 
     app.jinja_env.filters['time'] = filters.timefilter
     app.jinja_env.filters['date'] = filters.datefilter
