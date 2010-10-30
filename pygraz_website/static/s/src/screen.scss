@@ -214,3 +214,9 @@ form {
         margin: 3px 1em;
     }
 }
+#preview {
+    padding: 1em;
+    background: $preview-bg;
+    border: 1px dotted $preview-border;
+    margin-bottom: 1em;
+}

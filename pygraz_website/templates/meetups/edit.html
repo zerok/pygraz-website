@@ -1,6 +1,11 @@
 {% extends "meetups/base.html" %}
 {% import "forms.html" as forms %}
 {% block body %}
+{% if preview %}
+<div id="preview">
+    {{ form.notes.u|rst|safe }}
+</div>
+{% endif %}
 <form method="POST">
     <div>
         <label for="start">Beginn:</label>
@@ -33,6 +38,7 @@
         <p class="info">Was ist geplant, was ist passiert. Format: Restructured Text</p>
     </div>
     <button type="submit">Speichern</button>
+    <button type="submit" name="preview">Vorschau</button>
     {% if meetup %}
     <a href="{{ url_for('cancel_edit_meetup', date=meetup.start|datecode) }}">Abbrechen</a>
     {% endif %}

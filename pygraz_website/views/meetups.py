@@ -54,14 +54,16 @@ def edit_meetup(date):
         if request.method == 'POST':
             form = forms.MeetupForm.from_flat(request.form)
             if form.validate({'doc': doc}):
-                new_doc = utils.save_edit(doc, form)
-                lock.unlock()
-                return redirect(url_for('meetup',
-                    date=filters.datecode(new_doc.start)))
+                if 'preview' not in request.form:
+                    new_doc = utils.save_edit(doc, form)
+                    lock.unlock()
+                    return redirect(url_for('meetup',
+                        date=filters.datecode(new_doc.start)))
         else:
             form = forms.MeetupForm.from_object(doc)
         return render_template('meetups/edit.html',
                 meetup=doc,
+                preview='preview' in request.form,
                 form=form)
 
 @module.route('/<date>/cancel_edit', methods=['GET', 'POST'])
@@ -79,12 +81,15 @@ def create_meetup():
     if request.method == 'POST':
         form = forms.MeetupForm.from_flat(request.form)
         if form.validate():
-            utils.save_new(form, 'meetup')
-            return redirect(url_for('meetup',
-                date=filters.datecode(form['start'].value)))
+            if 'preview' not in request.form:
+                utils.save_new(form, 'meetup')
+                return redirect(url_for('meetup',
+                    date=filters.datecode(form['start'].value)))
     else:
         form = forms.MeetupForm()
-    return render_template('meetups/create.html', form=form)
+    return render_template('meetups/create.html',
+            preview='preview' in request.form,
+            form=form)
 
 @module.route('/archive/')
 def meetup_archive():
