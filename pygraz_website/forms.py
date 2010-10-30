@@ -1,5 +1,5 @@
 import flatland
-from flatland.validation import Present, Validator, IsEmail
+from flatland.validation import Present, Validator, IsEmail, Converted
 from flatland.validation.base import N_
 from flatland.out.markup import Generator
 import pytz
@@ -42,6 +42,8 @@ class UniqueMeetupStartDate(Validator):
     fail = "Am selben Tag findet schon ein Treffen statt."
 
     def validate(self, element, state):
+        if element.value is None:
+            return False
         docs = Meetup.view('frontend/meetups_by_date',
                 key=filters.datecode(element.value))
         if state is not None:
@@ -77,9 +79,9 @@ class UniqueEmail(UniqueUserField):
 
 class MeetupForm(flatland.Form):
     start = LocalDateTime.using(name="start", validators=[
-        Present(), UniqueMeetupStartDate()])
+        Present(), Converted(), UniqueMeetupStartDate()])
     end = LocalDateTime.using(name="end", validators=[
-        Present(), DateAfterOther('start')])
+        Present(), Converted(), DateAfterOther('start')])
     notes = flatland.String.using(optional=True)
     location = flatland.Dict.of(
         flatland.String.named('name').using(optional=True),

@@ -79,7 +79,7 @@ def create_meetup():
     if request.method == 'POST':
         form = forms.MeetupForm.from_flat(request.form)
         if form.validate():
-            save_new(form, 'meetup')
+            utils.save_new(form, 'meetup')
             return redirect(url_for('meetup',
                 date=filters.datecode(form['start'].value)))
     else:
