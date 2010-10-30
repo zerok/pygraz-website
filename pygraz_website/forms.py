@@ -82,7 +82,7 @@ class MeetupForm(flatland.Form):
         Present(), DateAfterOther('start')])
     notes = flatland.String.using(optional=True)
     location = flatland.Dict.of(
-        flatland.String.named('name'),
+        flatland.String.named('name').using(optional=True),
         flatland.String.named('address').using(optional=True)
         )
 
