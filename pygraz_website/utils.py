@@ -81,6 +81,9 @@ def save_edit(doc, form):
     return doc.__class__.get(new_doc['_id'])
 
 def save_new(form, type_):
+    """
+    Save a new document of the given type from the given form data.
+    """
     new_doc = {}
     for field in form.all_children:
         new_doc[field.name] = to_doc_value(field)

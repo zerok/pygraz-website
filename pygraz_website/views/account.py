@@ -1,3 +1,7 @@
+"""
+Basic account handling. Most of the openid methods are adapted from the
+Flask-OpenID documentation.
+"""
 from flask import Module, session, redirect, abort, render_template, request,\
         flash, g, url_for
 import pygraz_website as site
