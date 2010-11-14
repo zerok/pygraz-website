@@ -2,6 +2,8 @@ from flaskext.script import Manager
 import pygraz_website as site
 from pygraz_website import documents
 import tweepy
+from os.path import join, dirname, abspath
+from couchdbkit.loaders import FileSystemDocsLoader
 
 
 app = site.create_app('FLASK_SETTINGS')
@@ -19,5 +21,11 @@ def sync_twitter(dryrun=False):
             print tweet.id
         else:
             documents.Tweet.from_tweet(tweet).save()
+
+@manager.command
+def load_designdocs():
+    docs_path = join(abspath(dirname(__file__)), '_design')
+    loader = FileSystemDocsLoader(docs_path)
+    loader.sync(site.couchdb, verbose=True)
 
 manager.run()

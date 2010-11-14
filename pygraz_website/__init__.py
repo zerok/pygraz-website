@@ -80,6 +80,6 @@ def load_db(app):
     documents.Tweet.set_db(couchdb)
 
     redis = redisapi.Redis(app.config.get('REDIS_HOST', 'localhost'),
-            app.config.get('REDIS_HOST', 6379),
+            app.config.get('REDIS_PORT', 6379),
             app.config.get('REDIS_DB', 0))
 
