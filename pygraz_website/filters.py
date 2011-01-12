@@ -10,16 +10,16 @@ def timefilter(dt):
     return _local_tz(mkdate(dt)).time()
 
 def datefilter(dt):
-    return _local_tz(mkdate(dt)).strftime('%d. %b %Y')
+    return _local_tz(mkdate(dt)).strftime('%d. %b %Y').decode('utf-8')
 
 def datetimefilter(dt):
     return _local_tz(mkdate(dt))
 
 def datecode(dt):
-    return dt.strftime('%Y-%m-%d')
+    return dt.strftime('%Y-%m-%d').decode('utf-8')
 
 def datetimecode(dt):
-    return dt.strftime('%Y-%m-%dT%H:%M:%SZ')
+    return dt.strftime('%Y-%m-%dT%H:%M:%SZ').decode('utf-8')
 
 def rst(value):
     return publish_parts(value, writer_name='html',
