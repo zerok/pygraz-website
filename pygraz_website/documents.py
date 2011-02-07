@@ -46,7 +46,7 @@ class Tweet(couchdbkit.Document):
 
     @property
     def url(self):
-        return 'http://twitter.com/pygraz/status/%d' % (self.external_id,)
+        return 'http://twitter.com/pygraz/status/%s' % (unicode(self.external_id),)
 
     @classmethod
     def from_tweet(cls, tweet):
