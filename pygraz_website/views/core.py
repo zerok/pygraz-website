@@ -11,7 +11,7 @@ module = Module(__name__, url_prefix='')
 @module.route('/')
 def index():
     now_key = datetime.datetime.utcnow().date().strftime("%Y-%m-%d")
-    news = documents.Tweet.view('frontend/tweet_by_external_id', descending=True, limit=10)
+    news = documents.Tweet.view('frontend/tweet_by_external_id', descending=True, limit=5)
     next_meetup = documents.Meetup.view('frontend/meetups_by_date',
             descending=False, startkey=now_key, limit=1).first()
     return render_template('index.html', next_meetup=next_meetup,
