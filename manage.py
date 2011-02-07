@@ -14,13 +14,19 @@ manager = Manager(app)
 @manager.option("--dry-run", dest='dryrun', action='store_true')
 @manager.command
 def sync_twitter(dryrun=False):
+    keyrow = site.couchdb.view('admin/twitter_external_ids').first()
+    ids = set()
+    if keyrow:
+        ids = set(keyrow['value'])
     last_update = documents.Tweet.view('frontend/tweet_by_external_id', limit=1, descending=True).first()
     last_id = last_update is not None and last_update.external_id or None
+    print "Last ID: " + str(last_id)
     for tweet in tweepy.Cursor(tweepy.api.user_timeline, 'pygraz', since_id=last_id).items(100):
-        if dryrun:
-            print tweet.id
-        else:
-            documents.Tweet.from_tweet(tweet).save()
+        if tweet.id not in ids:
+            if dryrun:
+                print tweet.id
+            else:
+                documents.Tweet.from_tweet(tweet).save()
 
 @manager.command
 def load_designdocs():

@@ -36,7 +36,7 @@ class User(couchdbkit.Document):
 class Tweet(couchdbkit.Document):
     doc_type = 'tweet'
     text = couchdbkit.StringProperty()
-    external_id = couchdbkit.IntegerProperty()
+    external_id = couchdbkit.StringProperty()
     created_at = couchdbkit.DateTimeProperty()
     in_reply_to_status_id = couchdbkit.StringProperty()
     in_reply_to_screen_name = couchdbkit.StringProperty()
@@ -52,7 +52,7 @@ class Tweet(couchdbkit.Document):
     def from_tweet(cls, tweet):
         inst = cls()
         inst.text = tweet.text
-        inst.external_id = tweet.id
+        inst.external_id = str(tweet.id)
         inst.created_at = tweet.created_at
         inst.in_reply_to_status_id = tweet.in_reply_to_status_id
         inst.in_reply_to_screen_name = tweet.in_reply_to_screen_name
