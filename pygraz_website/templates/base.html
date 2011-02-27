@@ -42,6 +42,7 @@
                         <li><a href="{{ url_for('companies.index') }}" class="{% block nav_companies %}{% endblock %}">Firmen</a></li>
                         #}
                         <li><a href="http://groups.google.at/group/python-graz" class="{% block nav_about %}{% endblock %}">Mailinglist</a></li>
+                        <li><a href="http://convore.com/pygraz" class="{% block nav_about %}{% endblock %}">Convore</a></li>
                         {% if is_admin %}
                         <li><a href="{{ url_for('admin.index') }}" class="{% block nav_admin %}{% endblock %}">Administration</a></li>
                         {% endif %}
