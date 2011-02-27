@@ -8,3 +8,4 @@ flatland
 Flask-Script
 tweepy
 gunicorn
+fabric
