@@ -22,6 +22,10 @@ class LocalDateTime(flatland.DateTime):
             result = flatland.DateTime.adapt(self, value)
             return local_tz.localize(result).astimezone(pytz.utc)
 
+    def serialize(self, value):
+        local_tz = current_app.config['local_timezone']
+        return super(LocalDateTime, self).serialize(value.astimezone(local_tz))
+
 class DateAfterOther(Validator):
     fail = "%(label)s has to be after %(othervalue)s"
 
