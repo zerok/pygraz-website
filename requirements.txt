@@ -9,3 +9,4 @@ Flask-Script
 tweepy
 gunicorn
 fabric
+Flask-SQLAlchemy
