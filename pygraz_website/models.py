@@ -36,3 +36,24 @@ class Tweet(db.Model):
         print inst
         return inst
 
+class User(db.Model):
+    id = db.Column(db.Integer, db.Sequence("user_id_seq"), primary_key=True)
+    username = db.Column(db.String, unique=True)
+    email = db.Column(db.String)
+
+class OpenID(db.Model):
+    id = db.Column(db.String, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user = db.relationship('User', backref=db.backref('openids', lazy='dynamic'))
+
+user_role = db.Table('user_role', 
+        db.Column('user_id', db.ForeignKey('user.id')),
+        db.Column('role_id', db.ForeignKey('role.id'))
+        )
+
+class Role(db.Model):
+    id = db.Column(db.Integer, db.Sequence('role_id_seq'), primary_key=True)
+    name = db.Column(db.String, unique=True)
+    users = db.relationship('User', secondary=user_role,
+            backref=db.backref('roles', lazy='dynamic'))
+

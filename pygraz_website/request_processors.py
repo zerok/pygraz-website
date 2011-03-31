@@ -1,5 +1,5 @@
 from flask import session, g, current_app
-from . import documents
+from . import db, models
 
 
 def check_user():
@@ -10,7 +10,6 @@ def check_user():
     if 'FAKE_LOGIN' in current_app.config and 'openid' not in session:
         session['openid'] = current_app.config['FAKE_LOGIN']
     if 'openid' in session:
-        g.user = documents.User.view('frontend/users_by_openid',
-                key=session['openid']).first()
+        g.user = db.session.query(models.User).join(models.OpenID).filter(models.OpenID.id==session['openid']).first()
     else:
         g.user = None

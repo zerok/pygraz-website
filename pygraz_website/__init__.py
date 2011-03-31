@@ -3,7 +3,7 @@ from flaskext.babel import Babel, get_translations
 from flaskext.openid import OpenID
 from flaskext.sqlalchemy import SQLAlchemy
 import couchdbkit
-from . import documents, filters, context_processors, request_processors, utils
+from . import documents, filters, context_processors, utils
 import __builtin__
 import redis as redisapi
 import pytz
@@ -55,6 +55,7 @@ for k, v in locals().items():
         app.register_module(v)
 app.context_processor(context_processors.add_form_generator)
 app.context_processor(context_processors.auth_processor)
+from . import request_processors
 app.before_request(request_processors.check_user)
 babel = Babel(app)
 oid.init_app(app)

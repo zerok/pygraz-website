@@ -6,7 +6,7 @@ from flask import Module, session, redirect, abort, render_template, request,\
         flash, g, url_for
 import pygraz_website as site
 
-from pygraz_website import documents, forms, decorators
+from pygraz_website import forms, decorators, models, db
 
 
 module = Module(__name__, url_prefix='/account')
@@ -16,11 +16,14 @@ def register():
     if request.method == 'POST':
         form = forms.RegisterForm.from_flat(request.form)
         if form.validate():
-            doc = dict(form.flatten())
-            doc['openids'] = [session['openid']]
-            doc['doc_type'] = 'user'
-            doc['username'] = doc['username'].lstrip().rstrip()
-            site.couchdb.save_doc(doc)
+            data = dict(form.flatten())
+            openid = models.OpenID(id=session['openid'])
+            db.session.add(openid)
+            user = models.User()
+            user.username = data['username'].lstrip().rstrip()
+            user.openids.append(openid)
+            db.session.add(user)
+            db.session.commit()
             return redirect(site.oid.get_next_url())
     else:
         default = {}
@@ -49,13 +52,13 @@ def login():
 @site.oid.after_login
 def login_or_register(response):
     session['openid'] = response.identity_url
-    user = documents.User.view('frontend/users_by_openid',
-            key=session['openid']).first()
+    user = db.session.query(models.User).join(models.OpenID).filter(models.OpenID.id==session['openid']).first()
     if user is None:
         return redirect(url_for('register',
                 name=response.fullname,
                 email=response.email, next=site.oid.get_next_url()))
     else:
+        g.user = user
         return redirect(site.oid.get_next_url())
 
 @module.route('/logout')
