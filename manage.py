@@ -1,6 +1,5 @@
 from flaskext.script import Manager
 import pygraz_website as site
-from pygraz_website import documents
 from pygraz_website import models
 import tweepy
 from os.path import join, dirname, abspath
@@ -33,5 +32,9 @@ def load_designdocs():
 @manager.command
 def create_db():
     site.db.create_all()
+
+@manager.command
+def runserver():
+    site.app.run()
 
 manager.run()
