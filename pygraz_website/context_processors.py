@@ -18,8 +18,5 @@ def auth_processor():
             }
     if hasattr(g, 'user') and g.user is not None:
         result['is_logged_in'] = True
-        for role in g.user.roles.all():
-            if role.name == 'admin':
-                result['is_admin'] = True
-                break
+        result['is_admin'] = 'admin' in g.roles
     return result

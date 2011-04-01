@@ -21,6 +21,7 @@ def register():
             db.session.add(openid)
             user = models.User()
             user.username = data['username'].lstrip().rstrip()
+            user.email = data['email'].lstrip().rstrip()
             user.openids.append(openid)
             db.session.add(user)
             db.session.commit()

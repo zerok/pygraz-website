@@ -1,47 +1,44 @@
 {% extends "meetups/base.html" %}
-{% block title %}Treffen vom {{ meetup.utc_start|date }}{% endblock %}
+{% block title %}Treffen vom {{ meetup.start|date }}{% endblock %}
 {% block body %}
-    <h1>Treffen vom {{ meetup.utc_start|date }}</h1>
+    <h1>Treffen vom {{ meetup.start|date }}</h1>
     {% if meetup.notes %}
     {{ meetup.notes|rst|safe }}
     {% else %}
     <p>Keine Notizen vorhanden.</p>
     {% endif %}
-    {% if (not meetup.next_version) and is_logged_in %}
-    <a href="{{ url_for('edit_meetup', date=meetup.start|datecode) }}" class="edit">Seite ändern</a>
-    {% endif %}
     {% if is_admin %}
-    <a href="{{ url_for('core.purge_version', docid=meetup._id) }}" class="purge">Version löschen</a>
+        <a href="{{ url_for('edit_meetup', date=meetup.start|datecode) }}" class="edit">Seite ändern</a>
     {% endif %}
 {% endblock %}
 {% block sidebar %}
 {{ super() }}
 <div class="block" id="info">
     <div class="content">
-        {% if meetup.location and meetup.location.address %}
+        {% if meetup.location and meetup.address %}
         <iframe id="map" width="270" height="200" frameborder="0" scrolling="no" 
-            marginheight="0" marginwidth="0" src="http://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q={{ meetup.location.address|urlencode }}&amp;output=embed&amp;iwloc="></iframe>
+            marginheight="0" marginwidth="0" src="http://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q={{ meetup.address|urlencode }}&amp;output=embed&amp;iwloc="></iframe>
         {% endif %}
         {% if meetup.start %}
         <dl>
             <dt>Beginn:</dt>
-            <dd>{{ meetup.utc_start|datetime }}</dd>
+            <dd>{{ meetup.start|datetime }}</dd>
         </dl>
         {% endif %}
         {% if meetup.end %}
         <dl>
             <dt>Geplantes Ende:</dt>
-            <dd>{{ meetup.utc_end|datetime }}</dd>
+            <dd>{{ meetup.end|datetime }}</dd>
         </dl>
         {% endif %}
         {% if meetup.location %}
         <dl>
             <dt>Ort:</dt>
-            <dd>{{ meetup.location.name }}</dd>
+            <dd>{{ meetup.location }}</dd>
         </dl>
         <dl>
             <dt>Adresse:</dt>
-            <dd>{{ meetup.location.address }}</dd>
+            <dd>{{ meetup.address }}</dd>
         </dl>
         {% endif %}
     </div>

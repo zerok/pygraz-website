@@ -8,15 +8,15 @@ from flask import current_app, g
 
 from pygraz_website import filters
 import pygraz_website as site
-from pygraz_website.documents import Meetup
+from pygraz_website import models
 
 
 class LocalDateTime(flatland.DateTime):
     def adapt(self, value):
         local_tz = current_app.config['local_timezone']
         if isinstance(value, self.type_):
-            return flatland.DateTime.adapt(self,
-                    pytz.utc.localize(value).astimezone(local_tz))
+            adapted = flatland.DateTime.adapt(self, value.astimezone(pytz.UTC))
+            return adapted
         else:
             # We are in "store" mode, so a string is coming from the form
             result = flatland.DateTime.adapt(self, value)
@@ -48,15 +48,14 @@ class UniqueMeetupStartDate(Validator):
     def validate(self, element, state):
         if element.value is None:
             return False
-        docs = Meetup.view('frontend/meetups_by_date',
-                key=filters.datecode(element.value))
+        other_meetups = models.Meetup.query_by_date(element.value).all()
         if state is not None:
-            for d in docs:
-                if d['_id'] != state['doc']['_id']:
+            for d in other_meetups:
+                if d.id != state['meetup'].id:
                     self.note_error(element, state, 'fail')
                     return False
         else:
-            if docs.count() > 0:
+            if other_meetups:
                 self.note_error(element, state, 'fail')
                 return False
         return True
@@ -65,9 +64,9 @@ class UniqueMeetupStartDate(Validator):
 class UniqueUserField(Validator):
 
     def validate(self, element, state):
-        res = site.couchdb.view(self.view, key=element.u.rstrip().lstrip())
-        for doc in res:
-            if g.user is not None and g.user['_id'] == doc['value']['_id']:
+        users = self.find_users(element)
+        for user in users:
+            if g.user is not None and g.user.id == user.id:
                 break
             self.note_error(element, state, 'fail')
             return False
@@ -75,11 +74,15 @@ class UniqueUserField(Validator):
 
 class UniqueUsername(UniqueUserField):
     fail = "Dieser Benutzername wird schon von jemand anderem verwendet."
-    view = 'frontend/users_by_username'
+
+    def find_users(self, element):
+        return models.User.query.filter(models.User.username==element.u.rstrip().lstrip())
 
 class UniqueEmail(UniqueUserField):
     fail = "Diese E-Mail-Adresse wird bereits von jemand anderem verwendet."
-    view = 'frontend/users_by_email'
+
+    def find_users(self, element):
+        return models.User.query.filter(models.User.email==element.u.rstrip().lstrip())
 
 class MeetupForm(flatland.Form):
     start = LocalDateTime.using(name="start", validators=[
@@ -87,10 +90,8 @@ class MeetupForm(flatland.Form):
     end = LocalDateTime.using(name="end", validators=[
         Present(), Converted(), DateAfterOther('start')])
     notes = flatland.String.using(optional=True)
-    location = flatland.Dict.of(
-        flatland.String.named('name').using(optional=True),
-        flatland.String.named('address').using(optional=True)
-        )
+    location = flatland.String.using(optional=True)
+    address = flatland.String.using(optional=True)
 
 class LoginForm(flatland.Form):
     openid = flatland.String.using(name='openid', validators=[

@@ -1,77 +1,60 @@
 from flask import Module, render_template, request, redirect, url_for, current_app
 import datetime
 
-import pygraz_website as site
-from pygraz_website import documents, forms, decorators, utils, filters
+from pygraz_website import forms, decorators, utils, filters, db, models
 
 
 module = Module(__name__, url_prefix='/meetups')
 
 
-@module.route('/doc/<docid>')
-def view_doc(docid):
-    return current_app.view_functions['meetups.meetup'](date=None,
-            docid=docid)
-
-
 @module.route('/')
 def meetups():
     """List all meetups in chronological order"""
-    now_key = datetime.datetime.utcnow().date().strftime("%Y-%m-%d")
     return render_template('meetups.html',
-            meetups = list(documents.Meetup.view('frontend/meetups_by_date',
-                descending=False, startkey=now_key))
-            )
+            meetups = db.session.query(models.Meetup).filter(models.Meetup.end > datetime.datetime.utcnow()))
 
 @module.route('/<date>')
-def meetup(date, docid=None):
-    if docid is None:
-        doc = documents.Meetup.view('frontend/meetups_by_date', key=date,
-                include_docs=True).first()
-    else:
-        doc = documents.Meetup.get(docid)
-        if not doc.next_version:
-            return redirect(url_for('meetups.meetup', date=filters.datecode(doc.start)))
-    if 'root_id' in doc:
-        versions = documents.Version.view('frontend/all_versions',
-                endkey=[doc['root_id']], startkey=[doc['root_id'], 'Z'],
-                descending=True)
-    else:
-        versions = []
+def meetup(date):
+    real_date = datetime.datetime.strptime(date, "%Y-%m-%d").replace(tzinfo=current_app.config['local_timezone'])
+    meetup = models.Meetup.query_by_date(real_date).first()
     return render_template('meetup.html',
-            meetup = doc,
-            doc=doc,
-            versions=versions)
+            meetup = meetup)
 
 @module.route('/<date>/edit', methods=['GET', 'POST'])
-@decorators.login_required
+@decorators.admin_required
 def edit_meetup(date):
-    doc = documents.Meetup.view('frontend/meetups_by_date', key=date,
-            include_docs=True).first()
-    with utils.DocumentLock(doc.root_id) as lock:
-        if doc.next_version:
-            return abort(403)
+    real_date = datetime.datetime.strptime(date, "%Y-%m-%d").replace(tzinfo=current_app.config['local_timezone'])
+    meetup = models.Meetup.query_by_date(real_date).first()
+    with utils.DocumentLock(meetup) as lock:
         if request.method == 'POST':
             form = forms.MeetupForm.from_flat(request.form)
-            if form.validate({'doc': doc}):
+            if form.validate({'meetup': meetup}):
                 if 'preview' not in request.form:
-                    new_doc = utils.save_edit(doc, form)
+                    print form
+
+                    meetup.start = form['start'].value
+                    meetup.end = form['end'].value
+                    meetup.location = form['location'].value
+                    meetup.address = form['address'].value
+                    db.session.add(meetup)
+                    db.session.commit()
                     lock.unlock()
                     return redirect(url_for('meetup',
-                        date=filters.datecode(new_doc.start)))
+                        date=filters.datecode(meetup.start)))
         else:
-            form = forms.MeetupForm.from_object(doc)
+            form = forms.MeetupForm.from_object(meetup)
+            print form
         return render_template('meetups/edit.html',
-                meetup=doc,
+                meetup=meetup,
                 preview='preview' in request.form,
                 form=form)
 
 @module.route('/<date>/cancel_edit', methods=['GET', 'POST'])
-@decorators.login_required
+@decorators.admin_required
 def cancel_edit_meetup(date):
-    doc = documents.Meetup.view('frontend/meetups_by_date', key=date,
-            include_docs=True).first()
-    with utils.DocumentLock(doc.root_id) as lock:
+    real_date = datetime.datetime.strptime(date, "%Y-%m-%d").replace(tzinfo=current_app.config['local_timezone'])
+    meetup = models.Meetup.query_by_date(real_date)
+    with utils.DocumentLock(meetup) as lock:
         lock.unlock()
     return redirect(url_for('meetup', date=date))
 
@@ -82,7 +65,11 @@ def create_meetup():
         form = forms.MeetupForm.from_flat(request.form)
         if form.validate():
             if 'preview' not in request.form:
-                utils.save_new(form, 'meetup')
+                meetup = models.Meetup(start=form['start'].value,
+                        end=form['end'].value, location=form['location'].value,
+                        address=form['address'].value, notes=form['notes'].value)
+                db.session.add(meetup)
+                db.session.commit()
                 return redirect(url_for('meetup',
                     date=filters.datecode(form['start'].value)))
     else:
@@ -93,8 +80,6 @@ def create_meetup():
 
 @module.route('/archive/')
 def meetup_archive():
-    now_key = datetime.datetime.utcnow().date().strftime("%Y-%m-%d")
     return render_template('meetups/archive.html',
-            meetups = list(documents.Meetup.view('frontend/meetups_by_date',
-                descending=True, startkey=now_key, include_docs=True))
+            meetups=db.session.query(models.Meetup).filter(models.Meetup.end < datetime.datetime.utcnow())
             )

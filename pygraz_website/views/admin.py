@@ -2,7 +2,7 @@ from collections import defaultdict
 from flask import Module, render_template
 
 import pygraz_website as site
-from pygraz_website import documents
+from pygraz_website import models
 
 
 module = Module(__name__, url_prefix='/admin')
@@ -14,20 +14,21 @@ def index():
 @module.route('/locks')
 def locks():
     locks = defaultdict(dict)
-    keys = site.redis.keys("locks.*")
+    keys = site.redis.keys("locks:*")
     holders = {}
     if not keys:
         values = []
     else:
         values = site.redis.mget(keys)
+        print zip(keys, values)
     for l,v in zip(keys, values):
-        _, docid, field = l.split(".")
-        locks[docid][field]=v
+        _, type_, docid, field = l.split(":")
+        locks[type_ + docid][field]=v
         if field == 'holder':
-            holders[v] = {}
+            holders[int(v)] = {}
     if holders:
-        for e in documents.User.view('_all_docs', include_docs=True, keys=holders.keys()):
-            holders[e['_id']] = e
+        for user in models.User.query.filter(models.User.id.in_(map(int, holders.keys()))):
+            holders[user.id] = user
     for k, v in locks.iteritems():
-        v['holder'] = holders[v['holder']]
+        v['holder'] = holders[int(v['holder'])]
     return render_template('admin/locks.html', locks=locks)

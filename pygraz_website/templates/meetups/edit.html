@@ -21,14 +21,14 @@
     </div>
     <div>
         <label for="end">Ort:</label>
-        {{ formgen.input(form.location['name']) }}
-        {{ forms.errors(form.location['name']) }}
+        {{ formgen.input(form.location) }}
+        {{ forms.errors(form.location) }}
         <p class="info">z.B. der Name eines Restaurants</p>
     </div>
     <div>
         <label for="end">Adresse:</label>
-        {{ formgen.input(form.location.address) }}
-        {{ forms.errors(form.location.address) }}
+        {{ formgen.input(form.address) }}
+        {{ forms.errors(form.address) }}
         <p class="info">... mit der auch Google Maps etwas anfangen kann.</p>
     </div>
     <div>

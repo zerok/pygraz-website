@@ -11,5 +11,10 @@ def check_user():
         session['openid'] = current_app.config['FAKE_LOGIN']
     if 'openid' in session:
         g.user = db.session.query(models.User).join(models.OpenID).filter(models.OpenID.id==session['openid']).first()
+        g.roles = []
+        if g.user is not None:
+            for role in g.user.roles.all():
+                if role.name == 'admin':
+                    g.roles.append(role.name)
     else:
         g.user = None
