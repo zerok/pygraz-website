@@ -20,7 +20,6 @@ def locks():
         values = []
     else:
         values = site.redis.mget(keys)
-        print zip(keys, values)
     for l,v in zip(keys, values):
         _, type_, docid, field = l.split(":")
         locks[type_ + docid][field]=v

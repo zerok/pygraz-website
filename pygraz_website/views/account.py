@@ -75,7 +75,8 @@ def edit_profile():
         if form.validate():
             g.user.username = form['username'].u
             g.user.email = form['email'].u
-            g.user.save()
+            db.session.add(g.user)
+            db.session.commit()
             flash("Benutzerdaten gespeichert")
             return redirect(url_for('edit_profile'))
     else:
