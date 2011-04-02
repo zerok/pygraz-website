@@ -15,6 +15,7 @@ class Auth(object):
     def init_app(self, app):
         app.context_processor(self.auth_processor)
         app.before_request(self.before_request)
+        self.app = app
 
     def auth_processor(self):
         """
