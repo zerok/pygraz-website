@@ -2,7 +2,7 @@ from flask import Flask
 from flaskext.babel import Babel, get_translations
 from flaskext.openid import OpenID
 from flaskext.sqlalchemy import SQLAlchemy
-from . import filters, context_processors, utils
+from . import filters, context_processors, utils, ext
 import __builtin__
 import redis as redisapi
 import pytz
@@ -42,6 +42,8 @@ app.jinja_env.filters['urlencode'] = filters.urlencode
 app.secret_key = app.config['SECRET_KEY']
 
 db = SQLAlchemy(app)
+auth = ext.Auth(app)
+
 from . import models
 
 # Register modules
@@ -55,9 +57,6 @@ for k, v in locals().items():
 
 #Register context and request processors
 app.context_processor(context_processors.add_form_generator)
-app.context_processor(context_processors.auth_processor)
-from . import request_processors
-app.before_request(request_processors.check_user)
 
 # Register babel's i18n functions globally in order for Flatland to see
 # them.
