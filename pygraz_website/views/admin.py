@@ -1,5 +1,5 @@
 from collections import defaultdict
-from flask import Module, render_template
+from flask import Module, render_template, g
 
 import pygraz_website as site
 from pygraz_website import models
@@ -14,12 +14,12 @@ def index():
 @module.route('/locks')
 def locks():
     locks = defaultdict(dict)
-    keys = site.redis.keys("locks:*")
+    keys = g.redis.keys("locks:*")
     holders = {}
     if not keys:
         values = []
     else:
-        values = site.redis.mget(keys)
+        values = g.redis.mget(keys)
     for l,v in zip(keys, values):
         _, type_, docid, field = l.split(":")
         locks[type_ + docid][field]=v

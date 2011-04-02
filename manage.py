@@ -1,12 +1,14 @@
 from flaskext.script import Manager
-import pygraz_website as site
-from pygraz_website import models
+import pygraz_website
+from pygraz_website import models, db
 import tweepy
 from os.path import join, dirname, abspath
-from couchdbkit.loaders import FileSystemDocsLoader
 
 
-manager = Manager(site.app)
+app = pygraz_website.create_app()
+
+
+manager = Manager(app)
 
 @manager.option("--dry-run", dest='dryrun', action='store_true')
 @manager.command
@@ -20,21 +22,15 @@ def sync_twitter(dryrun=False):
         if dryrun:
             print tweet.id
         else:
-            site.db.session.add(models.Tweet.from_tweet(tweet))
-            site.db.session.commit()
-
-@manager.command
-def load_designdocs():
-    docs_path = join(abspath(dirname(__file__)), '_design')
-    loader = FileSystemDocsLoader(docs_path)
-    loader.sync(site.couchdb, verbose=True)
+            db.session.add(models.Tweet.from_tweet(tweet))
+            db.session.commit()
 
 @manager.command
 def create_db():
-    site.db.create_all()
+    db.create_all()
 
 @manager.command
 def runserver():
-    site.app.run()
+    app.run()
 
 manager.run()

@@ -1,9 +1,8 @@
-Flask==0.6
-couchdbkit
+Flask
 docutils
-Flask-Babel
+git+git://github.com/mitsuhiko/flask-babel.git#egg=Flask-Babel@rev77b4ef43794f54255d94b18edebfb2344fa6bdff
 Flask-OpenID
-redis
+Flask-Redis
 flatland
 Flask-Script
 tweepy

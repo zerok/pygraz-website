@@ -32,16 +32,16 @@ class DocumentLock(object):
                 (self.lock_key + ':holder', g.user.id),
                 (self.lock_key + ':expires', time.time() + self.timeout)
                 ])
-        if site.redis.msetnx(lockinfo):
+        if g.redis.msetnx(lockinfo):
             self.success = True
             return self
 
-        lock_user, lock_timeout = site.redis.mget([self.lock_key + ':holder',
+        lock_user, lock_timeout = g.redis.mget([self.lock_key + ':holder',
             self.lock_key + ':expires'])
 
         if float(lock_timeout) < time.time():
             # Found expired keys. Delete them and retry
-            site.redis.delete(*lockinfo.keys())
+            g.redis.delete(*lockinfo.keys())
             if self.attempt > 5:
                 raise exceptions.Conflict()
             self.attempt += 1
@@ -50,7 +50,7 @@ class DocumentLock(object):
         if lock_user != str(g.user.id):
             raise exceptions.Conflict()
 
-        site.redis.set(self.lock_key + ':expires',
+        g.redis.set(self.lock_key + ':expires',
                 time.time() + self.timeout)
         self.success = True
         return self
@@ -60,8 +60,8 @@ class DocumentLock(object):
             self.unlock()
 
     def unlock(self):
-        site.redis.delete(self.lock_key + ":holder")
-        site.redis.delete(self.lock_key + ":expires")
+        g.redis.delete(self.lock_key + ":holder")
+        g.redis.delete(self.lock_key + ":expires")
 
 def to_doc_value(field):
     import flatland

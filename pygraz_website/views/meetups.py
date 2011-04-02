@@ -30,12 +30,11 @@ def edit_meetup(date):
             form = forms.MeetupForm.from_flat(request.form)
             if form.validate({'meetup': meetup}):
                 if 'preview' not in request.form:
-                    print form
-
                     meetup.start = form['start'].value
                     meetup.end = form['end'].value
                     meetup.location = form['location'].value
                     meetup.address = form['address'].value
+                    meetup.notes = form['notes'].value
                     db.session.add(meetup)
                     db.session.commit()
                     lock.unlock()
