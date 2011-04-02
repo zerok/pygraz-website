@@ -22,7 +22,7 @@ def admin_required(func):
     def _func(*args, **kwargs):
         if not hasattr(g, 'user'):
             return redirect(url_for('login', next=request.path))
-        if g.roles is None or 'admin' not in g.roles:
+        if not g.user.is_admin:
             return abort(403)
         return func(*args, **kwargs)
     return _func

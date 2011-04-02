@@ -109,17 +109,3 @@ class RegisterForm(flatland.Form):
 class EditProfileForm(RegisterForm):
     pass
 
-class CompanyForm(flatland.Form):
-    name = flatland.String.using(validators=[Present()])
-    url = flatland.String
-    location = flatland.Dict.of(
-        flatland.String.named('address').using(optional=True)
-        )
-
-class AdminCompanyForm(CompanyForm):
-    confirmed = flatland.Boolean(validators=[Present()])
-
-def get_companyform():
-    if 'admin' in getattr(getattr(g, 'user'), 'roles', []):
-        return AdminCompanyForm
-    return CompanyForm

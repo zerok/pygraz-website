@@ -26,7 +26,7 @@ class Auth(object):
                 }
         if hasattr(g, 'user') and g.user is not None:
             result['is_logged_in'] = True
-            result['is_admin'] = 'admin' in g.roles
+            result['is_admin'] = g.user.is_admin
         return result
 
     def before_request(self):
@@ -40,10 +40,5 @@ class Auth(object):
             session['openid'] = self.app.config['FAKE_LOGIN']
         if 'openid' in session:
             g.user = db.session.query(models.User).join(models.OpenID).filter(models.OpenID.id==session['openid']).first()
-            g.roles = []
-            if g.user is not None:
-                for role in g.user.roles.all():
-                    if role.name == 'admin':
-                        g.roles.append(role.name)
         else:
             g.user = None

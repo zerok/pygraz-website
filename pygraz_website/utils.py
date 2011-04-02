@@ -79,9 +79,11 @@ def is_editor_for(doc, user=None):
     """
     if user is None:
         user = g.user
-    if 'admin' in getattr(user, 'roles', []):
+    if user is None:
+        return False
+    if user.is_admin:
         return True
-    return doc.root_id in getattr(user, 'editor_for', {}).get(doc.doc_type, [])
+    return hasattr(doc, "author") and doc.author == user
 
 def utcnow():
     return datetime.datetime.utcnow().replace(tzinfo=pytz.UTC)
