@@ -5,6 +5,7 @@ Flask-OpenID
 Flask-Redis
 flatland
 Flask-Script
+Flask-Compass
 tweepy
 gunicorn
 fabric

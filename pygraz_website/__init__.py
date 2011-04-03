@@ -3,6 +3,7 @@ from flaskext.babel import Babel, get_translations
 from flaskext.openid import OpenID
 from flaskext.sqlalchemy import SQLAlchemy
 from flaskext.redis import Redis
+from flaskext.compass import Compass
 from . import filters, context_processors, utils, ext
 import __builtin__
 import pytz
@@ -12,6 +13,7 @@ import logging.handlers
 redis = Redis()
 db = SQLAlchemy()
 auth = ext.Auth()
+compass = Compass()
 oid = OpenID()
 babel = Babel()
 
@@ -44,6 +46,7 @@ def create_app(envar="FLASK_SETTINGS"):
 
     db.init_app(app)
     auth.init_app(app)
+    compass.init_app(app)
 
     from . import models
 
