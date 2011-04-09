@@ -5,8 +5,8 @@ import pytz, datetime
 
 class Meetup(db.Model):
     id = db.Column(db.Integer, db.Sequence('meetup_id_seq'), primary_key=True)
-    start = db.Column(db.DateTime(timezone=True))
-    end = db.Column(db.DateTime(timezone=True))
+    start = db.Column(db.DateTime(timezone=False))
+    end = db.Column(db.DateTime(timezone=False))
     location = db.Column(db.String(255))
     address = db.Column(db.String(255))
     notes = db.Column(db.Text)
@@ -19,8 +19,10 @@ class Meetup(db.Model):
         utc_date = None
         if date.tzinfo == pytz.UTC:
             utc_date = date
+        elif date.tzinfo is None:
+            utc_date = pytz.utc.localize(date).astimezone(pytz.UTC)
         else:
-            utc_date = date.astimezone(pytz.UTC)
+            utc_date = date.astimezone(pytz.utc)
         start = utc_date.replace(minute=0, second=0, hour=0, microsecond=0)
         end = utc_date + datetime.timedelta(days=1)
         return db.session.query(cls).filter(cls.start.between(start, end))
@@ -29,7 +31,7 @@ class Tweet(db.Model):
     id = db.Column(db.Integer, db.Sequence('meetup_id_seq'), primary_key=True)
     text = db.Column(db.Text)
     external_id = db.Column(db.String, unique=True)
-    created_at = db.Column(db.DateTime(timezone=True))
+    created_at = db.Column(db.DateTime(timezone=False))
     in_reply_to_status_id = db.Column(db.String)
     in_reply_to_screen_name = db.Column(db.String)
 

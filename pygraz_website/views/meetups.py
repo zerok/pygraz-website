@@ -42,7 +42,6 @@ def edit_meetup(date):
                         date=filters.datecode(meetup.start)))
         else:
             form = forms.MeetupForm.from_object(meetup)
-            print form
         return render_template('meetups/edit.html',
                 meetup=meetup,
                 preview='preview' in request.form,

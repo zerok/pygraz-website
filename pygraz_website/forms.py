@@ -15,16 +15,16 @@ class LocalDateTime(flatland.DateTime):
     def adapt(self, value):
         local_tz = current_app.config['local_timezone']
         if isinstance(value, self.type_):
-            adapted = flatland.DateTime.adapt(self, value.astimezone(pytz.UTC))
+            adapted = flatland.DateTime.adapt(self, value)
             return adapted
         else:
             # We are in "store" mode, so a string is coming from the form
             result = flatland.DateTime.adapt(self, value)
-            return local_tz.localize(result).astimezone(pytz.utc)
+            return local_tz.localize(result).astimezone(pytz.utc).replace(tzinfo=None)
 
     def serialize(self, value):
         local_tz = current_app.config['local_timezone']
-        return super(LocalDateTime, self).serialize(value.astimezone(local_tz))
+        return super(LocalDateTime, self).serialize(pytz.utc.localize(value).astimezone(local_tz))
 
 class DateAfterOther(Validator):
     fail = "%(label)s has to be after %(othervalue)s"

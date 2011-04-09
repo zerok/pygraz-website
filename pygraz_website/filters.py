@@ -4,7 +4,11 @@ import pytz, datetime, urllib
 
 
 def _local_tz(dt):
-    return dt.astimezone(current_app.config['local_timezone'])
+    if dt.tzinfo is None:
+        utc_dt = dt.replace(tzinfo=pytz.utc)
+    else:
+        utc_dt = dt
+    return utc_dt.astimezone(current_app.config['local_timezone'])
 
 def timefilter(dt):
     return _local_tz(mkdate(dt)).time()
