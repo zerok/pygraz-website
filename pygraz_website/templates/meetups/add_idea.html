@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% import "forms.html" as forms %}
+{% block body %}
+    <form method="POST">
+        <div>
+            <label for="summary">Kurzbeschreibung:</label>
+            {{ formgen.input(form.summary) }}
+            {{ forms.errors(form.summary) }}
+        </div>
+        <div>
+            <label for="details">Details:</label>
+            {{ formgen.textarea(form.details) }}
+            {{ forms.errors(form.details) }}
+        </div>
+        <div>
+            <label for="url">URL:</label>
+            {{ formgen.input(form.url) }}
+            {{ forms.errors(form.url) }}
+        </div>
+        <button type="submit">Speichern</button>
+    </form>
+{% endblock %}

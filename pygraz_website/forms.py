@@ -1,5 +1,5 @@
 import flatland
-from flatland.validation import Present, Validator, IsEmail, Converted
+from flatland.validation import Present, Validator, IsEmail, Converted, LengthBetween
 from flatland.validation.base import N_
 from flatland.out.markup import Generator
 import pytz
@@ -108,4 +108,9 @@ class RegisterForm(flatland.Form):
 
 class EditProfileForm(RegisterForm):
     pass
+
+class SessionIdeaForm(flatland.Form):
+    summary = flatland.String.using(validators=[LengthBetween(1, 255)])
+    details = flatland.String.using(optional=False)
+    url = flatland.String.using(optional=True)
 

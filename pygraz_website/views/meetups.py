@@ -1,11 +1,26 @@
-from flask import Module, render_template, request, redirect, url_for, current_app
-import datetime
+# -*- encoding: utf-8 -*-
+from flask import Module, render_template, request, redirect, url_for, current_app, g, flash
+import datetime, collections
+from sqlalchemy.orm import joinedload
 
 from pygraz_website import forms, decorators, utils, filters, db, models
 
 
 module = Module(__name__, url_prefix='/meetups')
 
+def _get_meetup(date):
+    real_date = datetime.datetime.strptime(date, "%Y-%m-%d").replace(tzinfo=current_app.config['local_timezone'])
+    meetup = models.Meetup.query_by_date(real_date).first()
+    if meetup is None:
+        abort(404)
+    return meetup
+
+def _get_idea(id_, meetup):
+    idea = db.session.query(models.Sessionidea).filter(models.Sessionidea.id==id_)\
+            .filter(models.Sessionidea.meetup==meetup).first()
+    if idea is None:
+        abort(404)
+    return idea
 
 @module.route('/')
 def meetups():
@@ -15,10 +30,127 @@ def meetups():
 
 @module.route('/<date>')
 def meetup(date):
-    real_date = datetime.datetime.strptime(date, "%Y-%m-%d").replace(tzinfo=current_app.config['local_timezone'])
-    meetup = models.Meetup.query_by_date(real_date).first()
+    meetup = _get_meetup(date)
+    user_upvotes = []
+    user_downvotes = []
+    ideas = meetup.sessionideas
+    idea_ids = [idea.id for idea in ideas]
+    vote_results = collections.defaultdict(int)
+    for vote in db.session.query(models.SessionideaVote)\
+            .filter(models.SessionideaVote.sessionidea_id.in_(idea_ids)):
+        vote_results[vote.sessionidea_id] += vote.value
+    if g.user:
+        for vote in db.session.query(models.SessionideaVote)\
+                .options(joinedload('sessionIdea'))\
+                .filter(models.SessionideaVote.user==g.user)\
+                .filter(models.SessionideaVote.sessionidea_id.in_(idea_ids)):
+            if vote.value > 0:
+                user_upvotes.append(vote.sessionIdea.id)
+            else:
+                user_downvotes.append(vote.sessionIdea.id)
+    print vote_results
     return render_template('meetup.html',
-            meetup = meetup)
+            meetup = meetup, ideas=ideas,
+            vote_results=vote_results,
+            user_upvotes=user_upvotes,
+            user_downvotes=user_downvotes)
+
+@module.route('/<date>/sessionideas/add', methods=['GET', 'POST'])
+@decorators.login_required
+def add_sessionidea(date):
+    meetup = _get_meetup(date)
+    if request.method == 'POST':
+        form = forms.SessionIdeaForm.from_flat(request.form)
+        if form.validate():
+            idea = models.Sessionidea()
+            idea.author = g.user
+            idea.summary = form['summary'].value
+            idea.details = form['details'].value
+            idea.url = form['url'].value
+            idea.meetup = meetup
+            db.session.add(idea)
+            db.session.commit()
+            return redirect(url_for('meetup', date=filters.datecode(meetup.start)))
+        else:
+            print form
+    form = forms.SessionIdeaForm()
+    return render_template('meetups/add_idea.html', 
+            meetup=meetup, form=form)
+
+@module.route('/<date>/sessionideas/<id>/delete', methods=['GET', 'POST'])
+@decorators.login_required
+def delete_sessionidea(date, id):
+    meetup = _get_meetup(date)
+    idea = _get_idea(id, meetup)
+    if request.method == 'GET':
+        return render_template('meetups/confirm_delete_idea.html',
+                idea=idea, meetup=meetup)
+    db.session.delete(idea)
+    db.session.commit()
+    return redirect(url_for('meetup', date=filters.datecode(meetup.start)))
+
+@module.route('/<date>/sessionideas/<id>/edit', methods=['GET', 'POST'])
+@decorators.login_required
+def edit_sessionidea(date, id):
+    meetup = _get_meetup(date)
+    idea = _get_idea(id, meetup)
+    if g.user != idea.author:
+        return abort(404)
+    if request.method == 'POST':
+        form = forms.SessionIdeaForm.from_flat(request.form)
+        if form.validate():
+            idea.summary = form['summary'].value
+            idea.details = form['details'].value
+            idea.url = form['url'].value
+            db.session.add(idea)
+            db.session.commit()
+            return redirect(url_for('meetup', date=filters.datecode(meetup.start)))
+    form = forms.SessionIdeaForm.from_object(idea)
+    return render_template('meetups/edit_idea.html',
+            meetup=meetup, idea=idea, form=form)
+
+def do_vote(date, id, value):
+    meetup = _get_meetup(date)
+    idea = _get_idea(id, meetup)
+    voted_users = [vote.user for vote in idea.votes.all()]
+    if g.user not in voted_users:
+        vote = models.SessionideaVote()
+        vote.user=g.user
+        vote.sessionidea_id=idea.id
+        vote.value=1
+    else:
+        vote = db.session.query(models.SessionideaVote)\
+                .filter(models.SessionideaVote.user==g.user)\
+                .filter(models.SessionideaVote.sessionIdea==idea).first()
+        vote.value = value
+    db.session.add(vote)
+    db.session.commit()
+    flash(u"Gewählt")
+    return redirect(url_for('meetup', date=filters.datecode(meetup.start)))
+
+@module.route('/<date>/sessionideas/<id>/up')
+@decorators.login_required
+def vote_up_sessionidea(date, id):
+    return do_vote(date, id, 1)
+
+@module.route('/<date>/sessionideas/<id>/down')
+@decorators.login_required
+def vote_down_sessionidea(date, id):
+    return do_vote(date, id, -1)
+
+@module.route('/<date>/sessionideas/<id>/unvote')
+@decorators.login_required
+def unvote_sessionidea(date, id):
+    meetup = _get_meetup(date)
+    idea = _get_idea(id, meetup)
+    vote = db.session.query(models.SessionideaVote)\
+            .filter(models.SessionideaVote.user==g.user)\
+            .filter(models.SessionideaVote.sessionIdea==idea).first()
+    if vote is not None:
+        db.session.delete(vote)
+        db.session.commit()
+        flash("Wahl entfernt")
+    return redirect(url_for('meetup', date=filters.datecode(meetup.start)))
 
 @module.route('/<date>/edit', methods=['GET', 'POST'])
 @decorators.admin_required
@@ -81,3 +213,4 @@ def meetup_archive():
     return render_template('meetups/archive.html',
             meetups=db.session.query(models.Meetup).filter(models.Meetup.end < datetime.datetime.utcnow())
             )
+

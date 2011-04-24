@@ -27,6 +27,24 @@ class Meetup(db.Model):
         end = utc_date + datetime.timedelta(days=1)
         return db.session.query(cls).filter(cls.start.between(start, end))
 
+class Sessionidea(db.Model):
+    id = db.Column(db.Integer, db.Sequence('sessionidea_id_seq'), primary_key=True)
+    summary = db.Column(db.String(255))
+    details = db.Column(db.Text)
+    url = db.Column(db.String(1024), nullable=True)
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    author = db.relationship('User', backref=db.backref('sessionideas', lazy='dynamic'))
+    meetup_id = db.Column(db.Integer, db.ForeignKey('meetup.id'))
+    meetup = db.relationship('Meetup', backref=db.backref('sessionideas', lazy='dynamic'))
+
+class SessionideaVote(db.Model):
+    id = db.Column(db.Integer, db.Sequence('sessionideavote_id_seq'), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    sessionidea_id = db.Column(db.Integer, db.ForeignKey('sessionidea.id'))
+    user = db.relationship('User', backref=db.backref('sessionideasVotes', lazy='dynamic'))
+    sessionIdea = db.relationship('Sessionidea', backref=db.backref('votes', lazy='dynamic'))
+    value = db.Column(db.Integer)
+
 class Tweet(db.Model):
     id = db.Column(db.Integer, db.Sequence('meetup_id_seq'), primary_key=True)
     text = db.Column(db.Text)

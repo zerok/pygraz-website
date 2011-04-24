@@ -10,6 +10,48 @@
     {% if is_admin %}
         <a href="{{ url_for('edit_meetup', date=meetup.start|datecode) }}" class="edit">Seite ändern</a>
     {% endif %}
+    <section id="ideas">
+        <h1>Themenvorschläge</h1>
+        {% if ideas %}
+        <ul>
+            {% for idea in ideas %}
+            <li><p class="summary">
+                    {% if idea.url %}
+                    <a href="{{ idea.url }}" rel="nofollow">{{ idea.summary }}</a>
+                    {% else %}
+                    {{ idea.summary }}
+                    {% endif %} ({{ vote_results[idea.id] }})
+                <p>
+                {% if idea.details %}
+                <div class="details">{{ idea.details|rst|safe }}</div>
+                {% endif %}
+                {% if is_logged_in %}
+                    {% if idea.id in user_upvotes %}
+                    <a href="{{ url_for('meetups.unvote_sessionidea', date=meetup.start|datecode, id=idea.id) }}" class="unvote">+1</a>
+                    {% else %}
+                    <a href="{{ url_for('meetups.vote_up_sessionidea', date=meetup.start|datecode, id=idea.id) }}">+1</a>
+                    {% endif %}
+
+
+                    {% if idea.id in user_downvotes %}
+                    <a href="{{ url_for('meetups.unvote_sessionidea', date=meetup.start|datecode, id=idea.id) }}" class="unvote">-1</a>
+                    {% else %}
+                    <a href="{{ url_for('meetups.vote_down_sessionidea', date=meetup.start|datecode, id=idea.id) }}">-1</a>
+                    {% endif %}
+                {% endif %}
+                {% if idea.user == g.user or is_admin %}
+                <a href="{{ url_for('meetups.edit_sessionidea', date=meetup.start|datecode, id=idea.id) }}">Editieren</a>
+                <a href="{{ url_for('meetups.delete_sessionidea', date=meetup.start|datecode, id=idea.id) }}">Löschen</a>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>Es hat leider noch keine Themenvorschläge für dieses Meetup eingetragen.</p>
+        {% endif %}
+    {% if is_logged_in %}
+    <a class="add-idea" href="{{ url_for('meetups.meetup', date=meetup.start|datecode) }}/sessionideas/add">Neuen Themenvorschlag hinzufügen</a>
+    {% endif %}
 {% endblock %}
 {% block sidebar %}
 {{ super() }}
