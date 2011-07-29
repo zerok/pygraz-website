@@ -167,28 +167,63 @@ form {
     div {
         width: 100%;
         overflow: hidden;
+        margin-bottom: 10px;
+        border-top: 1px dashed #CCC;
+        padding-top: 10px;
+        &:first-child {
+            border-top: none;
+            padding-top: 0;
+        }
     }
     label {
         float: left;
-        width: 25%;
+        text-align: left;
+        width: 27%;
+        line-height: 20px;
+        font-weight: bold;
+        font-size: 12px;
     }
-    input, textarea {
+    input[type=text], input[type=url], input[type=password], input[type=email], textarea {
         float: right;
         width: 70%;
+        line-height: 18px;
+        border: 1px solid #BBB;
+        background: #F3F3F3;
+        padding: 0 2px;
+        &:focus {
+            background: #FFF;
+        }
     }
-    .info {
+    #main & div p.info {
         font-size: 80%;
         color: #999;
         float: right;
         width: 70%;
+        padding: 0;
+        margin: 0;
     }
-    .errors {
-        width: 70%;
+    #main & ul.errors {
+        clear: both;
+        width: 100%;
         float: right;
-        color: red;
+        list-style: none;
+        padding: 0;
+        font-size: 85%;
+        margin: 3px 0;
+        li {
+            list-style: none;
+            padding: 3px 5px;
+            background: $red;
+            border: 1px solid darken($red, 10);
+            color: darken($red, 40);
+        }
     }
     textarea {
         height: 300px;
+    }
+    .buttons {
+        margin-top: 10px;
+        text-align: right;
     }
 }
 

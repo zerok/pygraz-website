@@ -4,7 +4,7 @@
     <form method="POST">
         <div>
             <label for="summary">Kurzbeschreibung:</label>
-            {{ formgen.input(form.summary) }}
+            {{ formgen.input(form.summary, type="text") }}
             {{ forms.errors(form.summary) }}
         </div>
         <div>
@@ -14,9 +14,11 @@
         </div>
         <div>
             <label for="url">URL:</label>
-            {{ formgen.input(form.url) }}
+            {{ formgen.input(form.url, type="text") }}
             {{ forms.errors(form.url) }}
         </div>
-        <button type="submit">Speichern</button>
+        <div class="buttons">
+            <button type="submit">Speichern</button>
+        </div>
     </form>
 {% endblock %}

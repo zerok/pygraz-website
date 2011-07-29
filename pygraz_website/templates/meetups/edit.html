@@ -9,38 +9,40 @@
 <form method="POST">
     <div>
         <label for="start">Beginn:</label>
-        {{ formgen.input(form.start) }}
+        {{ formgen.input(form.start, type="text") }}
         {{ forms.errors(form.start) }}
         <p class="info">Format: yyyy-MM-dd hh:mm:ss</p>
     </div>
     <div>
         <label for="end">Geplantes Ende:</label>
-        {{ formgen.input(form.end) }}
+        {{ formgen.input(form.end, type="text") }}
         {{ forms.errors(form.end) }}
         <p class="info">Format: yyyy-MM-dd hh:mm:ss</p>
     </div>
     <div>
         <label for="end">Ort:</label>
-        {{ formgen.input(form.location) }}
+        {{ formgen.input(form.location, type="text") }}
         {{ forms.errors(form.location) }}
         <p class="info">z.B. der Name eines Restaurants</p>
     </div>
     <div>
         <label for="end">Adresse:</label>
-        {{ formgen.input(form.address) }}
+        {{ formgen.input(form.address, type="text") }}
         {{ forms.errors(form.address) }}
         <p class="info">... mit der auch Google Maps etwas anfangen kann.</p>
     </div>
     <div>
         <label for="notes">Notizen:</label>
-        {{ formgen.textarea(form.notes) }}
+        {{ formgen.textarea(form.notes, type="text") }}
         {{ forms.errors(form.notes) }}
         <p class="info">Was ist geplant, was ist passiert. Format: Restructured Text</p>
     </div>
-    <button type="submit">Speichern</button>
-    <button type="submit" name="preview">Vorschau</button>
-    {% if meetup %}
-    <a href="{{ url_for('.cancel_edit_meetup', date=meetup.start|datecode) }}">Abbrechen</a>
-    {% endif %}
+    <div class="buttons">
+        <button type="submit">Speichern</button>
+        <button type="submit" name="preview">Vorschau</button>
+        {% if meetup %}
+        <a href="{{ url_for('.cancel_edit_meetup', date=meetup.start|datecode) }}">Abbrechen</a>
+        {% endif %}
+    </div>
 </form>
 {% endblock %}

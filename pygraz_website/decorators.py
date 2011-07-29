@@ -20,8 +20,8 @@ def admin_required(func):
     """
     @functools.wraps(func)
     def _func(*args, **kwargs):
-        if not hasattr(g, 'user'):
-            return redirect(url_for('login', next=request.path))
+        if not hasattr(g, 'user') or g.user is None:
+            return redirect(url_for('account.login', next=request.path))
         if not g.user.is_admin:
             return abort(403)
         return func(*args, **kwargs)
