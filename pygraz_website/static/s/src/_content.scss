@@ -1,7 +1,7 @@
 @import "common";
 @import "colors";
 
-.content, #body {
+.content, #body, #sidebar .info {
     h1 {
         font-size: 225%;
         color: $h1-fg;
