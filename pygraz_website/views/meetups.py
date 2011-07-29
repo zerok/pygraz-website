@@ -1,12 +1,12 @@
 # -*- encoding: utf-8 -*-
-from flask import Module, render_template, request, redirect, url_for, current_app, g, flash
+from flask import Blueprint, render_template, request, redirect, url_for, current_app, g, flash
 import datetime, collections
 from sqlalchemy.orm import joinedload
 
 from pygraz_website import forms, decorators, utils, filters, db, models
 
 
-module = Module(__name__, url_prefix='/meetups')
+module = Blueprint('meetups', __name__)
 
 def _get_meetup(date):
     real_date = datetime.datetime.strptime(date, "%Y-%m-%d").replace(tzinfo=current_app.config['local_timezone'])
@@ -70,7 +70,7 @@ def add_sessionidea(date):
             idea.meetup = meetup
             db.session.add(idea)
             db.session.commit()
-            return redirect(url_for('meetup', date=filters.datecode(meetup.start)))
+            return redirect(url_for('.meetup', date=filters.datecode(meetup.start)))
         else:
             print form
     form = forms.SessionIdeaForm()
@@ -87,7 +87,7 @@ def delete_sessionidea(date, id):
                 idea=idea, meetup=meetup)
     db.session.delete(idea)
     db.session.commit()
-    return redirect(url_for('meetup', date=filters.datecode(meetup.start)))
+    return redirect(url_for('.meetup', date=filters.datecode(meetup.start)))
 
 @module.route('/<date>/sessionideas/<id>/edit', methods=['GET', 'POST'])
 @decorators.login_required
@@ -104,7 +104,7 @@ def edit_sessionidea(date, id):
             idea.url = form['url'].value
             db.session.add(idea)
             db.session.commit()
-            return redirect(url_for('meetup', date=filters.datecode(meetup.start)))
+            return redirect(url_for('.meetup', date=filters.datecode(meetup.start)))
     form = forms.SessionIdeaForm.from_object(idea)
     return render_template('meetups/edit_idea.html',
             meetup=meetup, idea=idea, form=form)
@@ -126,7 +126,7 @@ def do_vote(date, id, value):
     db.session.add(vote)
     db.session.commit()
     flash(u"Gewählt")
-    return redirect(url_for('meetup', date=filters.datecode(meetup.start)))
+    return redirect(url_for('.meetup', date=filters.datecode(meetup.start)))
 
 @module.route('/<date>/sessionideas/<id>/up')
 @decorators.login_required
@@ -150,7 +150,7 @@ def unvote_sessionidea(date, id):
         db.session.delete(vote)
         db.session.commit()
         flash("Wahl entfernt")
-    return redirect(url_for('meetup', date=filters.datecode(meetup.start)))
+    return redirect(url_for('.meetup', date=filters.datecode(meetup.start)))
 
 @module.route('/<date>/edit', methods=['GET', 'POST'])
 @decorators.admin_required
@@ -170,7 +170,7 @@ def edit_meetup(date):
                     db.session.add(meetup)
                     db.session.commit()
                     lock.unlock()
-                    return redirect(url_for('meetup',
+                    return redirect(url_for('.meetup',
                         date=filters.datecode(meetup.start)))
         else:
             form = forms.MeetupForm.from_object(meetup)
@@ -186,7 +186,7 @@ def cancel_edit_meetup(date):
     meetup = models.Meetup.query_by_date(real_date)
     with utils.DocumentLock(meetup) as lock:
         lock.unlock()
-    return redirect(url_for('meetup', date=date))
+    return redirect(url_for('.meetup', date=date))
 
 @module.route('/create', methods=['GET','POST'])
 @decorators.admin_required
@@ -200,7 +200,7 @@ def create_meetup():
                         address=form['address'].value, notes=form['notes'].value)
                 db.session.add(meetup)
                 db.session.commit()
-                return redirect(url_for('meetup',
+                return redirect(url_for('.meetup',
                     date=filters.datecode(form['start'].value)))
     else:
         form = forms.MeetupForm()

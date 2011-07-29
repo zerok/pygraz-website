@@ -1,6 +1,6 @@
-Flask
+Flask<0.8
 docutils
-git+git://github.com/mitsuhiko/flask-babel.git#egg=Flask-Babel@rev77b4ef43794f54255d94b18edebfb2344fa6bdff
+git+https://github.com/mitsuhiko/flask-babel.git@77b4ef43794f54255d94b18edebfb2344fa6bdff#egg=Flask-Babel
 Flask-OpenID
 Flask-Redis
 flatland

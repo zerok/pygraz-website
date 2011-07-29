@@ -55,9 +55,10 @@ def create_app(envar="FLASK_SETTINGS"):
     from .views.admin import module as admin_module
     from .views.core import module as core_module
     from .views.meetups import module as meetups_module
-    for k, v in locals().items():
-        if k.endswith('_module'):
-            app.register_module(v)
+    app.register_blueprint(core_module, url_prefix='')
+    app.register_blueprint(account_module, url_prefix='/account')
+    app.register_blueprint(admin_module, url_prefix='/admin')
+    app.register_blueprint(meetups_module, url_prefix='/meetups')
 
     #Register context and request processors
     app.context_processor(context_processors.add_form_generator)

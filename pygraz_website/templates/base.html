@@ -23,7 +23,7 @@
     <body class="{% block bodyclass %}{% endblock %}">
         <div id="page">
             <header>
-                <a href="/" id="logo"><img src="{{ url_for(".static", filename="s/logo.png")}}" alt="pyGRAZ" /></a>
+                <a href="/" id="logo"><img src="/static/s/logo.png" alt="pyGRAZ" /></a>
                 <nav id="accountnav">
                     <ul>
                         {% if not g.user %}

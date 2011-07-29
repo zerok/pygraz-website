@@ -2,14 +2,14 @@
 Basic account handling. Most of the openid methods are adapted from the
 Flask-OpenID documentation.
 """
-from flask import Module, session, redirect, abort, render_template, request,\
+from flask import Blueprint, session, redirect, abort, render_template, request,\
         flash, g, url_for
 import pygraz_website as site
 
 from pygraz_website import forms, decorators, models, db
 
 
-module = Module(__name__, url_prefix='/account')
+module = Blueprint('account', __name__)
 
 @module.route('/register', methods=['POST', 'GET'])
 def register():
@@ -55,7 +55,7 @@ def login_or_register(response):
     session['openid'] = response.identity_url
     user = db.session.query(models.User).join(models.OpenID).filter(models.OpenID.id==session['openid']).first()
     if user is None:
-        return redirect(url_for('register',
+        return redirect(url_for('.register',
                 name=response.fullname,
                 email=response.email, next=site.oid.get_next_url()))
     else:
@@ -78,7 +78,7 @@ def edit_profile():
             db.session.add(g.user)
             db.session.commit()
             flash("Benutzerdaten gespeichert")
-            return redirect(url_for('edit_profile'))
+            return redirect(url_for('.edit_profile'))
     else:
         form = forms.EditProfileForm.from_object(g.user)
     return render_template('account/edit_profile.html', form=form)

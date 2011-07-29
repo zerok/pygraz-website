@@ -1,11 +1,11 @@
-from flask import Module, request, redirect, abort, render_template,\
+from flask import Blueprint, request, redirect, abort, render_template,\
         current_app, url_for
 
 import pygraz_website as site
 from pygraz_website import decorators, models, db, utils
 
 
-module = Module(__name__, url_prefix='')
+module = Blueprint('core', __name__)
 
 @module.route('/')
 def index():

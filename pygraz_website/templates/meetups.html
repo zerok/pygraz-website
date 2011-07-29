@@ -21,7 +21,7 @@
     <tbody>
         {% for meetup in meetups %}
         <tr>
-            <td class="date"><a href="{{ url_for('meetup', date=meetup.start|datecode) }}">{{ meetup.start|date }}</a></td>
+            <td class="date"><a href="{{ url_for('.meetup', date=meetup.start|datecode) }}">{{ meetup.start|date }}</a></td>
             <td class="start">{{ meetup.start|time}}</td>
             <td class="location">{{ meetup.location }}</td>
         </tr>
@@ -29,6 +29,6 @@
     </tbody>
 </table>
 {% if is_admin %}
-<a href="{{ url_for('create_meetup') }}">Neues Treffen anlegen</a>
+<a href="{{ url_for('.create_meetup') }}">Neues Treffen anlegen</a>
 {% endif %}
 {% endblock %}

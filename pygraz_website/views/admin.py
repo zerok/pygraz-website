@@ -1,11 +1,11 @@
 from collections import defaultdict
-from flask import Module, render_template, g
+from flask import Blueprint, render_template, g
 
 import pygraz_website as site
 from pygraz_website import models
 
 
-module = Module(__name__, url_prefix='/admin')
+module = Blueprint('admin', __name__)
 
 @module.route('/')
 def index():

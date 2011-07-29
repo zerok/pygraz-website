@@ -40,7 +40,7 @@
     <button type="submit">Speichern</button>
     <button type="submit" name="preview">Vorschau</button>
     {% if meetup %}
-    <a href="{{ url_for('cancel_edit_meetup', date=meetup.start|datecode) }}">Abbrechen</a>
+    <a href="{{ url_for('.cancel_edit_meetup', date=meetup.start|datecode) }}">Abbrechen</a>
     {% endif %}
 </form>
 {% endblock %}
