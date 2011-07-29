@@ -11,7 +11,7 @@
 <form method="post" style="float:right; width: 48%">
     <div>
         <label>OpenID:</label>
-        {{ formgen.input(form.openid, type="url") }}
+        {{ formgen.input(form.openid, type="url", autofocus="autofocus") }}
         {{ forms.errors(form.openid) }}
     </div>
     <div class="buttons">

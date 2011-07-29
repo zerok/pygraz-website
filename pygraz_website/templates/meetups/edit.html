@@ -9,7 +9,7 @@
 <form method="POST">
     <div>
         <label for="start">Beginn:</label>
-        {{ formgen.input(form.start, type="text") }}
+        {{ formgen.input(form.start, type="text", autofocus="autofocus") }}
         {{ forms.errors(form.start) }}
         <p class="info">Format: yyyy-MM-dd hh:mm:ss</p>
     </div>

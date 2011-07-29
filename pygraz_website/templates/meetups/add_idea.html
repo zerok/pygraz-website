@@ -4,7 +4,7 @@
     <form method="POST">
         <div>
             <label for="summary">Kurzbeschreibung:</label>
-            {{ formgen.input(form.summary, type="text") }}
+            {{ formgen.input(form.summary, type="text", autofocus="autofocus") }}
             {{ forms.errors(form.summary) }}
         </div>
         <div>

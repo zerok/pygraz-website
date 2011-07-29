@@ -4,7 +4,7 @@
 <form method="post">
     <div>
         <label>Name:</label>
-        {{ formgen.input(form.username, type="text") }}
+        {{ formgen.input(form.username, type="text", autofocus="autofocus") }}
         {{ forms.errors(form.username) }}
     </div>
     <div>

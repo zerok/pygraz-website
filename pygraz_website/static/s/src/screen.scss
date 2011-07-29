@@ -179,20 +179,23 @@ form {
         float: left;
         text-align: left;
         width: 27%;
-        line-height: 20px;
+        line-height: 27px;
         font-weight: bold;
         font-size: 12px;
     }
     input[type=text], input[type=url], input[type=password], input[type=email], textarea {
         float: right;
         width: 70%;
-        line-height: 18px;
+        line-height: 25px;
         border: 1px solid #BBB;
         background: #F3F3F3;
         padding: 0 2px;
         &:focus {
             background: #FFF;
         }
+    }
+    textarea {
+        line-height: 18px;
     }
     #main & div p.info {
         font-size: 80%;
