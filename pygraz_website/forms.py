@@ -110,7 +110,7 @@ class EditProfileForm(RegisterForm):
     pass
 
 class SessionIdeaForm(flatland.Form):
-    summary = flatland.String.using(validators=[LengthBetween(1, 255)])
-    details = flatland.String.using(optional=False)
+    summary = flatland.String.using(validators=[Present(), LengthBetween(1, 255)])
+    details = flatland.String.using(validators=[Present()])
     url = flatland.String.using(optional=True)
 

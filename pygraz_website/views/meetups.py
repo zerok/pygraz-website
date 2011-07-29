@@ -48,7 +48,6 @@ def meetup(date):
                 user_upvotes.append(vote.sessionIdea.id)
             else:
                 user_downvotes.append(vote.sessionIdea.id)
-    print vote_results
     return render_template('meetup.html',
             meetup = meetup, ideas=ideas,
             vote_results=vote_results,
@@ -71,9 +70,8 @@ def add_sessionidea(date):
             db.session.add(idea)
             db.session.commit()
             return redirect(url_for('.meetup', date=filters.datecode(meetup.start)))
-        else:
-            print form
-    form = forms.SessionIdeaForm()
+    else:
+        form = forms.SessionIdeaForm()
     return render_template('meetups/add_idea.html', 
             meetup=meetup, form=form)
 
@@ -105,7 +103,8 @@ def edit_sessionidea(date, id):
             db.session.add(idea)
             db.session.commit()
             return redirect(url_for('.meetup', date=filters.datecode(meetup.start)))
-    form = forms.SessionIdeaForm.from_object(idea)
+    else:
+        form = forms.SessionIdeaForm.from_object(idea)
     return render_template('meetups/edit_idea.html',
             meetup=meetup, idea=idea, form=form)
 
