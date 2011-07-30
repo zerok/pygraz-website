@@ -98,10 +98,18 @@ a:hover {
 #body {
     @include column(16);
     @include append(1);
+    .nosidebar & {
+        width: 100%;
+        margin: auto;
+        padding: 0;
+    }
 }
 #sidebar {
     @include column(7);
     @include last;
+    .nosidebar & {
+        display: none;
+    }
     .block {
         margin-bottom: 2em;
         color: $sidebar-block-fg;
@@ -266,4 +274,16 @@ form {
 
 #ideas {
     margin-top: 2em;
+}
+
+.loginpage {
+    #body {
+        #info {
+            @include column(12, true);
+        }
+        form {
+            @include column(11);
+            @include append(1);
+        }
+    }
 }
