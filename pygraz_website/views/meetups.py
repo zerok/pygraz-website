@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 from flask import Blueprint, render_template, request, redirect, url_for, current_app, g, flash
+from flaskext.babel import gettext as _
 import datetime, collections
 from sqlalchemy.orm import joinedload
 
@@ -58,6 +59,10 @@ def meetup(date):
 @decorators.login_required
 def add_sessionidea(date):
     meetup = _get_meetup(date)
+    now = datetime.datetime.utcnow()
+    if now > meetup.start:
+       flash(_('Session ideas can only be added to future meetups'))
+       return redirect(url_for('.meetup', date=date))
     if request.method == 'POST':
         form = forms.SessionIdeaForm.from_flat(request.form)
         if form.validate():

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2011-07-30 16:01+0200\n"
+"POT-Creation-Date: 2011-07-31 00:51+0200\n"
 "PO-Revision-Date: 2011-07-30 15:41+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: de <LL@li.org>\n"
@@ -68,4 +68,8 @@ msgstr "Die Kurzbeschreibung deiner Idee muss zwischen 1 und 255 Zeichen lang se
 #: pygraz_website/forms.py:122
 msgid "Please describe your idea"
 msgstr "Bitte beschreibe deine Idee"
+
+#: pygraz_website/views/meetups.py:64
+msgid "Session ideas can only be added to future meetups"
+msgstr "Themenvorschläge können nur für zukünftige Treffen angelegt werden"
 
