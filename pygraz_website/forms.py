@@ -1,13 +1,10 @@
+#-*- encoding: utf-8 -*-
 import flatland
 from flatland.validation import Present, Validator, IsEmail, Converted, LengthBetween
-from flatland.validation.base import N_
-from flatland.out.markup import Generator
 import pytz
-import __builtin__
 from flask import current_app, g
+from flaskext.babel import lazy_gettext as _
 
-from pygraz_website import filters
-import pygraz_website as site
 from pygraz_website import models
 
 
@@ -29,9 +26,9 @@ class LocalDateTime(flatland.DateTime):
 class DateAfterOther(Validator):
     fail = "%(label)s has to be after %(othervalue)s"
 
-    def __init__(self, othername):
+    def __init__(self, othername, *args, **kwargs):
         self.othername = othername
-        Validator.__init__(self)
+        Validator.__init__(self, *args, **kwargs)
 
     def validate(self, element, state):
         other = element.parent.el(self.othername)
@@ -43,7 +40,7 @@ class DateAfterOther(Validator):
         return True
 
 class UniqueMeetupStartDate(Validator):
-    fail = "Am selben Tag findet schon ein Treffen statt."
+    fail = _('There already is a meetup on this day')
 
     def validate(self, element, state):
         if element.value is None:
@@ -73,44 +70,56 @@ class UniqueUserField(Validator):
         return True
 
 class UniqueUsername(UniqueUserField):
-    fail = "Dieser Benutzername wird schon von jemand anderem verwendet."
+    fail = _('This username is already taken')
 
     def find_users(self, element):
         return models.User.query.filter(models.User.username==element.u.rstrip().lstrip())
 
 class UniqueEmail(UniqueUserField):
-    fail = "Diese E-Mail-Adresse wird bereits von jemand anderem verwendet."
+    fail = _('This email address is already taken')
 
     def find_users(self, element):
         return models.User.query.filter(models.User.email==element.u.rstrip().lstrip())
 
 class MeetupForm(flatland.Form):
     start = LocalDateTime.using(name="start", validators=[
-        Present(), Converted(), UniqueMeetupStartDate()])
+            Present(missing=_('Please provide a start datetime')), 
+            Converted(), 
+            UniqueMeetupStartDate()])
     end = LocalDateTime.using(name="end", validators=[
-        Present(), Converted(), DateAfterOther('start')])
+            Present(missing=_('Please provide an end datetime')), 
+            Converted(), 
+            DateAfterOther('start', fail=_('The end has to come after the start'))])
     notes = flatland.String.using(optional=True)
     location = flatland.String.using(optional=True)
     address = flatland.String.using(optional=True)
 
 class LoginForm(flatland.Form):
     openid = flatland.String.using(name='openid', validators=[
-        Present()
+            Present(missing=_('Please provide an OpenID in order to login'))
         ])
 
 class RegisterForm(flatland.Form):
     username = flatland.String.using(name="username", validators=[
-        Present(), UniqueUsername()
+            Present(missing=_('Please provide a username')),
+            UniqueUsername()
         ])
     email = flatland.String.using(name="email", validators=[
-        Present(), IsEmail(), UniqueEmail()
+            Present(missing=_('Please provide an email address')), 
+            IsEmail(invalid=_('Please provide a valid email address')),
+            UniqueEmail()
         ])
 
 class EditProfileForm(RegisterForm):
     pass
 
 class SessionIdeaForm(flatland.Form):
-    summary = flatland.String.using(validators=[Present(), LengthBetween(1, 255)])
-    details = flatland.String.using(validators=[Present()])
+    summary = flatland.String.using(validators=[
+            Present(missing=_('Please give your idea a summary')), 
+            LengthBetween(1, 255, breached=_('The summary of your idea has to be between 1 and 255 chars long'))
+        ])
+    details = flatland.String.using(validators=[
+            Present(missing=_('Please describe your idea'))
+        ])
     url = flatland.String.using(optional=True)
 
