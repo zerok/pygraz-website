@@ -93,7 +93,7 @@ def edit_sessionidea(date, id):
     meetup = _get_meetup(date)
     idea = _get_idea(id, meetup)
     if g.user != idea.author:
-        return abort(404)
+        abort(404)
     if request.method == 'POST':
         form = forms.SessionIdeaForm.from_flat(request.form)
         if form.validate():
@@ -177,6 +177,23 @@ def edit_meetup(date):
                 meetup=meetup,
                 preview='preview' in request.form,
                 form=form)
+
+@module.route('/<date>/delete', methods=['GET', 'POST'])
+@decorators.admin_required
+def delete_meetup(date):
+    real_date = datetime.datetime.strptime(date, "%Y-%m-%d").replace(tzinfo=current_app.config['local_timezone'])
+    meetup = models.Meetup.query_by_date(real_date).first()
+    if meetup is None:
+        abort(404)
+    if request.method == 'POST':
+        with utils.DocumentLock(meetup) as lock:
+            db.session.delete(meetup)
+            db.session.commit()
+            lock.unlock()
+        return redirect(url_for('.meetups'))
+    else:
+        return render_template('meetups/confirm_delete_meetup.html', meetup=meetup)
+
 
 @module.route('/<date>/cancel_edit', methods=['GET', 'POST'])
 @decorators.admin_required

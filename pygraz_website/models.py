@@ -33,16 +33,16 @@ class Sessionidea(db.Model):
     details = db.Column(db.Text)
     url = db.Column(db.String(1024), nullable=True)
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    author = db.relationship('User', backref=db.backref('sessionideas', lazy='dynamic'))
+    author = db.relationship('User', backref=db.backref('sessionideas', lazy='dynamic', cascade='delete'))
     meetup_id = db.Column(db.Integer, db.ForeignKey('meetup.id'))
-    meetup = db.relationship('Meetup', backref=db.backref('sessionideas', lazy='dynamic'))
+    meetup = db.relationship('Meetup', backref=db.backref('sessionideas', lazy='dynamic', cascade='delete'))
 
 class SessionideaVote(db.Model):
     id = db.Column(db.Integer, db.Sequence('sessionideavote_id_seq'), primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     sessionidea_id = db.Column(db.Integer, db.ForeignKey('sessionidea.id'))
     user = db.relationship('User', backref=db.backref('sessionideasVotes', lazy='dynamic'))
-    sessionIdea = db.relationship('Sessionidea', backref=db.backref('votes', lazy='dynamic'))
+    sessionIdea = db.relationship('Sessionidea', backref=db.backref('votes', lazy='dynamic', cascade='delete'))
     value = db.Column(db.Integer)
 
 class Tweet(db.Model):
@@ -80,5 +80,5 @@ class User(db.Model):
 class OpenID(db.Model):
     id = db.Column(db.String, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    user = db.relationship('User', backref=db.backref('openids', lazy='dynamic'))
+    user = db.relationship('User', backref=db.backref('openids', lazy='dynamic', cascade='delete'))
 
