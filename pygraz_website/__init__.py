@@ -17,9 +17,12 @@ compass = Compass()
 oid = OpenID()
 babel = Babel()
 
-def create_app(envar="FLASK_SETTINGS"):
+def create_app(envar="FLASK_SETTINGS", config_object=None):
     app = Flask(__name__)
-    app.config.from_envvar("FLASK_SETTINGS")
+    if config_object is None:
+        app.config.from_envvar("FLASK_SETTINGS")
+    else:
+        app.config.from_object(config_object)
     if 'local_timezone' not in app.config:
         app.config['local_timezone'] = pytz.timezone('Europe/Vienna')
     if 'type2module' not in app.config:

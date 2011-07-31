@@ -3,9 +3,9 @@ import pygraz_website
 from pygraz_website import models, db
 import tweepy
 from os.path import join, dirname, abspath
+import settings
 
-
-app = pygraz_website.create_app()
+app = pygraz_website.create_app(config_object=settings)
 
 
 manager = Manager(app)
