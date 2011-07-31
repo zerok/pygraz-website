@@ -33,4 +33,16 @@ def create_db():
 def runserver():
     app.run()
 
+@manager.option('--make-admin', dest='make_admin', action='store')
+@manager.command
+def update_user(openid, make_admin=None):
+    user = db.session.query(models.OpenID).filter(models.OpenID.id==openid).first().user
+    print user
+    if make_admin == '1':
+        user.is_admin = True
+    elif make_admin == '0':
+        user.is_admin = False
+    db.session.add(user)
+    db.session.commit()
+
 manager.run()
