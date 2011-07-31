@@ -36,5 +36,5 @@ def mkdate(v):
 
 def urlencode(v):
     if isinstance(v, basestring):
-        return urllib.urlencode((('v', v),)).lstrip('v=')
+        return urllib.urlencode((('v', unicode(v).encode('iso8859-15')),)).lstrip('v=')
     return urllib.urlencode(v)
