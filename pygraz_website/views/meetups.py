@@ -121,7 +121,7 @@ def do_vote(date, id, value):
         vote = models.SessionideaVote()
         vote.user=g.user
         vote.sessionidea_id=idea.id
-        vote.value=1
+        vote.value = value
     else:
         vote = db.session.query(models.SessionideaVote)\
                 .filter(models.SessionideaVote.user==g.user)\

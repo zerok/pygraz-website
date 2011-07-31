@@ -28,16 +28,16 @@
                 {% endif %}
                 {% if is_logged_in %}
                     {% if idea.id in user_upvotes %}
-                    <a href="{{ url_for('meetups.unvote_sessionidea', date=meetup.start|datecode, id=idea.id) }}" class="unvote">+1</a>
+                    <a href="{{ url_for('meetups.unvote_sessionidea', date=meetup.start|datecode, id=idea.id) }}" class="upvote unvote">+1</a>
                     {% else %}
-                    <a href="{{ url_for('meetups.vote_up_sessionidea', date=meetup.start|datecode, id=idea.id) }}">+1</a>
+                    <a href="{{ url_for('meetups.vote_up_sessionidea', date=meetup.start|datecode, id=idea.id) }}" class="upvote">+1</a>
                     {% endif %}
 
 
                     {% if idea.id in user_downvotes %}
-                    <a href="{{ url_for('meetups.unvote_sessionidea', date=meetup.start|datecode, id=idea.id) }}" class="unvote">-1</a>
+                    <a href="{{ url_for('meetups.unvote_sessionidea', date=meetup.start|datecode, id=idea.id) }}" class="downvote unvote">-1</a>
                     {% else %}
-                    <a href="{{ url_for('meetups.vote_down_sessionidea', date=meetup.start|datecode, id=idea.id) }}">-1</a>
+                    <a href="{{ url_for('meetups.vote_down_sessionidea', date=meetup.start|datecode, id=idea.id) }}" class="downvote">-1</a>
                     {% endif %}
                 {% endif %}
                 {% if idea.user == g.user or is_admin %}
