@@ -232,6 +232,6 @@ def create_meetup():
 @module.route('/archive/')
 def meetup_archive():
     return render_template('meetups/archive.html',
-            meetups=db.session.query(models.Meetup).filter(models.Meetup.end < datetime.datetime.utcnow())
+            meetups=db.session.query(models.Meetup).filter(models.Meetup.end < datetime.datetime.utcnow()).order_by(models.Meetup.start.desc())
             )
 
