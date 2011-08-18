@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-from flask import Blueprint, render_template, request, redirect, url_for, current_app, g, flash
+from flask import Blueprint, render_template, request, redirect, url_for, current_app, g, flash, abort
 from flaskext.babel import gettext as _
 import datetime, collections
 from sqlalchemy.orm import joinedload
@@ -10,6 +10,13 @@ from pygraz_website import forms, decorators, utils, filters, db, models
 module = Blueprint('meetups', __name__)
 
 def _get_meetup(date):
+    """
+    Returns the meetup with the given date. If no matching meetup could be found this raises
+    a 404 error page.
+
+    :param date: date string in %Y-%m%-d
+    :type date: string
+    """
     real_date = datetime.datetime.strptime(date, "%Y-%m-%d").replace(tzinfo=current_app.config['local_timezone'])
     meetup = models.Meetup.query_by_date(real_date).first()
     if meetup is None:
@@ -17,20 +24,62 @@ def _get_meetup(date):
     return meetup
 
 def _get_idea(id_, meetup):
+    """
+    Fetches the idea with the given idea associated with the given meetup. If the idea
+    can't be found a 404 error page is raised.
+
+    :param id_: id of an idea
+    :param meetup: meetup object
+    :returns: idea object
+    """
     idea = db.session.query(models.Sessionidea).filter(models.Sessionidea.id==id_)\
             .filter(models.Sessionidea.meetup==meetup).first()
     if idea is None:
         abort(404)
     return idea
 
+def do_vote(date, id, value):
+    """
+    Executes a voting for an idea with the given id associated with a meetup taking
+    place on the given date (string). The value indicates whether the voting is
+    positive or negative.
+
+    :param date: date of a meetup. See `_get_meetup` for details
+    :param id: id of an idea associated with the meetup
+    :param value: 1 or -1 for voting the idea up or down
+    :returns: Response initiating a redirect to the meetup
+    """
+    meetup = _get_meetup(date)
+    idea = _get_idea(id, meetup)
+    voted_users = [vote.user for vote in idea.votes.all()]
+    if g.user not in voted_users:
+        vote = models.SessionideaVote()
+        vote.user=g.user
+        vote.sessionidea_id=idea.id
+        vote.value = value
+    else:
+        vote = db.session.query(models.SessionideaVote)\
+                .filter(models.SessionideaVote.user==g.user)\
+                .filter(models.SessionideaVote.sessionIdea==idea).first()
+        vote.value = value
+    db.session.add(vote)
+    db.session.commit()
+    flash(_(u"Thank you for your vote!"))
+    return redirect(url_for('.meetup', date=filters.datecode(meetup.start)))
+
 @module.route('/')
 def meetups():
-    """List all meetups in chronological order"""
+    """
+    List all meetups in chronological order
+    """
     return render_template('meetups.html',
             meetups = db.session.query(models.Meetup).filter(models.Meetup.end > datetime.datetime.utcnow()))
 
 @module.route('/<date>')
 def meetup(date):
+    """
+    Displays the meetup taking place on the given date.
+    """
     meetup = _get_meetup(date)
     user_upvotes = []
     user_downvotes = []
@@ -113,24 +162,6 @@ def edit_sessionidea(date, id):
     return render_template('meetups/edit_idea.html',
             meetup=meetup, idea=idea, form=form)
 
-def do_vote(date, id, value):
-    meetup = _get_meetup(date)
-    idea = _get_idea(id, meetup)
-    voted_users = [vote.user for vote in idea.votes.all()]
-    if g.user not in voted_users:
-        vote = models.SessionideaVote()
-        vote.user=g.user
-        vote.sessionidea_id=idea.id
-        vote.value = value
-    else:
-        vote = db.session.query(models.SessionideaVote)\
-                .filter(models.SessionideaVote.user==g.user)\
-                .filter(models.SessionideaVote.sessionIdea==idea).first()
-        vote.value = value
-    db.session.add(vote)
-    db.session.commit()
-    flash(u"Gewählt")
-    return redirect(url_for('.meetup', date=filters.datecode(meetup.start)))
 
 @module.route('/<date>/sessionideas/<id>/up')
 @decorators.login_required
@@ -153,7 +184,7 @@ def unvote_sessionidea(date, id):
     if vote is not None:
         db.session.delete(vote)
         db.session.commit()
-        flash("Wahl entfernt")
+        flash(_('Vote removed'))
     return redirect(url_for('.meetup', date=filters.datecode(meetup.start)))
 
 @module.route('/<date>/edit', methods=['GET', 'POST'])

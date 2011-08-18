@@ -1,10 +1,20 @@
-from fabric.api import run
-from fabric.context_managers import cd
+from fabric.api import local
+from fabric.context_managers import lcd
+from os.path import join, dirname
 
-def update():
-    run('git pull origin master && git checkout -f')
-    with cd('pygraz_website/static/s'):
-        run('compass compile -s compact')
+here = dirname(__file__)
 
-def reload():
-    run('cat /var/run/site-www.pygraz.org.pid | xargs kill -HUP')
+def upload():
+    with lcd(here):
+        local('epio upload -a pygraz')
+
+def extract_messages():
+    with lcd(here):
+        local('pybabel extract -F babel.cfg -o pygraz_website/translations/messages.pot pygraz_website')
+        local('pybabel update -i pygraz_website/translations/messages.pot -d pygraz_website/translations')
+
+def build():
+    with lcd(here):
+        local('pybabel compile -d pygraz_website/translations')
+    with lcd(join(here, 'pygraz_website/static/s')):
+        local('compass compile -s compressed')

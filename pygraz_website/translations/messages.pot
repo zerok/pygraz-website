@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2011-07-31 00:51+0200\n"
+"POT-Creation-Date: 2011-08-18 21:07+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -69,7 +69,15 @@ msgstr ""
 msgid "Please describe your idea"
 msgstr ""
 
-#: pygraz_website/views/meetups.py:64
+#: pygraz_website/views/meetups.py:67
+msgid "Thank you for your vote!"
+msgstr ""
+
+#: pygraz_website/views/meetups.py:113
 msgid "Session ideas can only be added to future meetups"
+msgstr ""
+
+#: pygraz_website/views/meetups.py:187
+msgid "Vote removed"
 msgstr ""
 
