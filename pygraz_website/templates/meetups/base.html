@@ -4,8 +4,8 @@
     <nav id="subnav">
         <h2 class="title">Mehr Treffen</h2>
         <ul>
-            <li><a href="{{ url_for('meetups') }}" class="{% block subnav_start %}{% endblock %}">Nächste Treffen</a></li>
-            <li><a href="{{ url_for('meetup_archive') }}" class="{% block subnav_archive %}{% endblock %}">Vergangene Treffen</a></li>
+            <li><a href="{{ url_for('.meetups') }}" class="{% block subnav_start %}{% endblock %}">Nächste Treffen</a></li>
+            <li><a href="{{ url_for('.meetup_archive') }}" class="{% block subnav_archive %}{% endblock %}">Vergangene Treffen</a></li>
         </ul>
     </nav>
 {% endblock %}

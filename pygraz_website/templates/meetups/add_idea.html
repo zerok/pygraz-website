@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% import "forms.html" as forms %}
+{% block body %}
+    <form method="POST">
+        <div>
+            <label for="summary">Kurzbeschreibung:</label>
+            {{ formgen.input(form.summary, type="text", autofocus="autofocus") }}
+            {{ forms.errors(form.summary) }}
+        </div>
+        <div>
+            <label for="details">Details:</label>
+            {{ formgen.textarea(form.details) }}
+            {{ forms.errors(form.details) }}
+        </div>
+        <div>
+            <label for="url">URL:</label>
+            {{ formgen.input(form.url, type="text") }}
+            {{ forms.errors(form.url) }}
+        </div>
+        <div class="buttons">
+            <button type="submit">Speichern</button>
+        </div>
+    </form>
+{% endblock %}
+{% block sidebar %}
+<div class="block info">
+    <p>Hast du eine Idee für den nächsten Stammtisch? Dann trage sie hier ein!</p>
+    <p>Bitte beschreibe
+    zumindest in ein oder zwei Sätzen, was du genau präsentieren willst bzw. stelle kurz das Thema
+    vor, das du diskutieren möchtest.</p>
+</div>
+{% endblock %}

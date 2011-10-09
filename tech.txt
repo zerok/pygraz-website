@@ -1,13 +1,9 @@
 * Flask <http://flask.pocoo.org/>
-* Flask-Script <http://pypi.python.org/pypi/Flask-Script>
-* Flask-OpenID <http://packages.python.org/Flask-OpenID/>
-* CouchDB <http://couchdb.apache.org/>
-* Redis <http://redis.io/>
 * Compass <http://compass-style.org/>
-* tweepy <http://pypi.python.org/pypi/tweepy/>
-* gunicorn <http://gunicorn.org/>
-* fabric <http://fabfile.org>
-* flatland <http://pypi.python.org/pypi/flatland/>
+* Redis <http://redis.io/>
+* PostgreSQL
 
 And if you want to see the actual code of the site, you can find it on Github:
 https://github.com/pygraz/website
+
+hosted by ep.io

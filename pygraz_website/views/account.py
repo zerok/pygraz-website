@@ -2,25 +2,30 @@
 Basic account handling. Most of the openid methods are adapted from the
 Flask-OpenID documentation.
 """
-from flask import Module, session, redirect, abort, render_template, request,\
+from flask import Blueprint, session, redirect, render_template, request,\
         flash, g, url_for
 import pygraz_website as site
 
-from pygraz_website import documents, forms, decorators
+from pygraz_website import forms, decorators, models, db
 
 
-module = Module(__name__, url_prefix='/account')
+module = Blueprint('account', __name__)
+
 
 @module.route('/register', methods=['POST', 'GET'])
 def register():
     if request.method == 'POST':
         form = forms.RegisterForm.from_flat(request.form)
         if form.validate():
-            doc = dict(form.flatten())
-            doc['openids'] = [session['openid']]
-            doc['doc_type'] = 'user'
-            doc['username'] = doc['username'].lstrip().rstrip()
-            site.couchdb.save_doc(doc)
+            data = dict(form.flatten())
+            openid = models.OpenID(id=session['openid'])
+            db.session.add(openid)
+            user = models.User()
+            user.username = data['username'].lstrip().rstrip()
+            user.email = data['email'].lstrip().rstrip()
+            user.openids.append(openid)
+            db.session.add(user)
+            db.session.commit()
             return redirect(site.oid.get_next_url())
     else:
         default = {}
@@ -33,7 +38,8 @@ def register():
     return render_template('account/register.html',
             form=form, next=site.oid.get_next_url())
 
-@module.route('/account/login', methods=['GET','POST'])
+
+@module.route('/account/login', methods=['GET', 'POST'])
 @site.oid.loginhandler
 def login():
     if request.method == 'POST':
@@ -46,22 +52,26 @@ def login():
     return render_template('account/login.html',
             form=form, next=request.args.get('next', '/'))
 
+
 @site.oid.after_login
 def login_or_register(response):
     session['openid'] = response.identity_url
-    user = documents.User.view('frontend/users_by_openid',
-            key=session['openid']).first()
+    user = db.session.query(models.User).join(models.OpenID)\
+            .filter(models.OpenID.id == session['openid']).first()
     if user is None:
-        return redirect(url_for('register',
+        return redirect(url_for('.register',
                 name=response.fullname,
                 email=response.email, next=site.oid.get_next_url()))
     else:
+        g.user = user
         return redirect(site.oid.get_next_url())
+
 
 @module.route('/logout')
 def logout():
     del session['openid']
     return redirect(request.args.get('next', '/'))
+
 
 @module.route('/profile', methods=['GET', 'POST'])
 @decorators.login_required
@@ -71,9 +81,10 @@ def edit_profile():
         if form.validate():
             g.user.username = form['username'].u
             g.user.email = form['email'].u
-            g.user.save()
+            db.session.add(g.user)
+            db.session.commit()
             flash("Benutzerdaten gespeichert")
-            return redirect(url_for('edit_profile'))
+            return redirect(url_for('.edit_profile'))
     else:
         form = forms.EditProfileForm.from_object(g.user)
     return render_template('account/edit_profile.html', form=form)

@@ -6,14 +6,16 @@
 <form method="post">
     <div>
         <label>Name:</label>
-        {{ formgen.input(form.username) }}
+        {{ formgen.input(form.username, type="text", autofocus="autofocus") }}
         {{ forms.errors(form.username) }}
     </div>
     <div>
         <label>E-Mail:</label>
-        {{ formgen.input(form.email) }}
+        {{ formgen.input(form.email, type="email") }}
         {{ forms.errors(form.email) }}
     </div>
-    <button type="submit">Speichern</button>
+    <div class="buttons">
+        <button type="submit">Speichern</button>
+    </div>
 </form>
 {% endblock %}

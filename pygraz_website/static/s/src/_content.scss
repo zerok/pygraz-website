@@ -1,7 +1,7 @@
 @import "common";
 @import "colors";
 
-.content, #body {
+.content, #body, #sidebar .info {
     h1 {
         font-size: 225%;
         color: $h1-fg;
@@ -19,6 +19,16 @@
     }
     h2, h3, h4, h5, h6 {
         margin-top: 1em;
+    }
+    section {
+        h1 {
+            font-size: 190%;
+        }
+        section {
+            h1 {
+                font-size: 170%;
+            }
+        }
     }
     table {
         margin-bottom: 1em;

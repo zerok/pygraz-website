@@ -1,15 +1,24 @@
 {% extends "base.html"%}
+{% import "forms.html" as forms %}
+{% block bodyclass %}loginpage nosidebar{% endblock %}
 {% block title %}Anmelden{% endblock %}
 {% block body %}
 <h1>Anmelden</h1>
-<div class="info" style="float: left; width: 50%">
-    <p>Um sich anmelden zu können, benötigen Sie eine OpenID. Damit können Sie sich
-    auf vielen Websites ohne Passwort anmelden. <a href="http://de.wikipedia.org/wiki/OpenID">
+<form method="post">
+    <div>
+        <label>OpenID:</label>
+        {{ formgen.input(form.openid, type="url", autofocus="autofocus") }}
+        {{ forms.errors(form.openid) }}
+    </div>
+    <div class="buttons">
+        <input type="hidden" value="{{ next }}" />
+        <button type="submit">Anmelden</button>
+    </div>
+</form>
+<div class="info">
+    <p>Um sich anmelden zu können, benötigst Du eine OpenID. Damit kannst Du dich dann nicht
+    nur hier, sondern auch auf jeder Menge anderer Websites wie z.B. <a href="http://bitbucket.org">Bitbucket</a>
+    oder <a href="http://stackoverflow.com">StackOverflow</a> anmelden. <a href="http://de.wikipedia.org/wiki/OpenID">
     Mehr Information.</a></p>
 </div>
-<form method="post" style="float:right; width: 48%">
-    <p><label>OpenID:</label>{{ formgen.input(form.openid) }}</p>
-    <input type="hidden" value="{{ next }}" />
-    <button type="submit">Anmelden</button>
-</form>
 {% endblock %}

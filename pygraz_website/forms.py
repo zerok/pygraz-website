@@ -1,37 +1,38 @@
+#-*- encoding: utf-8 -*-
 import flatland
-from flatland.validation import Present, Validator, IsEmail, Converted
-from flatland.validation.base import N_
-from flatland.out.markup import Generator
+from flatland.validation import Present, Validator, IsEmail, Converted,\
+        LengthBetween
 import pytz
-import __builtin__
 from flask import current_app, g
+from flaskext.babel import lazy_gettext as _
 
-from pygraz_website import filters
-import pygraz_website as site
-from pygraz_website.documents import Meetup
+from pygraz_website import models
 
 
 class LocalDateTime(flatland.DateTime):
     def adapt(self, value):
         local_tz = current_app.config['local_timezone']
         if isinstance(value, self.type_):
-            return flatland.DateTime.adapt(self,
-                    pytz.utc.localize(value).astimezone(local_tz))
+            adapted = flatland.DateTime.adapt(self, value)
+            return adapted
         else:
             # We are in "store" mode, so a string is coming from the form
             result = flatland.DateTime.adapt(self, value)
-            return local_tz.localize(result).astimezone(pytz.utc)
+            return local_tz.localize(result).astimezone(pytz.utc)\
+                    .replace(tzinfo=None)
 
     def serialize(self, value):
         local_tz = current_app.config['local_timezone']
-        return super(LocalDateTime, self).serialize(value.astimezone(local_tz))
+        return super(LocalDateTime, self).serialize(
+                pytz.utc.localize(value).astimezone(local_tz))
+
 
 class DateAfterOther(Validator):
     fail = "%(label)s has to be after %(othervalue)s"
 
-    def __init__(self, othername):
+    def __init__(self, othername, *args, **kwargs):
         self.othername = othername
-        Validator.__init__(self)
+        Validator.__init__(self, *args, **kwargs)
 
     def validate(self, element, state):
         other = element.parent.el(self.othername)
@@ -42,21 +43,21 @@ class DateAfterOther(Validator):
             return False
         return True
 
+
 class UniqueMeetupStartDate(Validator):
-    fail = "Am selben Tag findet schon ein Treffen statt."
+    fail = _('There already is a meetup on this day')
 
     def validate(self, element, state):
         if element.value is None:
             return False
-        docs = Meetup.view('frontend/meetups_by_date',
-                key=filters.datecode(element.value))
+        other_meetups = models.Meetup.query_by_date(element.value).all()
         if state is not None:
-            for d in docs:
-                if d['_id'] != state['doc']['_id']:
+            for d in other_meetups:
+                if d.id != state['meetup'].id:
                     self.note_error(element, state, 'fail')
                     return False
         else:
-            if docs.count() > 0:
+            if other_meetups:
                 self.note_error(element, state, 'fail')
                 return False
         return True
@@ -65,60 +66,70 @@ class UniqueMeetupStartDate(Validator):
 class UniqueUserField(Validator):
 
     def validate(self, element, state):
-        res = site.couchdb.view(self.view, key=element.u.rstrip().lstrip())
-        for doc in res:
-            if g.user is not None and g.user['_id'] == doc['value']['_id']:
+        users = self.find_users(element)
+        for user in users:
+            if g.user is not None and g.user.id == user.id:
                 break
             self.note_error(element, state, 'fail')
             return False
         return True
 
+
 class UniqueUsername(UniqueUserField):
-    fail = "Dieser Benutzername wird schon von jemand anderem verwendet."
-    view = 'frontend/users_by_username'
+    fail = _('This username is already taken')
+
+    def find_users(self, element):
+        return models.User.query.filter(
+                models.User.username == element.u.rstrip().lstrip())
+
 
 class UniqueEmail(UniqueUserField):
-    fail = "Diese E-Mail-Adresse wird bereits von jemand anderem verwendet."
-    view = 'frontend/users_by_email'
+    fail = _('This email address is already taken')
+
+    def find_users(self, element):
+        return models.User.query.filter(
+                models.User.email == element.u.rstrip().lstrip())
+
 
 class MeetupForm(flatland.Form):
     start = LocalDateTime.using(name="start", validators=[
-        Present(), Converted(), UniqueMeetupStartDate()])
+            Present(missing=_('Please provide a start datetime')),
+            Converted(),
+            UniqueMeetupStartDate()])
     end = LocalDateTime.using(name="end", validators=[
-        Present(), Converted(), DateAfterOther('start')])
+            Present(missing=_('Please provide an end datetime')),
+            Converted(),
+            DateAfterOther('start',
+                fail=_('The end has to come after the start'))])
     notes = flatland.String.using(optional=True)
-    location = flatland.Dict.of(
-        flatland.String.named('name').using(optional=True),
-        flatland.String.named('address').using(optional=True)
-        )
+    location = flatland.String.using(optional=True)
+    address = flatland.String.using(optional=True)
+
 
 class LoginForm(flatland.Form):
     openid = flatland.String.using(name='openid', validators=[
-        Present()
-        ])
+            Present(missing=_('Please provide an OpenID in order to login'))])
+
 
 class RegisterForm(flatland.Form):
     username = flatland.String.using(name="username", validators=[
-        Present(), UniqueUsername()
-        ])
+            Present(missing=_('Please provide a username')),
+            UniqueUsername()])
     email = flatland.String.using(name="email", validators=[
-        Present(), IsEmail(), UniqueEmail()
-        ])
+            Present(missing=_('Please provide an email address')),
+            IsEmail(invalid=_('Please provide a valid email address')),
+            UniqueEmail()])
+
 
 class EditProfileForm(RegisterForm):
     pass
 
-class CompanyForm(flatland.Form):
-    name = flatland.String.using(validators=[Present()])
-    url = flatland.String
-    location = flatland.Dict.of(
-        flatland.String.named('address').using(optional=True)
-        )
 
-class AdminCompanyForm(CompanyForm):
-    confirmed = flatland.Boolean(validators=[Present()])
-
-def get_companyform():
-    if 'admin' in getattr(getattr(g, 'user'), 'roles', []):
-        return AdminCompanyForm
-    return CompanyForm
+class SessionIdeaForm(flatland.Form):
+    summary = flatland.String.using(validators=[
+            Present(missing=_('Please give your idea a summary')),
+            LengthBetween(1, 255,
+                breached=_('The summary of your idea has to be between 1 and 255 chars long'))])
+    details = flatland.String.using(validators=[
+            Present(missing=_('Please describe your idea'))])
+    url = flatland.String.using(optional=True)

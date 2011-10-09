@@ -1,37 +1,57 @@
 from flaskext.script import Manager
-import pygraz_website as site
-from pygraz_website import documents
+import pygraz_website
+from pygraz_website import models, db
 import tweepy
-from os.path import join, dirname, abspath
-from couchdbkit.loaders import FileSystemDocsLoader
+import settings
 
+app = pygraz_website.create_app(config_object=settings)
 
-app = site.create_app('FLASK_SETTINGS')
-site.load_db(app)
 
 manager = Manager(app)
+
 
 @manager.option("--dry-run", dest='dryrun', action='store_true')
 @manager.command
 def sync_twitter(dryrun=False):
-    keyrow = site.couchdb.view('admin/twitter_external_ids').first()
-    ids = set()
-    if keyrow:
-        ids = set(keyrow['value'])
-    last_update = documents.Tweet.view('frontend/tweet_by_external_id', limit=1, descending=True).first()
-    last_id = last_update is not None and last_update.external_id or None
-    print "Last ID: " + str(last_id)
-    for tweet in tweepy.Cursor(tweepy.api.user_timeline, 'pygraz', since_id=last_id).items(100):
-        if tweet.id not in ids:
-            if dryrun:
-                print tweet.id
-            else:
-                documents.Tweet.from_tweet(tweet).save()
+    last_tweet = models.Tweet.query\
+            .order_by(models.Tweet.created_at.desc()).first()
+    last_id = None
+    if last_tweet:
+        print "Last ID: " + str(last_tweet.external_id)
+        last_id = last_tweet.external_id
+    for tweet in tweepy.Cursor(tweepy.api.user_timeline, 'pygraz',
+            since_id=last_id).items(100):
+        if dryrun:
+            print tweet.id
+        else:
+            db.session.add(models.Tweet.from_tweet(tweet))
+            db.session.commit()
+
 
 @manager.command
-def load_designdocs():
-    docs_path = join(abspath(dirname(__file__)), '_design')
-    loader = FileSystemDocsLoader(docs_path)
-    loader.sync(site.couchdb, verbose=True)
+def create_db():
+    db.create_all()
 
-manager.run()
+
+@manager.command
+def runserver():
+    app.run()
+
+
+@manager.option('--make-admin', dest='make_admin', action='store')
+@manager.command
+def update_user(openid, make_admin=None):
+    user = db.session.query(models.OpenID)\
+            .filter(models.OpenID.id == openid)\
+            .first().user
+    print user
+    if make_admin == '1':
+        user.is_admin = True
+    elif make_admin == '0':
+        user.is_admin = False
+    db.session.add(user)
+    db.session.commit()
+
+
+if __name__ == '__main__':
+    manager.run()

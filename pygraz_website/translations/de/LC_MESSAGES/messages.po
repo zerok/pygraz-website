@@ -1,0 +1,83 @@
+# German translations for PROJECT.
+# Copyright (C) 2011 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2011-08-18 21:07+0200\n"
+"PO-Revision-Date: 2011-07-30 15:41+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: de <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 0.9.6\n"
+
+#: pygraz_website/forms.py:43
+msgid "There already is a meetup on this day"
+msgstr "An diesem Tag gibt es bereits ein Treffen"
+
+#: pygraz_website/forms.py:73
+msgid "This username is already taken"
+msgstr "Dieser Benutzername is bereits vergeben"
+
+#: pygraz_website/forms.py:79
+msgid "This email address is already taken"
+msgstr "Diese E-Mail-Adresse wird bereits von jemand anderem verwendet"
+
+#: pygraz_website/forms.py:86
+msgid "Please provide a start datetime"
+msgstr "Bitte gib einen Startzeitpunkt an"
+
+#: pygraz_website/forms.py:90
+msgid "Please provide an end datetime"
+msgstr "Bitte gib einen Endzeitpunkt an"
+
+#: pygraz_website/forms.py:92
+msgid "The end has to come after the start"
+msgstr "Der Endzeitpunkt muss nach dem Anfangszeitpunkt liegen"
+
+#: pygraz_website/forms.py:99
+msgid "Please provide an OpenID in order to login"
+msgstr "Bitte gib eine OpenID an, um dich anzumelden"
+
+#: pygraz_website/forms.py:104
+msgid "Please provide a username"
+msgstr "Bitte gib einen Benutzernamen an"
+
+#: pygraz_website/forms.py:108
+msgid "Please provide an email address"
+msgstr "Bitte gib eine E-Mail-Adresse an"
+
+#: pygraz_website/forms.py:109
+msgid "Please provide a valid email address"
+msgstr "Bitte gib eine gültige E-Mail-Adresse an"
+
+#: pygraz_website/forms.py:118
+msgid "Please give your idea a summary"
+msgstr "Bitte gib eine Kurzbeschreibung deiner Idee"
+
+#: pygraz_website/forms.py:119
+msgid "The summary of your idea has to be between 1 and 255 chars long"
+msgstr "Die Kurzbeschreibung deiner Idee muss zwischen 1 und 255 Zeichen lang sein"
+
+#: pygraz_website/forms.py:122
+msgid "Please describe your idea"
+msgstr "Bitte beschreibe deine Idee"
+
+#: pygraz_website/views/meetups.py:67
+msgid "Thank you for your vote!"
+msgstr "Danke für deine Wahl!"
+
+#: pygraz_website/views/meetups.py:113
+msgid "Session ideas can only be added to future meetups"
+msgstr "Themenvorschläge können nur für zukünftige Treffen angelegt werden"
+
+#: pygraz_website/views/meetups.py:187
+msgid "Vote removed"
+msgstr "Vote entfernt"
+

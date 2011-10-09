@@ -1,0 +1,83 @@
+# Translations template for PROJECT.
+# Copyright (C) 2011 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2011-08-18 21:07+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 0.9.6\n"
+
+#: pygraz_website/forms.py:43
+msgid "There already is a meetup on this day"
+msgstr ""
+
+#: pygraz_website/forms.py:73
+msgid "This username is already taken"
+msgstr ""
+
+#: pygraz_website/forms.py:79
+msgid "This email address is already taken"
+msgstr ""
+
+#: pygraz_website/forms.py:86
+msgid "Please provide a start datetime"
+msgstr ""
+
+#: pygraz_website/forms.py:90
+msgid "Please provide an end datetime"
+msgstr ""
+
+#: pygraz_website/forms.py:92
+msgid "The end has to come after the start"
+msgstr ""
+
+#: pygraz_website/forms.py:99
+msgid "Please provide an OpenID in order to login"
+msgstr ""
+
+#: pygraz_website/forms.py:104
+msgid "Please provide a username"
+msgstr ""
+
+#: pygraz_website/forms.py:108
+msgid "Please provide an email address"
+msgstr ""
+
+#: pygraz_website/forms.py:109
+msgid "Please provide a valid email address"
+msgstr ""
+
+#: pygraz_website/forms.py:118
+msgid "Please give your idea a summary"
+msgstr ""
+
+#: pygraz_website/forms.py:119
+msgid "The summary of your idea has to be between 1 and 255 chars long"
+msgstr ""
+
+#: pygraz_website/forms.py:122
+msgid "Please describe your idea"
+msgstr ""
+
+#: pygraz_website/views/meetups.py:67
+msgid "Thank you for your vote!"
+msgstr ""
+
+#: pygraz_website/views/meetups.py:113
+msgid "Session ideas can only be added to future meetups"
+msgstr ""
+
+#: pygraz_website/views/meetups.py:187
+msgid "Vote removed"
+msgstr ""
+
