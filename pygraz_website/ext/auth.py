@@ -23,8 +23,7 @@ class Auth(object):
         """
         result = {
                 'is_logged_in': False,
-                'is_admin': False
-                }
+                'is_admin': False}
         if hasattr(g, 'user') and g.user is not None:
             result['is_logged_in'] = True
             result['is_admin'] = g.user.is_admin
@@ -40,6 +39,8 @@ class Auth(object):
         if 'FAKE_LOGIN' in self.app.config and 'openid' not in session:
             session['openid'] = self.app.config['FAKE_LOGIN']
         if 'openid' in session:
-            g.user = db.session.query(models.User).join(models.OpenID).filter(models.OpenID.id==session['openid']).first()
+            g.user = db.session.query(models.User)\
+                    .join(models.OpenID)\
+                    .filter(models.OpenID.id == session['openid']).first()
         else:
             g.user = None

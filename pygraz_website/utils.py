@@ -1,8 +1,9 @@
-import pygraz_website as site
-from flask import g, abort, render_template
-import time, datetime, pytz
+from flask import g, render_template
+import time
+import datetime
+import pytz
 
-from . import exceptions, filters
+from . import exceptions
 
 
 class DocumentLock(object):
@@ -30,8 +31,7 @@ class DocumentLock(object):
     def __enter__(self):
         lockinfo = dict([
                 (self.lock_key + ':holder', g.user.id),
-                (self.lock_key + ':expires', time.time() + self.timeout)
-                ])
+                (self.lock_key + ':expires', time.time() + self.timeout)])
         if g.redis.msetnx(lockinfo):
             self.success = True
             return self
@@ -45,7 +45,7 @@ class DocumentLock(object):
             if self.attempt > 5:
                 raise exceptions.Conflict()
             self.attempt += 1
-            return self.__enter__() # Retry
+            return self.__enter__()  # Retry
 
         if lock_user != str(g.user.id):
             raise exceptions.Conflict()
@@ -63,14 +63,17 @@ class DocumentLock(object):
         g.redis.delete(self.lock_key + ":holder")
         g.redis.delete(self.lock_key + ":expires")
 
+
 def to_doc_value(field):
     import flatland
     if isinstance(field, flatland.DateTime):
         return field.value.strftime("%Y-%m-%dT%H:%M:%SZ")
     return field.value
 
+
 def handle_conflict(*args, **kwargs):
     return render_template('errors/conflict.html')
+
 
 def is_editor_for(doc, user=None):
     """
@@ -84,6 +87,7 @@ def is_editor_for(doc, user=None):
     if user.is_admin:
         return True
     return hasattr(doc, "author") and doc.author == user
+
 
 def utcnow():
     return datetime.datetime.utcnow().replace(tzinfo=pytz.UTC)

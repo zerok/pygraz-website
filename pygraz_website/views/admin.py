@@ -1,15 +1,16 @@
 from collections import defaultdict
 from flask import Blueprint, render_template, g
 
-import pygraz_website as site
 from pygraz_website import models
 
 
 module = Blueprint('admin', __name__)
 
+
 @module.route('/')
 def index():
     return render_template('admin/index.html')
+
 
 @module.route('/locks')
 def locks():
@@ -20,13 +21,14 @@ def locks():
         values = []
     else:
         values = g.redis.mget(keys)
-    for l,v in zip(keys, values):
+    for l, v in zip(keys, values):
         _, type_, docid, field = l.split(":")
-        locks[type_ + docid][field]=v
+        locks[type_ + docid][field] = v
         if field == 'holder':
             holders[int(v)] = {}
     if holders:
-        for user in models.User.query.filter(models.User.id.in_(map(int, holders.keys()))):
+        for user in models.User.query.filter(
+                models.User.id.in_(map(int, holders.keys()))):
             holders[user.id] = user
     for k, v in locks.iteritems():
         v['holder'] = holders[int(v['holder'])]

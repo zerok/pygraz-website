@@ -1,6 +1,7 @@
 from sqlalchemy.orm.attributes import instance_dict
 from pygraz_website import db
-import pytz, datetime
+import pytz
+import datetime
 
 
 class Meetup(db.Model):
@@ -27,23 +28,32 @@ class Meetup(db.Model):
         end = utc_date + datetime.timedelta(days=1)
         return db.session.query(cls).filter(cls.start.between(start, end))
 
+
 class Sessionidea(db.Model):
-    id = db.Column(db.Integer, db.Sequence('sessionidea_id_seq'), primary_key=True)
+    id = db.Column(db.Integer, db.Sequence('sessionidea_id_seq'),
+            primary_key=True)
     summary = db.Column(db.String(255))
     details = db.Column(db.Text)
     url = db.Column(db.String(1024), nullable=True)
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    author = db.relationship('User', backref=db.backref('sessionideas', lazy='dynamic', cascade='delete'))
+    author = db.relationship('User', backref=db.backref('sessionideas',
+        lazy='dynamic', cascade='delete'))
     meetup_id = db.Column(db.Integer, db.ForeignKey('meetup.id'))
-    meetup = db.relationship('Meetup', backref=db.backref('sessionideas', lazy='dynamic', cascade='delete'))
+    meetup = db.relationship('Meetup', backref=db.backref('sessionideas',
+        lazy='dynamic', cascade='delete'))
+
 
 class SessionideaVote(db.Model):
-    id = db.Column(db.Integer, db.Sequence('sessionideavote_id_seq'), primary_key=True)
+    id = db.Column(db.Integer, db.Sequence('sessionideavote_id_seq'),
+            primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     sessionidea_id = db.Column(db.Integer, db.ForeignKey('sessionidea.id'))
-    user = db.relationship('User', backref=db.backref('sessionideasVotes', lazy='dynamic'))
-    sessionIdea = db.relationship('Sessionidea', backref=db.backref('votes', lazy='dynamic', cascade='delete'))
+    user = db.relationship('User', backref=db.backref('sessionideasVotes',
+        lazy='dynamic'))
+    sessionIdea = db.relationship('Sessionidea', backref=db.backref('votes',
+        lazy='dynamic', cascade='delete'))
     value = db.Column(db.Integer)
+
 
 class Tweet(db.Model):
     id = db.Column(db.Integer, db.Sequence('meetup_id_seq'), primary_key=True)
@@ -59,7 +69,8 @@ class Tweet(db.Model):
 
     @property
     def url(self):
-        return 'http://twitter.com/pygraz/status/%s' % (unicode(self.external_id),)
+        return 'http://twitter.com/pygraz/status/%s' % (
+                unicode(self.external_id),)
 
     @classmethod
     def from_tweet(cls, tweet):
@@ -71,14 +82,16 @@ class Tweet(db.Model):
         inst.in_reply_to_screen_name = tweet.in_reply_to_screen_name
         return inst
 
+
 class User(db.Model):
     id = db.Column(db.Integer, db.Sequence("user_id_seq"), primary_key=True)
     username = db.Column(db.String, unique=True)
     email = db.Column(db.String)
     is_admin = db.Column(db.Boolean, nullable=False, default=False)
 
+
 class OpenID(db.Model):
     id = db.Column(db.String, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    user = db.relationship('User', backref=db.backref('openids', lazy='dynamic', cascade='delete'))
-
+    user = db.relationship('User', backref=db.backref('openids',
+        lazy='dynamic', cascade='delete'))

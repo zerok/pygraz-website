@@ -1,6 +1,7 @@
 import functools
 from flask import g, redirect, url_for, abort, request
 
+
 def login_required(func):
     """
     Checks if the current user is logged in and redirects her to the login
@@ -12,6 +13,7 @@ def login_required(func):
             return redirect(url_for('account.login', next=request.path))
         return func(*args, **kwargs)
     return _func
+
 
 def admin_required(func):
     """
@@ -26,4 +28,3 @@ def admin_required(func):
             return abort(403)
         return func(*args, **kwargs)
     return _func
-

@@ -2,7 +2,7 @@
 Basic account handling. Most of the openid methods are adapted from the
 Flask-OpenID documentation.
 """
-from flask import Blueprint, session, redirect, abort, render_template, request,\
+from flask import Blueprint, session, redirect, render_template, request,\
         flash, g, url_for
 import pygraz_website as site
 
@@ -10,6 +10,7 @@ from pygraz_website import forms, decorators, models, db
 
 
 module = Blueprint('account', __name__)
+
 
 @module.route('/register', methods=['POST', 'GET'])
 def register():
@@ -37,7 +38,8 @@ def register():
     return render_template('account/register.html',
             form=form, next=site.oid.get_next_url())
 
-@module.route('/account/login', methods=['GET','POST'])
+
+@module.route('/account/login', methods=['GET', 'POST'])
 @site.oid.loginhandler
 def login():
     if request.method == 'POST':
@@ -50,10 +52,12 @@ def login():
     return render_template('account/login.html',
             form=form, next=request.args.get('next', '/'))
 
+
 @site.oid.after_login
 def login_or_register(response):
     session['openid'] = response.identity_url
-    user = db.session.query(models.User).join(models.OpenID).filter(models.OpenID.id==session['openid']).first()
+    user = db.session.query(models.User).join(models.OpenID)\
+            .filter(models.OpenID.id == session['openid']).first()
     if user is None:
         return redirect(url_for('.register',
                 name=response.fullname,
@@ -62,10 +66,12 @@ def login_or_register(response):
         g.user = user
         return redirect(site.oid.get_next_url())
 
+
 @module.route('/logout')
 def logout():
     del session['openid']
     return redirect(request.args.get('next', '/'))
+
 
 @module.route('/profile', methods=['GET', 'POST'])
 @decorators.login_required
