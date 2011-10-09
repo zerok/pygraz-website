@@ -64,29 +64,8 @@ class DocumentLock(object):
         g.redis.delete(self.lock_key + ":expires")
 
 
-def to_doc_value(field):
-    import flatland
-    if isinstance(field, flatland.DateTime):
-        return field.value.strftime("%Y-%m-%dT%H:%M:%SZ")
-    return field.value
-
-
 def handle_conflict(*args, **kwargs):
     return render_template('errors/conflict.html')
-
-
-def is_editor_for(doc, user=None):
-    """
-    Checks if the given user has editor status for the given document
-    (determined by the user's editor_of property and the doc's root_id)
-    """
-    if user is None:
-        user = g.user
-    if user is None:
-        return False
-    if user.is_admin:
-        return True
-    return hasattr(doc, "author") and doc.author == user
 
 
 def utcnow():
