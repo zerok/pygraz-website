@@ -10,3 +10,4 @@ tweepy
 gunicorn
 fabric
 Flask-SQLAlchemy
+psycopg2
