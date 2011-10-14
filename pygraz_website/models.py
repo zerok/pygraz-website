@@ -56,7 +56,7 @@ class SessionideaVote(db.Model):
 
 
 class Tweet(db.Model):
-    id = db.Column(db.Integer, db.Sequence('meetup_id_seq'), primary_key=True)
+    id = db.Column(db.Integer, db.Sequence('tweet_id_seq'), primary_key=True)
     text = db.Column(db.Text)
     external_id = db.Column(db.String, unique=True)
     created_at = db.Column(db.DateTime(timezone=False))
