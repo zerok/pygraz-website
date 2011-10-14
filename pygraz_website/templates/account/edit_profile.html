@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% import "forms.html" as forms %}
+{% import "base.html" as base with context %}
 {% block title %}Profil ändern{% endblock %}
+{% block bodyclass %}editprofile{% endblock %}
 {% block body %}
 <h1>Profil ändern</h1>
 <form method="post">
@@ -13,7 +15,31 @@
         <label>E-Mail:</label>
         {{ formgen.input(form.email, type="email") }}
         {{ forms.errors(form.email) }}
+        <span id="email-status" class="email-status-{{ g.user.email_status }}">{{ base.email_status(g.user.email_status) }}</span>
+        {% if email_status != 'activated' %}<a id="send-activation" href="#">Aktivierungsemail an diese Adresse versenden</a>{% endif %}
     </div>
+    {% if email_status == 'activated' %}
+    {% endif %}
+    <fieldset>
+        <legend>E-Mail-Benachrichtigungen:</legend>
+        <div>
+            <label for="email_new_meetup">Stammtischankündigung:</label>
+            <input type="checkbox" id="email_new_meetup" name="email_new_meetup" />
+            <p class="info">
+                Hiermit bekommst du eine E-Mail-Benachrichtung, wenn ein neuer Stammtisch
+                angelegt bzw. relevante Information geändert werden. Dies betrifft lediglich
+                zukünfigte Stammtische.
+            </p>
+        </div>
+        <div>
+            <label for="email_new_session_idea">Neue Session-Idee:</label>
+            <input type="checkbox" id="email_new_session_idea" name="email_new_session_idea" />
+            <p class="info">
+                Wenn für einen Stammtisch eine neue Session-Idee angelegt wird, bekommst du hiermit
+                eine Benachrichtigung.
+            </p>
+        </div>
+    </fieldset>
     <div class="buttons">
         <button type="submit">Speichern</button>
     </div>

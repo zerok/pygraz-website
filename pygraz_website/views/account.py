@@ -76,6 +76,8 @@ def logout():
 @module.route('/profile', methods=['GET', 'POST'])
 @decorators.login_required
 def edit_profile():
+    # Fake the email status for now
+    g.user.email_status = 'not_verified'
     if request.method == 'POST':
         form = forms.EditProfileForm.from_flat(request.form)
         if form.validate():
