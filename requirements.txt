@@ -11,3 +11,4 @@ gunicorn
 fabric
 Flask-SQLAlchemy
 psycopg2
+sqlalchemy-migrate
