@@ -1,4 +1,4 @@
-Flask<0.8
+Flask<0.9
 docutils
 git+https://github.com/mitsuhiko/flask-babel.git@77b4ef43794f54255d94b18edebfb2344fa6bdff#egg=Flask-Babel
 Flask-OpenID
