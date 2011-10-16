@@ -1,9 +1,9 @@
 from flask import Flask
-from flaskext.babel import Babel, get_translations
-from flaskext.openid import OpenID
-from flaskext.sqlalchemy import SQLAlchemy
-from flaskext.redis import Redis
-from flaskext.compass import Compass
+from flask.ext.babel import Babel, get_translations
+from flask.ext.openid import OpenID
+from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.redis import Redis
+from flask.ext.compass import Compass
 from . import filters, context_processors, utils, ext
 import __builtin__
 import pytz
@@ -16,6 +16,7 @@ auth = ext.Auth()
 compass = Compass()
 oid = OpenID()
 babel = Babel()
+
 
 def create_app(envar="FLASK_SETTINGS", config_object=None):
     app = Flask(__name__)
@@ -70,7 +71,7 @@ def create_app(envar="FLASK_SETTINGS", config_object=None):
     # them.
     babel.init_app(app)
     oid.init_app(app)
-    __builtin__.ugettext = lambda x : get_translations().ugettext(x)
+    __builtin__.ugettext = lambda x: get_translations().ugettext(x)
     __builtin__.ungettext = lambda x,s,p: get_translations().ungettext(x,s,p)
     app.error_handlers[409] = utils.handle_conflict
     redis.init_app(app)
