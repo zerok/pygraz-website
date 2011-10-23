@@ -16,15 +16,14 @@
         {{ formgen.input(form.email, type="email") }}
         {{ forms.errors(form.email) }}
         <span id="email-status" class="email-status-{{ g.user.email_status }}">{{ base.email_status(g.user.email_status) }}</span>
-        {% if email_status != 'activated' %}<a id="send-activation" href="#">Aktivierungsemail an diese Adresse versenden</a>{% endif %}
+        {% if g.user.email_status != 'active' %}<a id="send-activation" href="{{ url_for('.start_email_activation') }}">Aktivierungsemail an diese Adresse versenden</a>{% endif %}
     </div>
-    {% if email_status == 'activated' %}
-    {% endif %}
+    {% if g.user.email_activated() %}
     <fieldset>
         <legend>E-Mail-Benachrichtigungen:</legend>
         <div>
             <label for="email_new_meetup">Stammtischankündigung:</label>
-            <input type="checkbox" id="email_new_meetup" name="email_new_meetup" />
+            {{ formgen.input(form.email_notify_new_meetup, type="checkbox") }}
             <p class="info">
                 Hiermit bekommst du eine E-Mail-Benachrichtung, wenn ein neuer Stammtisch
                 angelegt bzw. relevante Information geändert werden. Dies betrifft lediglich
@@ -33,13 +32,14 @@
         </div>
         <div>
             <label for="email_new_session_idea">Neue Session-Idee:</label>
-            <input type="checkbox" id="email_new_session_idea" name="email_new_session_idea" />
+            {{ formgen.input(form.email_notify_new_sessionidea, type="checkbox") }}
             <p class="info">
                 Wenn für einen Stammtisch eine neue Session-Idee angelegt wird, bekommst du hiermit
                 eine Benachrichtigung.
             </p>
         </div>
     </fieldset>
+    {% endif %}
     <div class="buttons">
         <button type="submit">Speichern</button>
     </div>

@@ -88,6 +88,14 @@ class User(db.Model):
     username = db.Column(db.String, unique=True)
     email = db.Column(db.String)
     is_admin = db.Column(db.Boolean, nullable=False, default=False)
+    email_status = db.Column(db.String, nullable=True, default="not_verified")
+    email_activation_code = db.Column(db.String, nullable=True)
+    email_notify_new_meetup = db.Column(db.Boolean, nullable=True, default=False)
+    email_notify_new_sessionidea = db.Column(db.Boolean, nullable=True, default=False)
+
+    def email_activated(self):
+        print self.email_status
+        return self.email_status in ("active",)
 
 
 class OpenID(db.Model):

@@ -13,6 +13,7 @@ import logging.handlers
 redis = Redis()
 db = SQLAlchemy()
 auth = ext.Auth()
+postmark = ext.Postmark()
 compass = Compass()
 oid = OpenID()
 babel = Babel()
@@ -49,6 +50,7 @@ def create_app(envar="FLASK_SETTINGS", config_object=None):
     app.secret_key = app.config['SECRET_KEY']
 
     db.init_app(app)
+    postmark.init_app(app)
     auth.init_app(app)
     compass.init_app(app)
 
