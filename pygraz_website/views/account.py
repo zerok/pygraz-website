@@ -143,7 +143,7 @@ def handle_meetup_created(meetup):
             .filter_by(email_status='active')\
             .filter_by(email_notify_new_meetup=True)
     emails = [user.email for user in users]
-    email.send_mass_email(emails, 'Neues Meetup', 'emails/new-meetup', ctx=dict(user=g.user, meetup=meetup))
+    email.send_mass_email(emails, 'Neues Stammtisch', 'emails/new-meetup', ctx=dict(meetup=meetup))
 
 
 def handle_sessionidea_created(sessionidea):
@@ -153,7 +153,7 @@ def handle_sessionidea_created(sessionidea):
     emails = [user.email for user in users]
     url = '{}{}#idea-{}'.format(request.url_root, sessionidea.meetup.get_absolute_url(), sessionidea.id)
     email.send_mass_email(emails, 'Neue Sessionidea', 'emails/new-sessionidea',
-            ctx=dict(user=g.user, idea=sessionidea, url=url))
+            ctx=dict(idea=sessionidea, url=url))
 
 
 signals.meetup_created.connect(handle_meetup_created)

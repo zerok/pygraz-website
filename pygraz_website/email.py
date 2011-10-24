@@ -11,12 +11,16 @@ def _fill_msg_with_template(msg, template_base, ctx):
 
     try:
         msg.text_body = render_template(txt_template, **ctx)
-    except TemplateNotFound, _:
+    except TemplateNotFound, e:
+        if e.templates != [txt_template]:
+            raise
         txt_template_available = False
 
     try:
         msg.html_body = render_template(html_template, **ctx)
-    except TemplateNotFound, _:
+    except TemplateNotFound, e:
+        if e.templates != [html_template]:
+            raise 
         html_template_available = False
 
     if not html_template_available and not txt_template_available:

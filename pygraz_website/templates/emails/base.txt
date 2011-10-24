@@ -1,4 +1,4 @@
-Hallo, {{ user.username }},
+{% if user %}Hallo, {{ user.username }},{% else %}Hallo :D{% endif %}
 
 {% block body %}
 {% endblock %}
