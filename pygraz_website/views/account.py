@@ -98,6 +98,7 @@ def edit_profile():
         form = forms.EditProfileForm.from_object(g.user)
     return render_template('account/edit_profile.html', form=form)
 
+
 @module.route('/email-activation/start', methods=['GET'])
 @decorators.login_required
 def start_email_activation():
@@ -119,6 +120,7 @@ def start_email_activation():
     flash(u"Es wurde eine Aktivierungsemail an {} versandt".format(g.user.email))
     return redirect(url_for('.edit_profile'))
 
+
 @module.route('/email-activation/finalize')
 @decorators.login_required
 def activate_email():
@@ -134,6 +136,7 @@ def activate_email():
         flash(u"Der von Ihnen angegebene Code ist leider ungültig")
     return render_template('account/email_activation_finalize.html')
 
+
 def handle_meetup_created(meetup):
     """
     Is called when a new meetup is created and notifies all users that requested such
@@ -142,6 +145,8 @@ def handle_meetup_created(meetup):
     users = db.session.query(models.User)\
             .filter_by(email_status='active')\
             .filter_by(email_notify_new_meetup=True)
+    if hasattr(g, "user"):
+        users = users.filter(models.User.id != g.user.id)
     emails = [user.email for user in users]
     email.send_mass_email(emails, 'Neues Stammtisch', 'emails/new-meetup', ctx=dict(meetup=meetup))
 
@@ -150,6 +155,8 @@ def handle_sessionidea_created(sessionidea):
     users = db.session.query(models.User)\
             .filter_by(email_status='active')\
             .filter_by(email_notify_new_sessionidea=True)
+    if hasattr(g, "user"):
+        users = users.filter(models.User.id != g.user.id)
     emails = [user.email for user in users]
     url = '{}{}#idea-{}'.format(request.url_root, sessionidea.meetup.get_absolute_url(), sessionidea.id)
     email.send_mass_email(emails, 'Neue Sessionidea', 'emails/new-sessionidea',
@@ -158,6 +165,7 @@ def handle_sessionidea_created(sessionidea):
 
 signals.meetup_created.connect(handle_meetup_created)
 signals.sessionidea_created.connect(handle_sessionidea_created)
+
 
 def _generate_activation_code(user):
     raw = "{}.{}.{}".format(user.id, user.email, str(uuid.uuid4()))
