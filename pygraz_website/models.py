@@ -1,5 +1,6 @@
+from flask import url_for
 from sqlalchemy.orm.attributes import instance_dict
-from pygraz_website import db
+from pygraz_website import db, filters
 import pytz
 import datetime
 
@@ -14,6 +15,9 @@ class Meetup(db.Model):
 
     def as_dict(self):
         return instance_dict(self)
+
+    def get_absolute_url(self):
+        return url_for('meetups.meetup', date=filters.datecode(self.start))
 
     @classmethod
     def query_by_date(cls, date):

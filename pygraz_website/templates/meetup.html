@@ -16,7 +16,7 @@
         {% if ideas %}
         <ul>
             {% for idea in ideas %}
-            <li><p class="summary">
+            <li id="idea-{{ idea.id }}"><p class="summary">
                     {% if idea.url %}
                     <a href="{{ idea.url }}" rel="nofollow">{{ idea.summary }}</a>
                     {% else %}
