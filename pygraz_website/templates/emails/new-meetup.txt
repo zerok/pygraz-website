@@ -1,0 +1,6 @@
+{% extends "emails/base.txt" %}
+{% block body %}
+Es wurde ein neuer Stammtisch angelegt:
+
+<{{ meetup.get_absolute_url() }}>
+{% endblock %}

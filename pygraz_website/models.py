@@ -1,5 +1,6 @@
+from flask import url_for
 from sqlalchemy.orm.attributes import instance_dict
-from pygraz_website import db
+from pygraz_website import db, filters
 import pytz
 import datetime
 
@@ -14,6 +15,9 @@ class Meetup(db.Model):
 
     def as_dict(self):
         return instance_dict(self)
+
+    def get_absolute_url(self):
+        return url_for('meetups.meetup', date=filters.datecode(self.start))
 
     @classmethod
     def query_by_date(cls, date):
@@ -88,6 +92,13 @@ class User(db.Model):
     username = db.Column(db.String, unique=True)
     email = db.Column(db.String)
     is_admin = db.Column(db.Boolean, nullable=False, default=False)
+    email_status = db.Column(db.String, nullable=True, default="not_verified")
+    email_activation_code = db.Column(db.String, nullable=True)
+    email_notify_new_meetup = db.Column(db.Boolean, nullable=True, default=False)
+    email_notify_new_sessionidea = db.Column(db.Boolean, nullable=True, default=False)
+
+    def email_activated(self):
+        return self.email_status in ("active",)
 
 
 class OpenID(db.Model):

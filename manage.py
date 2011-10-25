@@ -52,6 +52,15 @@ def update_user(openid, make_admin=None):
     db.session.add(user)
     db.session.commit()
 
+@manager.command
+def send_meetup_notification(meetup_date):
+    from pygraz_website.views.meetups import _get_meetup
+    from pygraz_website.views.account import handle_meetup_created
+
+    meetup = _get_meetup(meetup_date)
+    handle_meetup_created(meetup)
+
+
 
 if __name__ == '__main__':
     manager.run()

@@ -1,0 +1,10 @@
+{% if user %}Hallo, {{ user.username }},{% else %}Hallo :D{% endif %}
+
+{% block body %}
+{% endblock %}
+
+-----------------------------------------------------------------------------
+
+Falls du E-Mails dieser Art nicht mehr bekommen möchtest, überprüfe deine
+Einstellungen in deinem Profil auf pygraz.org.
+

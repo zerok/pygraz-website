@@ -122,6 +122,10 @@ class RegisterForm(flatland.Form):
 
 
 class EditProfileForm(RegisterForm):
+    email_notify_new_meetup = flatland.Boolean.using(name="email_notify_new_meetup",
+            optional=True)
+    email_notify_new_sessionidea = flatland.Boolean.using(name="email_notify_new_sessionidea",
+            optional=True)
     pass
 
 
