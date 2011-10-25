@@ -36,7 +36,6 @@ class Postmark(object):
         mail.api_key = self.get_config('API_KEY')
         if 'sender' not in kwargs:
             mail.sender = self.get_config('SENDER')
-            print "SETTING SENDER TO {}".format(mail.sender)
         return mail
 
     def send_bcc_batch(self, mail, recipients):
@@ -52,7 +51,7 @@ class Postmark(object):
         mail.recipient = mail.sender
         for recs in _split_recipients(recipients, max_num=20):
             mail.bcc = ','.join(recs)
-            print "Sending mail to {}".format(mail.bcc)
+            logger.debug("Sending mail to {}".format(mail.bcc))
             mail.send()
 
 

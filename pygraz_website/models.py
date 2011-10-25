@@ -98,7 +98,6 @@ class User(db.Model):
     email_notify_new_sessionidea = db.Column(db.Boolean, nullable=True, default=False)
 
     def email_activated(self):
-        print self.email_status
         return self.email_status in ("active",)
 
 
