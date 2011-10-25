@@ -1,0 +1,10 @@
+{% extends "emails/base.txt" %}
+{% block body %}
+{{ idea.author.username }} hat gerade eine neue Sessionidee zum Thema
+"{{ idea.summary }}" für das Treffen am {{ idea.meetup.start.date() }}
+angelegt.{% if idea.details %}
+
+{{ idea.details }}{% endif %}
+
+<{{ url }}>
+{% endblock %}

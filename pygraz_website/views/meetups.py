@@ -6,7 +6,7 @@ import datetime
 import collections
 from sqlalchemy.orm import joinedload
 
-from pygraz_website import forms, decorators, utils, filters, db, models
+from pygraz_website import forms, decorators, utils, filters, db, models, signals
 
 
 module = Blueprint('meetups', __name__)
@@ -84,6 +84,7 @@ def do_vote(date, id, value):
     db.session.add(vote)
     db.session.commit()
     flash(_(u"Thank you for your vote!"))
+    signals.sessionidea_voted(vote)
     return redirect(url_for('.meetup', date=filters.datecode(meetup.start)))
 
 
@@ -150,6 +151,7 @@ def add_sessionidea(date):
             idea.meetup = meetup
             db.session.add(idea)
             db.session.commit()
+            signals.sessionidea_created.send(idea)
             return redirect(url_for('.meetup',
                 date=filters.datecode(meetup.start)))
     else:
@@ -171,6 +173,7 @@ def delete_sessionidea(date, id):
                 idea=idea, meetup=meetup)
     db.session.delete(idea)
     db.session.commit()
+    signals.sessionidea_deleted.send(idea)
     return redirect(url_for('.meetup', date=filters.datecode(meetup.start)))
 
 
@@ -192,6 +195,7 @@ def edit_sessionidea(date, id):
             idea.url = form['url'].value
             db.session.add(idea)
             db.session.commit()
+            signals.sessionidea_changed(idea)
             return redirect(url_for('.meetup',
                 date=filters.datecode(meetup.start)))
     else:
@@ -224,6 +228,7 @@ def unvote_sessionidea(date, id):
         db.session.delete(vote)
         db.session.commit()
         flash(_('Vote removed'))
+        signals.sessionidea_unvoted.send(vote)
     return redirect(url_for('.meetup', date=filters.datecode(meetup.start)))
 
 
@@ -245,6 +250,7 @@ def edit_meetup(date):
                     db.session.add(meetup)
                     db.session.commit()
                     lock.unlock()
+                    signals.meetup_changed.send(meetup)
                     return redirect(url_for('.meetup',
                         date=filters.datecode(meetup.start)))
         else:
@@ -267,6 +273,7 @@ def delete_meetup(date):
             db.session.delete(meetup)
             db.session.commit()
             lock.unlock()
+            signals.meetup_deleted.send(meetup)
         return redirect(url_for('.meetups'))
     else:
         return render_template('meetups/confirm_delete_meetup.html',
@@ -296,6 +303,7 @@ def create_meetup():
                         notes=form['notes'].value)
                 db.session.add(meetup)
                 db.session.commit()
+                signals.meetup_created.send(meetup)
                 return redirect(url_for('.meetup',
                     date=filters.datecode(form['start'].value)))
     else:

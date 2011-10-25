@@ -74,3 +74,8 @@
         </div>
     </body>
 </html>
+{% macro email_status(status) -%}
+    {% if status == 'not_verified' %}Noch nicht aktiviert{% endif %}
+    {% if status == 'active' %}Aktiviert{% endif %}
+    {% if status == 'bounced' %}Nicht erreichbar{% endif %}
+{%- endmacro %}

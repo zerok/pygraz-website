@@ -183,6 +183,21 @@ form {
             padding-top: 0;
         }
     }
+    fieldset {
+        > legend {
+            border-top: 1px dashed #CCC;
+            font-weight: bold;
+            display: block;
+            width: 100%;
+            clear: both;
+            font-size: 12px;
+            padding: 10px 0;
+        }
+        > div {
+            margin-left: 10%;
+            width: 90%;
+        }
+    }
     label {
         float: left;
         text-align: left;
@@ -202,6 +217,10 @@ form {
             background: #FFF;
         }
     }
+    input[type=checkbox] {
+        float: left;
+        margin-top: 8px;
+    }
     textarea {
         line-height: 18px;
     }
@@ -209,6 +228,7 @@ form {
         font-size: 80%;
         color: #999;
         float: right;
+        clear: both;
         width: 70%;
         padding: 0;
         margin: 0;
@@ -309,4 +329,19 @@ form {
             @include append(1);
         }
     }
+}
+.editprofile {
+    #email-status, #send-activation {
+        font-size: 12px;
+        margin-top: 5px;
+        width: 71%;
+        float: right;
+        display: block;
+    }
+}
+.email-status-active {
+    color: green;
+}
+.email-status-bounded, .email-status-not_verified {
+    color: red;
 }

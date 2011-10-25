@@ -1,0 +1,4 @@
+Durch Klicken auf folgenden Link können Sie Ihre E-Mail-Adresse für PyGRAZ
+aktivieren:
+
+<{{ url }}>
