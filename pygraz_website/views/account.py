@@ -110,7 +110,7 @@ def start_email_activation():
         flash("Ihre E-Mail-Adresse wurde bereits aktiviert")
         return redirect(url_for('.edit_profile'))
     code = _generate_activation_code(g.user)
-    activation_url = request.url_root + url_for('.activate_email', code=code)
+    activation_url = request.url_root.rstrip('/') + url_for('.activate_email', code=code)
     g.user.email_activation_code = code
     db.session.add(g.user)
     db.session.commit()
@@ -158,7 +158,7 @@ def handle_sessionidea_created(sessionidea):
     if hasattr(g, "user"):
         users = users.filter(models.User.id != g.user.id)
     emails = [user.email for user in users]
-    url = '{}{}#idea-{}'.format(request.url_root, sessionidea.meetup.get_absolute_url(), sessionidea.id)
+    url = '{}{}#idea-{}'.format(request.url_root.rstrip('/'), sessionidea.meetup.get_absolute_url(), sessionidea.id)
     email.send_mass_email(emails, 'Neue Sessionidea', 'emails/new-sessionidea',
             ctx=dict(idea=sessionidea, url=url))
 
