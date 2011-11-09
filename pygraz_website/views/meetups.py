@@ -84,7 +84,7 @@ def do_vote(date, id, value):
     db.session.add(vote)
     db.session.commit()
     flash(_(u"Thank you for your vote!"))
-    signals.sessionidea_voted(vote)
+    signals.sessionidea_voted.send(vote)
     return redirect(url_for('.meetup', date=filters.datecode(meetup.start)))
 
 
@@ -195,7 +195,7 @@ def edit_sessionidea(date, id):
             idea.url = form['url'].value
             db.session.add(idea)
             db.session.commit()
-            signals.sessionidea_changed(idea)
+            signals.sessionidea_changed.send(idea)
             return redirect(url_for('.meetup',
                 date=filters.datecode(meetup.start)))
     else:
