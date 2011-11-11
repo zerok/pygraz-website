@@ -14,7 +14,7 @@ $blueprint_container_size: 830px;
 
 body {
     font-size: 15px;
-    font-family: Helvetica Neue, Arial, Helvetica, sans-serif;
+    font-family: $sans;
     color: #333;
 }
 
@@ -27,12 +27,13 @@ a:hover {
     color: $highlight;
 }
 #logo {
-    @include column(3);
     padding-top: 20px;
+    display: block;
+    float: left;
 }
 #accountnav {
-    @include column(21);
-    @include last;
+    width: 600px;
+    float: right;
 
     ul {
         float: right;
@@ -77,9 +78,11 @@ a:hover {
             margin-left: 2em;
             a {
                 font-size: 17px;
-                padding: 10px;
+                padding: 0px 10px;
+                line-height: 45px;
                 text-decoration: none;
                 color: $mainnav-fg;
+                display: block;
                 &.active {
                     color: $mainnav-active-fg;
                     font-weight: bold;
@@ -87,11 +90,15 @@ a:hover {
                     @include linear-gradient(color-stops(lighten($mainnav-active-fg, 50), lighten($mainnav-active-fg, 60)));
                     @include border-radius;
                 }
+                img {
+                    vertical-align: middle;
+                }
             }
         }
     }
 }
 #main {
+    margin-top: 5px;
     padding-top: 2em;
 }
 
@@ -298,24 +305,59 @@ form {
         @include border-radius(5px);
     }
     a.upvote {
-        background-color: lighten($blue, 30);
+        @include background-image(linear-gradient(lighten($blue, 40), lighten($blue, 30)));
         border-color: lighten($blue, 25);
         &.unvote {
             background-color: $blue;
+            @include background-image(linear-gradient(lighten($blue, 10), $blue));
             border-color: darken($blue, 5);
         }
     }
     a.downvote {
-        background-color: $red;
-        border-color: darken($red, 5);
+        @include background-image(linear-gradient(lighten($red, 10), $red));
+        border-color: $red;
         &.unvote {
-            background-color: darken($red, 20);
+            @include background-image(linear-gradient(darken($red, 10), darken($red, 20)));
             border-color: darken($red, 25);
         }
     }
 
     #ideas {
         margin-top: 2em;
+        > ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        li {
+            background: #EFEFEF;
+            @include background-image(linear-gradient(#efefef, #FFF));
+            margin-bottom: 1em;
+            @include border-radius(10px);
+            padding: 10px;
+            > h2 {
+                padding: 5px 10px;
+                margin: 0;
+                font-size: 100%;
+                font-family: $sans;
+                background: #DDD;
+                color: #555;
+                font-weight: bold;
+                letter-spacing: 0;
+                @include background-image(linear-gradient(#DDD, #CCC));
+                @include border-radius(5px);
+                a {
+                    color: #555;
+                }
+            }
+            .details {
+                padding: 5px 10px;
+            }
+        }
+
+        .actions {
+            text-align: right;
+        }
     }
 }
 

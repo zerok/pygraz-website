@@ -196,6 +196,7 @@ def edit_sessionidea(date, id):
             db.session.add(idea)
             db.session.commit()
             signals.sessionidea_changed.send(idea)
+            flash(_('Your changes have been saved.'), category='success')
             return redirect(url_for('.meetup',
                 date=filters.datecode(meetup.start)))
     else:
@@ -251,6 +252,7 @@ def edit_meetup(date):
                     db.session.commit()
                     lock.unlock()
                     signals.meetup_changed.send(meetup)
+                    flash(_('Your changes have been saved.'))
                     return redirect(url_for('.meetup',
                         date=filters.datecode(meetup.start)))
         else:
