@@ -27,12 +27,13 @@ a:hover {
     color: $highlight;
 }
 #logo {
-    @include column(3);
     padding-top: 20px;
+    display: block;
+    float: left;
 }
 #accountnav {
-    @include column(21);
-    @include last;
+    width: 600px;
+    float: right;
 
     ul {
         float: right;
@@ -77,9 +78,11 @@ a:hover {
             margin-left: 2em;
             a {
                 font-size: 17px;
-                padding: 10px;
+                padding: 0px 10px;
+                line-height: 45px;
                 text-decoration: none;
                 color: $mainnav-fg;
+                display: block;
                 &.active {
                     color: $mainnav-active-fg;
                     font-weight: bold;
@@ -87,11 +90,15 @@ a:hover {
                     @include linear-gradient(color-stops(lighten($mainnav-active-fg, 50), lighten($mainnav-active-fg, 60)));
                     @include border-radius;
                 }
+                img {
+                    vertical-align: middle;
+                }
             }
         }
     }
 }
 #main {
+    margin-top: 5px;
     padding-top: 2em;
 }
 
