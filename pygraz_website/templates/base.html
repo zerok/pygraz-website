@@ -31,6 +31,9 @@
                         {% else %}
                         <li><a href="{{ url_for('account.edit_profile') }}">Meine Profil</a></li>
                         <li><a href="{{ url_for('account.logout') }}?next={{ request.path }}">Abmelden</a></li>
+                        {% if is_admin %}
+                        <li><a href="{{ url_for('admin.index') }}" class="{% block nav_admin %}{% endblock %}">Admin</a></li>
+                        {% endif %}
                         {% endif %}
                     </ul>
                 </nav>
@@ -45,9 +48,6 @@
                         <li><a href="http://groups.google.at/group/python-graz" class="{% block nav_about %}{% endblock %}">Mailinglist</a></li>
                         <li><a href="http://convore.com/pygraz">Convore</a></li>
                         <li><a href="https://plus.google.com/101185345132127945047?prsrc=3" style="text-decoration: none;"><img src="/static/s/gplus-32.png" alt="Google+" width="32" height="32" style="border: 0;"/></a></li>
-                        {% if is_admin %}
-                        <li><a href="{{ url_for('admin.index') }}" class="{% block nav_admin %}{% endblock %}">Administration</a></li>
-                        {% endif %}
                     </ul>
                 </nav>
             </header>
