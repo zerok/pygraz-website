@@ -16,16 +16,17 @@
         {% if ideas %}
         <ul>
             {% for idea in ideas %}
-            <li id="idea-{{ idea.id }}"><p class="summary">
+            <li id="idea-{{ idea.id }}"><h2 class="summary">
                     {% if idea.url %}
                     <a href="{{ idea.url }}" rel="nofollow">{{ idea.summary }}</a>
                     {% else %}
                     {{ idea.summary }}
                     {% endif %} ({{ vote_results[idea.id] }})
-                <p>
+                </h2>
                 {% if idea.details %}
                 <div class="details">{{ idea.details|rst|safe }}</div>
                 {% endif %}
+                <p class="actions">
                 {% if is_logged_in %}
                     {% if idea.id in user_upvotes %}
                     <a href="{{ url_for('meetups.unvote_sessionidea', date=meetup.start|datecode, id=idea.id) }}" class="upvote unvote">+1</a>
@@ -44,6 +45,7 @@
                 <a href="{{ url_for('meetups.edit_sessionidea', date=meetup.start|datecode, id=idea.id) }}">Editieren</a>
                 <a href="{{ url_for('meetups.delete_sessionidea', date=meetup.start|datecode, id=idea.id) }}">Löschen</a>
                 {% endif %}
+                </p>
             </li>
             {% endfor %}
         </ul>

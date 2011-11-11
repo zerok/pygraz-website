@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2011-08-18 21:07+0200\n"
+"POT-Creation-Date: 2011-11-11 21:04+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,67 +17,71 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
 
-#: pygraz_website/forms.py:43
+#: pygraz_website/forms.py:48
 msgid "There already is a meetup on this day"
 msgstr ""
 
-#: pygraz_website/forms.py:73
+#: pygraz_website/forms.py:79
 msgid "This username is already taken"
 msgstr ""
 
-#: pygraz_website/forms.py:79
+#: pygraz_website/forms.py:87
 msgid "This email address is already taken"
 msgstr ""
 
-#: pygraz_website/forms.py:86
+#: pygraz_website/forms.py:96
 msgid "Please provide a start datetime"
 msgstr ""
 
-#: pygraz_website/forms.py:90
+#: pygraz_website/forms.py:100
 msgid "Please provide an end datetime"
 msgstr ""
 
-#: pygraz_website/forms.py:92
+#: pygraz_website/forms.py:103
 msgid "The end has to come after the start"
 msgstr ""
 
-#: pygraz_website/forms.py:99
+#: pygraz_website/forms.py:111
 msgid "Please provide an OpenID in order to login"
 msgstr ""
 
-#: pygraz_website/forms.py:104
+#: pygraz_website/forms.py:116
 msgid "Please provide a username"
 msgstr ""
 
-#: pygraz_website/forms.py:108
+#: pygraz_website/forms.py:119
 msgid "Please provide an email address"
 msgstr ""
 
-#: pygraz_website/forms.py:109
+#: pygraz_website/forms.py:120
 msgid "Please provide a valid email address"
 msgstr ""
 
-#: pygraz_website/forms.py:118
+#: pygraz_website/forms.py:134
 msgid "Please give your idea a summary"
 msgstr ""
 
-#: pygraz_website/forms.py:119
+#: pygraz_website/forms.py:136
 msgid "The summary of your idea has to be between 1 and 255 chars long"
 msgstr ""
 
-#: pygraz_website/forms.py:122
+#: pygraz_website/forms.py:138
 msgid "Please describe your idea"
 msgstr ""
 
-#: pygraz_website/views/meetups.py:67
+#: pygraz_website/views/meetups.py:86
 msgid "Thank you for your vote!"
 msgstr ""
 
-#: pygraz_website/views/meetups.py:113
+#: pygraz_website/views/meetups.py:141
 msgid "Session ideas can only be added to future meetups"
 msgstr ""
 
-#: pygraz_website/views/meetups.py:187
+#: pygraz_website/views/meetups.py:199 pygraz_website/views/meetups.py:255
+msgid "Your changes have been saved."
+msgstr ""
+
+#: pygraz_website/views/meetups.py:231
 msgid "Vote removed"
 msgstr ""
 
