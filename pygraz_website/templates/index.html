@@ -53,7 +53,7 @@
         <ul>
             {% for item in news %}
             <li>
-            <p class="content">{{ item.text }}</p>
+            <p class="content">{{ item.text|e|urlize|safe }}</p>
             <a href="{{ item.url }}" class="date">{{ item.utc_created_at|date }}</a>
             </li>
             {% endfor %}
