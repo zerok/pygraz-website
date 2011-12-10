@@ -1,4 +1,3 @@
-import collections
 from pygraz_website import filters
 
 class TestFilters(object):
