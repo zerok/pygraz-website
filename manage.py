@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from flaskext.script import Manager
 import pygraz_website
 from pygraz_website import models, db
