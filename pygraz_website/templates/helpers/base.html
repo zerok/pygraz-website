@@ -1,0 +1,15 @@
+{% macro email_status(status) -%}
+    {% if status == 'not_verified' %}Noch nicht aktiviert{% endif %}
+    {% if status == 'active' %}Aktiviert{% endif %}
+    {% if status == 'bounced' %}Nicht erreichbar{% endif %}
+{%- endmacro %}
+
+{% macro location_info(location) -%}
+    <div class="locationinfo">
+    {% if location == 'Google+' %}
+        <p>Dieses Treffen findet als Google+ Hangout auf unserer <a href="https://plus.google.com/101185345132127945047/posts">Google+ Page</a> statt.
+        Mehr Information zu Hangouts und wie du daran teilnehmen kannst, findest du <a href="http://support.google.com/plus/bin/answer.py?hl=de&answer=1349254&topic=1651547&ctx=topic">hier</a>.
+        </p>
+    {% endif %}
+    </div>
+{%- endmacro %}
