@@ -47,6 +47,7 @@ def create_app(envar="FLASK_SETTINGS", config_object=None):
     app.jinja_env.filters['datetime'] = filters.datetimefilter
     app.jinja_env.filters['rst'] = filters.rst
     app.jinja_env.filters['urlencode'] = filters.urlencode
+    app.jinja_env.filters['urlize'] = filters.urlize
     app.secret_key = app.config['SECRET_KEY']
 
     db.init_app(app)

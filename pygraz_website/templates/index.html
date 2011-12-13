@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block nav_start %}active{% endblock %}
 {% block bodyclass %}frontpage{% endblock %}
+{% import "helpers/base.html" as base with context %}
 {% block head %}
 <link rel="stylesheet" href="/static/s/frontpage.css" type="text/css" media="screen" />
 {% endblock %}
@@ -36,16 +37,23 @@
         <p><a href="{{ url_for('meetups.meetup', date=next_meetup.start|datecode)}}">{{ next_meetup.start|date }}</a>,
         {{ next_meetup.start|time }} - {{ next_meetup.end|time }}
         {% if next_meetup.location %}
-        <br />{{ next_meetup.location.name }}
-        {% if next_meetup.location.address %}
-        , {{ next_meetup.location.address }}
-        {% endif %}
+            {% if next_meetup.location == 'Google+' %}
+                {{ base.location_info(next_meetup.location) }}
+            {% else %}
+                <br />{{ next_meetup.location }}
+                {% if next_meetup.address %}
+                , {{ next_meetup.address }}
+                {% endif %}
+            {% endif %}
         {% endif %}
         </p>
         {% if next_meetup and next_meetup.address %}
             <iframe id="map" width="423" height="350" frameborder="0" scrolling="no" 
                 marginheight="0" marginwidth="0" src="http://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q={{ next_meetup.address|urlencode }}&amp;output=embed"></iframe>
         {% endif %}
+        {% else %}
+        <p>Derzeit ist kein Treffen geplant. In der Regel findet aber so etwas einmal im Monat statt, weshalb sich
+        dieser leere Fleck sicher bald füllen sollte :-)</p>
         {% endif %}
     </div>
     <div id="news">
@@ -53,7 +61,7 @@
         <ul>
             {% for item in news %}
             <li>
-            <p class="content">{{ item.text }}</p>
+            <p class="content">{{ item.text|e|urlize|safe }}</p>
             <a href="{{ item.url }}" class="date">{{ item.utc_created_at|date }}</a>
             </li>
             {% endfor %}

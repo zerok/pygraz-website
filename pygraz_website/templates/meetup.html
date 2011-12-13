@@ -1,4 +1,5 @@
 {% extends "meetups/base.html" %}
+{% import "helpers/base.html" as base with context %}
 {% block title %}Treffen vom {{ meetup.start|date }}{% endblock %}
 {% block body %}
     <h1>Treffen vom {{ meetup.start|date }}</h1>
@@ -81,10 +82,13 @@
             <dt>Ort:</dt>
             <dd>{{ meetup.location }}</dd>
         </dl>
+        {% if meetup.address %}
         <dl>
             <dt>Adresse:</dt>
             <dd>{{ meetup.address }}</dd>
         </dl>
+        {% endif %}
+        {{ base.location_info(meetup.location) }}
         {% endif %}
     </div>
 </div>
