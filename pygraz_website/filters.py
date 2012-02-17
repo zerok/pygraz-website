@@ -93,4 +93,7 @@ def urlize(v, return_matches=False):
     if return_matches:
         return UrlizeResult(result, matches)
     return result
-    
+
+def in_future(meetup):
+    return meetup.start > datetime.datetime.utcnow()
+

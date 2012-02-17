@@ -391,3 +391,35 @@ form {
     line-height: 1.5em;
     margin-top: 10px;
 }
+
+#body .meetupcom {
+    @include border-radius(3px);
+    background: #EFEFEF url(meetup-logo.png) 2% 50% no-repeat;
+    padding: 10px 10px 10px 110px;
+    font-size: 110%;
+    p {
+        margin-bottom: 0 !important;
+        font-style: italic;
+        a {
+            font-weight: bold;
+            text-transform: uppercase;
+            font-style: normal;
+        }
+    }
+    p.info {
+        font-style:normal;
+        margin-top: 8px;
+        font-size: 80%;
+    }
+    margin-bottom: 1.5em;
+}
+
+#credits {
+    text-align: center;
+    margin: 2em 0;
+    font-size: 70%;
+    color: #AAA;
+    a {
+        color: #888;
+    }
+}
