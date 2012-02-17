@@ -12,6 +12,7 @@ class Meetup(db.Model):
     location = db.Column(db.String(255))
     address = db.Column(db.String(255))
     notes = db.Column(db.Text)
+    meetupcom_eventid = db.Column(db.String(255))
 
     def as_dict(self):
         return instance_dict(self)

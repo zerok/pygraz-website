@@ -32,6 +32,11 @@
         <p class="info">... mit der auch Google Maps etwas anfangen kann.</p>
     </div>
     <div>
+        <label for="end">Meetup.com ID:</label>
+        {{ formgen.input(form.meetupcom_eventid, type="text") }}
+        {{ forms.errors(form.meetupcom_eventid) }}
+    </div>
+    <div>
         <label for="notes">Notizen:</label>
         {{ formgen.textarea(form.notes, type="text") }}
         {{ forms.errors(form.notes) }}

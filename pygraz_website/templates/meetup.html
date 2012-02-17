@@ -3,6 +3,17 @@
 {% block title %}Treffen vom {{ meetup.start|date }}{% endblock %}
 {% block body %}
     <h1>Treffen vom {{ meetup.start|date }}</h1>
+    {% if meetup.meetupcom_eventid and meetup|in_future %}
+    <div class="meetupcom">
+        <p>
+            Falls du kommen möchtest, melde dich bitte bei Gelegenheit auf <a href="http://www.meetup.com/PyGRAZ/events/{{ meetup.meetupcom_eventid }}/">Meetup.com</a>
+            zu diesem Treffen an.
+        </p>
+        <p class="info">
+            Eine Anmeldung ist zwar nicht zwingend erforderlich, hilft uns aber bei der Organisation.
+        </p>
+    </div>
+    {% endif %}
     {% if meetup.notes %}
     {{ meetup.notes|rst|safe }}
     {% else %}

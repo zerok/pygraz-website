@@ -48,6 +48,7 @@ class UniqueMeetupStartDate(Validator):
     fail = _('There already is a meetup on this day')
 
     def validate(self, element, state):
+        #import pdb; pdb.set_trace()
         if element.value is None:
             return False
         other_meetups = models.Meetup.query_by_date(element.value).all()
@@ -104,6 +105,7 @@ class MeetupForm(flatland.Form):
     notes = flatland.String.using(optional=True)
     location = flatland.String.using(optional=True)
     address = flatland.String.using(optional=True)
+    meetupcom_eventid = flatland.String.using(optional=True)
 
 
 class LoginForm(flatland.Form):
