@@ -238,6 +238,7 @@ def unvote_sessionidea(date, id):
 def edit_meetup(date):
     real_date = _extract_date(date)
     meetup = models.Meetup.query_by_date(real_date).first()
+    print meetup.meetupcom_eventid
     with utils.DocumentLock(meetup) as lock:
         if request.method == 'POST':
             form = forms.MeetupForm.from_flat(request.form)
@@ -248,6 +249,7 @@ def edit_meetup(date):
                     meetup.location = form['location'].value
                     meetup.address = form['address'].value
                     meetup.notes = form['notes'].value
+                    meetup.meetupcom_eventid = form['meetupcom_eventid'].value
                     db.session.add(meetup)
                     db.session.commit()
                     lock.unlock()
@@ -302,6 +304,7 @@ def create_meetup():
                 meetup = models.Meetup(start=form['start'].value,
                         end=form['end'].value, location=form['location'].value,
                         address=form['address'].value,
+                        meetupcom_id=form['meetupcom_id'].value,
                         notes=form['notes'].value)
                 db.session.add(meetup)
                 db.session.commit()
